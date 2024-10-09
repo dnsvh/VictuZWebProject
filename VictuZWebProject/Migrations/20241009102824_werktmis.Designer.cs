@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VictuZWebProject.Data;
 
@@ -11,9 +12,11 @@ using VictuZWebProject.Data;
 namespace VictuZWebProject.Migrations
 {
     [DbContext(typeof(VictuZAccountDbContext))]
-    partial class VictuZAccountDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241009102824_werktmis")]
+    partial class werktmis
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

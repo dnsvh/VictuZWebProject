@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using VictuZ_Lars.Data;
 using VictuZWebProject.Areas.Identity.Data;
 using VictuZWebProject.Data;
 namespace VictuZWebProject
@@ -12,7 +13,7 @@ namespace VictuZWebProject
             var connectionString = builder.Configuration.GetConnectionString("VictuZAccountDbContextConnection") ?? throw new InvalidOperationException("Connection string 'VictuZAccountDbContextConnection' not found.");
 
             builder.Services.AddDbContext<VictuZAccountDbContext>(options => options.UseSqlServer(connectionString));
-
+            builder.Services.AddDbContext<VictuZ_Lars_Db>();
             builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<VictuZAccountDbContext>();
 
             // Add services to the container.
