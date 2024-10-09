@@ -1,5 +1,5 @@
 ﻿@{
-    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout !=  null)
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
     {
         Layout = parentLayout.ToString();
     }
@@ -16,9 +16,11 @@
     <hr />
     <div class="row">
         <div class="col-md-3">
+            <!-- Render the updated ManageNav -->
             <partial name="_ManageNav" />
         </div>
         <div class="col-md-9">
+            <!-- Render body content (email/password/sign-ups, etc.) -->
             @RenderBody()
         </div>
     </div>

@@ -7,22 +7,27 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-    </li>
-    <li class="nav-item">
+
+<div class="dropdown" style="margin-right: 50px;">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Profiel
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Accountgegevens">Accountgegevens</a></li>
+        @* log out button as second drop down item *@
         <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+            <button id="logout" type="submit" class="dropdown-item btn btn-link text-dark border-0">Uitloggen</button>
         </form>
-    </li>
+    </ul>
+</div>
 }
 else
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Account aanvragen</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Inloggen</a>
     </li>
 }
 </ul>
