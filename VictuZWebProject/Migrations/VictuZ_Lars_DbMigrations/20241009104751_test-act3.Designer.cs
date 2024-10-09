@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VictuZ_Lars.Data;
 
@@ -11,9 +12,11 @@ using VictuZ_Lars.Data;
 namespace VictuZWebProject.Migrations.VictuZ_Lars_DbMigrations
 {
     [DbContext(typeof(VictuZ_Lars_Db))]
-    partial class VictuZ_Lars_DbModelSnapshot : ModelSnapshot
+    [Migration("20241009104751_test-act3")]
+    partial class testact3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,26 +24,6 @@ namespace VictuZWebProject.Migrations.VictuZ_Lars_DbMigrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("VictuZWebProject.Models.UserRegistration", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserRegistration", (string)null);
-                });
 
             modelBuilder.Entity("VictuZ_Lars.Models.Activity", b =>
                 {
