@@ -1,0 +1,44 @@
+﻿@model IEnumerable<VictuZWebProject.Models.ActivityViewModel>
+
+<h1>Current Activities</h1>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-4" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.Activity.Name)</h5>
+                    <p class="card-text">@Html.DisplayFor(modelItem => item.Activity.Body)</p>
+                    <div class="d-flex justify-content-between">
+                        <p class="card-text"><small>Location: @Html.DisplayFor(modelItem => item.Activity.Location)</small></p>
+                        <p class="card-text"><small>@Html.DisplayFor(modelItem => item.Activity.Registered) / @Html.DisplayFor(modelItem => item.Activity.MaxCapacity)</small></p>
+                    </div>
+
+                    <a asp-action="Details" asp-route-id="@item.Activity.ActivityId" class="btn btn-primary">Details</a>
+
+                    @if (item.Activity.Registered >= item.Activity.MaxCapacity)
+                    {
+                        <a class="btn btn-secondary disabled" aria-disabled="true">Full</a>
+                    }
+                    else if (!User.Identity.IsAuthenticated)
+                    {
+                        <a class="btn btn-secondary disabled" aria-disabled="true">Login to Register</a>
+                    }
+                    else if (item.IsUserRegistered)
+                    {
+                        // Show the delete button if the user is registered
+                        <form asp-action="Delete" asp-route-id="@item.Activity.ActivityId" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger">Delete Registration</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-action="Register" asp-route-id="@item.Activity.ActivityId" class="btn btn-primary">Register</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
