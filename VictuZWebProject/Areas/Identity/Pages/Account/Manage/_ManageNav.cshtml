@@ -2,14 +2,19 @@
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
-    @if (hasExternalLogins)
-    {
-        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a></li>
-    }
-    <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
+<ul class="nav flex-column">
+    <!-- Profile link -->
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext) btn" style="background-color: #20c997; color: white;" id="profile" asp-page="./Index">Profile</a>
+    </li>
+
+    <!-- Change email link -->
+    <li class="nav-item" style="margin-top: 10px;">
+        <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext) btn" style="background-color: #20c997; color: white;" id="email" asp-page="./Email">Change Email</a>
+    </li>
+
+    <!-- Change password link -->
+    <li class="nav-item" style="margin-top: 10px;">
+        <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext) btn" style="background-color: #20c997; color: white;" id="change-password" asp-page="./ChangePassword">Change Password</a>
+    </li>
 </ul>
