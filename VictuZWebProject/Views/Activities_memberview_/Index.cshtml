@@ -1,0 +1,38 @@
+﻿@model IEnumerable<VictuZ_Lars.Models.Activity>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Current Activities</h1>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-4" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
+                    <p class="card-text">@Html.DisplayFor(modelItem => item.Body)</p>
+                    <div class="d-flex justify-content-between">
+                        <p class="card-text"><small>Location: @Html.DisplayFor(modelItem => item.Location)</small></p>
+                        <p class="card-text"><small>@Html.DisplayFor(modelItem => item.Registered) / @Html.DisplayFor(modelItem => item.MaxCapacity)</small></p>
+                    </div> 
+                    <a asp-action="Details" asp-route-id="@item.ActivityId" class="btn btn-primary">Details</a>
+
+                    @if (item.Registered >= item.MaxCapacity)
+                    {
+                        <a class="btn btn-secondary disabled" aria-disabled="true">Full</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Register" asp-route-id="@item.ActivityId" class="btn btn-primary">Register</a>
+                    }
+
+                </div>
+                </div>
+            </div>
+    }
+</div>
+
