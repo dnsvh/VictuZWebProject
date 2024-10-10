@@ -41,4 +41,24 @@
             </div>
         </div>
     }
+    <h2>Upcoming Activities</h2>
+
+    <!-- Date filter form -->
+
+    @if (!Model.Any())
+    {
+        <p>No upcoming activities found.</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var item in Model)
+            {
+                <li>
+                    <strong>@Html.DisplayFor(modelItem => item.Activity.Name)</strong> - @Html.DisplayFor(modelItem => item.Activity.DateDue)
+                    <p>@Html.DisplayFor(modelItem => item.Activity.Body)</p>
+                </li>
+            }
+        </ul>
+    }
 </div>

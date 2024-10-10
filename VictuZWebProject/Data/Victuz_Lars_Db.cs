@@ -13,7 +13,8 @@ namespace VictuZ_Lars.Data
     {
         public DbSet<Activity> Activity { get; set; }
         public DbSet<UserRegistration> UserRegistration { get; set; }
-
+        public DbSet<Suggestion> Suggestion { get; set; }
+        public DbSet<SuggestionLike> SuggestionLike { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -25,9 +26,17 @@ namespace VictuZ_Lars.Data
         {
             modelBuilder.Entity<Activity>().ToTable("Activity");
             modelBuilder.Entity<UserRegistration>().ToTable("UserRegistration");
+            modelBuilder.Entity<Suggestion>().ToTable("Suggestion");
+            modelBuilder.Entity<SuggestionLike>().ToTable("SuggestionLike");
+
         }
         public DbSet<Activity> Activity_1 { get; set; } = default!;
         public DbSet<UserRegistration> UserRegistration_1 { get; set; } = default!;
+        public DbSet<Suggestion> Suggestion_1 { get; set; } = default!;
+
+        public DbSet<SuggestionLike> SuggestionLike_1 { get; set; } = default!;
+
+
 
     }
 }
