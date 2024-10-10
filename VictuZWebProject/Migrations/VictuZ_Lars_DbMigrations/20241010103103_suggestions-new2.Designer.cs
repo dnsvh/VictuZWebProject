@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VictuZ_Lars.Data;
 
@@ -11,9 +12,11 @@ using VictuZ_Lars.Data;
 namespace VictuZWebProject.Migrations.VictuZ_Lars_DbMigrations
 {
     [DbContext(typeof(VictuZ_Lars_Db))]
-    partial class VictuZ_Lars_DbModelSnapshot : ModelSnapshot
+    [Migration("20241010103103_suggestions-new2")]
+    partial class suggestionsnew2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,6 +34,7 @@ namespace VictuZWebProject.Migrations.VictuZ_Lars_DbMigrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Author")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Body")
@@ -47,28 +51,6 @@ namespace VictuZWebProject.Migrations.VictuZ_Lars_DbMigrations
                     b.HasKey("Id");
 
                     b.ToTable("Suggestion", (string)null);
-                });
-
-            modelBuilder.Entity("VictuZWebProject.Models.SuggestionLike", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("SuggestionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SuggestionId");
-
-                    b.ToTable("SuggestionLike", (string)null);
                 });
 
             modelBuilder.Entity("VictuZWebProject.Models.UserRegistration", b =>
@@ -126,17 +108,6 @@ namespace VictuZWebProject.Migrations.VictuZ_Lars_DbMigrations
                     b.HasKey("ActivityId");
 
                     b.ToTable("Activity", (string)null);
-                });
-
-            modelBuilder.Entity("VictuZWebProject.Models.SuggestionLike", b =>
-                {
-                    b.HasOne("VictuZWebProject.Models.Suggestion", "Suggestion")
-                        .WithMany()
-                        .HasForeignKey("SuggestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Suggestion");
                 });
 #pragma warning restore 612, 618
         }

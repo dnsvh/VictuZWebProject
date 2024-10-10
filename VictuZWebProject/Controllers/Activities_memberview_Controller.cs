@@ -12,6 +12,7 @@ using VictuZWebProject.Models;
 using VictuZWebProject.Data;
 using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics;
+using Activity = VictuZ_Lars.Models.Activity;
 
 namespace VictuZ_Lars.Controllers
 {
@@ -44,6 +45,33 @@ namespace VictuZ_Lars.Controllers
             return View(viewModel);
         }
 
+        public async Task<IActionResult> UpcomingActivities(DateTime? filterDate = null)
+        {
+            // Get the current date and time
+            DateTime currentDateTime = DateTime.Now;
+
+            // Query all activities from the database
+            IQueryable<Activity> activities = _context.Activity;
+
+            // If a filter date is provided, filter activities by the given date and time
+            if (filterDate.HasValue)
+            {
+                activities = activities.Where(a => a.DateDue >= filterDate.Value);
+            }
+            else
+            {
+                // Otherwise, filter activities with a future date and time compared to the current time
+                activities = activities.Where(a => a.DateDue > currentDateTime);
+            }
+
+            // Order by date and time so the earliest upcoming activity is first
+            var upcomingActivities = await activities
+                .OrderBy(a => a.DateDue)
+                .ToListAsync();
+
+            // Pass the filtered activities to the view
+            return View(upcomingActivities);
+        }
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
