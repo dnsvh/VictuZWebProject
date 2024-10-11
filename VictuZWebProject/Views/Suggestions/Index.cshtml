@@ -1,4 +1,4 @@
-﻿@model IEnumerable<VictuZWebProject.Models.Suggestion>
+﻿@model IEnumerable<VictuZWebProject.Models.SuggestionViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,46 +9,79 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card m-5 p-3">
+                    <h3 class="">@Html.DisplayFor(modelItem => item.Suggestion.Title)</h3>
+                    <p>Suggested by: @Html.DisplayFor(modelItem => item.Suggestion.Author)</p>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="col"></div>
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.Suggestion.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Author)
+                @Html.DisplayNameFor(model => model.Suggestion.Author)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Body)
+                @Html.DisplayNameFor(model => model.Suggestion.Body)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Likes)
+                @Html.DisplayNameFor(model => model.Suggestion.Likes)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Body)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Likes)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                <a asp-action="Like" asp-route-id="@item.Id">Like</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Suggestion.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Suggestion.Author)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Suggestion.Body)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Suggestion.Likes)
+                </td>
+                <td>
+
+                    <a asp-action="Details" asp-route-id="@item.Suggestion.Id" class="btn btn-primary">Details</a> |
+
+                    @* Check if the current user is the author of the suggestion *@
+                    @if (User.Identity.Name == item.Suggestion.Author)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Suggestion.Id" class="btn btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Suggestion.Id" class="btn btn-primary">Delete</a>
+                    }
+
+                    @if (item.HasUserLiked)
+                    {
+                        <a asp-action="Like" asp-route-id="@item.Suggestion.Id" class="btn btn-danger">Unlike</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Like" asp-route-id="@item.Suggestion.Id" class="btn btn-primary">Like</a>
+                    }
+                   
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
