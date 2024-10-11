@@ -50,9 +50,13 @@
                         <div class="ms-auto">
                             <a asp-action="Details" asp-route-id="@item.Suggestion.Id" class="btn me-2" style="background-color: #20c997; color: white;">Details</a>
 
-                            @* Check if the current user is the author of the suggestion *@
                             @if (User.Identity.Name == item.Suggestion.Author)
                             {
+                                <a asp-action="Delete" asp-route-id="@item.Suggestion.Id" class="btn me-2" style="background-color: #20c997; color: white;">Delete</a>
+                            }
+                            else if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                            {
+                                <a asp-action="ConvertToActivityPage" asp-route-id="@item.Suggestion.Id" class="btn me-2" style="background-color: #20c997; color: white;">Convert</a>
                                 <a asp-action="Edit" asp-route-id="@item.Suggestion.Id" class="btn me-2" style="background-color: #20c997; color: white;">Edit</a>
                                 <a asp-action="Delete" asp-route-id="@item.Suggestion.Id" class="btn me-2" style="background-color: #20c997; color: white;">Delete</a>
                             }
@@ -64,6 +68,7 @@
     </div>
 </div>
 
+
 <script>
     function showLoginAlert(event) {
         event.preventDefault(); // Prevent any default action
@@ -72,3 +77,5 @@
 </script>
 
 <script src="https://kit.fontawesome.com/8073668e9d.js" crossorigin="anonymous"></script>
+
+
