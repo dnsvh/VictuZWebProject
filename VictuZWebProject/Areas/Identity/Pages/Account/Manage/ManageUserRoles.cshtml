@@ -1,0 +1,39 @@
+﻿@page
+@model VictuZWebProject.Areas.Identity.Pages.Account.ManageRolesModel
+@{
+    ViewData["Title"] = "Manage User Roles";
+}
+
+<h2>Manage User Roles</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Current Role</th>
+            <th>Change Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var userWithRoles in Model.UsersWithRoles)
+        {
+            <tr>
+                <td>@userWithRoles.User.Email</td>
+                <td>@string.Join(", ", userWithRoles.Roles)</td>
+                <td>
+                    <form method="post">
+                        <input type="hidden" asp-for="UserId" value="@userWithRoles.User.Id" />
+                        <select asp-for="SelectedRole" class="form-control">
+                            @foreach (var role in Model.Roles)
+                            {
+                                <option value="@role">@role</option>
+                            }
+                        </select>
+                        <button type="submit" class="btn btn-primary">Change Role</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
