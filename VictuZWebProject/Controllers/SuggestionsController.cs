@@ -24,7 +24,19 @@ namespace VictuZWebProject.Controllers
         // GET: Suggestions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Suggestion.ToListAsync());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Fetch the suggestions
+            var suggestions = await _context.Suggestion.ToListAsync();
+
+            // Map Suggestions to SuggestionViewModel
+            var suggestionViewModels = suggestions.Select(s => new SuggestionViewModel
+            {
+                Suggestion = s,
+                HasUserLiked = _context.SuggestionLike.Any(sl => sl.UserId == userId && sl.SuggestionId == s.Id)
+            }).ToList();
+
+            return View(suggestionViewModels); // Pass the mapped view models to the view
         }
 
         // GET: Suggestions/Details/5
