@@ -1,39 +1,59 @@
 ﻿@page
-@model VictuZWebProject.Areas.Identity.Pages.Account.ManageRolesModel
+@model VictuZWebProject.Pages.Identity.ManageUserRolesModel
 @{
     ViewData["Title"] = "Manage User Roles";
 }
 
-<h2>Manage User Roles</h2>
+<h1>Manage User Roles</h1>
+
+<form method="get">
+    <input type="text" name="searchString" placeholder="Search by name or email" value="@Model.SearchString" />
+    <input type="submit" value="Search" />
+</form>
 
 <table class="table">
     <thead>
         <tr>
+            <th>Name</th>
             <th>Email</th>
-            <th>Current Role</th>
-            <th>Change Role</th>
+            <th>Roles</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var userWithRoles in Model.UsersWithRoles)
+        @foreach (var userRole in Model.UsersWithRoles)
         {
             <tr>
-                <td>@userWithRoles.User.Email</td>
-                <td>@string.Join(", ", userWithRoles.Roles)</td>
+                <td>@userRole.User.FirstName @userRole.User.LastName</td>
+                <td>@userRole.User.Email</td>
                 <td>
-                    <form method="post">
-                        <input type="hidden" asp-for="UserId" value="@userWithRoles.User.Id" />
-                        <select asp-for="SelectedRole" class="form-control">
-                            @foreach (var role in Model.Roles)
+                    @foreach (var role in userRole.Roles)
+                    {
+                        @role
+                        <br />
+                    }
+                </td>
+                <td>
+                    <form method="post" asp-page-handler="EditRole">
+                        <input type="hidden" name="userId" value="@userRole.User.Id" />
+                        <select name="newRole" required>
+                            <option value="Member">Member</option>
+                            <option value="Visitor">Visitor</option>
+                            <option value="Pending">Pending</option>
+                            
+                            @if (User.IsInRole("Admin"))
                             {
-                                <option value="@role">@role</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Staff">Staff </option>
                             }
                         </select>
-                        <button type="submit" class="btn btn-primary">Change Role</button>
+                        <input type="submit" value="Change Role" />
                     </form>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+
 

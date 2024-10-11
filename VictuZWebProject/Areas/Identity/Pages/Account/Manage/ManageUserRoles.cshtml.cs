@@ -1,102 +1,80 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using VictuZWebProject.Areas.Identity.Data;
 
-namespace VictuZWebProject.Areas.Identity.Pages.Account
+namespace VictuZWebProject.Pages.Identity
 {
-    [Authorize(Roles = "Staff, Admin")]
-    public class ManageRolesModel : PageModel
+    public class ManageUserRolesModel : PageModel
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public ManageRolesModel(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
+        public ManageUserRolesModel(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
         }
 
-        public List<UserWithRoles> UsersWithRoles { get; set; }
-        public List<string> Roles { get; set; }
-
-        [BindProperty]
-        public string SelectedRole { get; set; }
-
-        [BindProperty]
-        public string UserId { get; set; }
-
-        public async Task OnGetAsync()
+        // store the user and their roles
+        public class UserRoleViewModel
         {
-            // Get all users and their roles
-            UsersWithRoles = new List<UserWithRoles>();
+            public AppUser User { get; set; }
+            public IList<string> Roles { get; set; }
+        }
+
+        // list to store users and their roles
+        public IList<UserRoleViewModel> UsersWithRoles { get; set; }
+        public string SearchString { get; set; }
+
+        public async Task OnGetAsync(string searchString)
+        {
+            SearchString = searchString;
             var users = _userManager.Users;
 
-            foreach (var user in users)
+            // search with lambdaa
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(u => u.UserName.Contains(searchString) || u.Email.Contains(searchString));
+            }
+
+            // get user n roles
+            UsersWithRoles = new List<UserRoleViewModel>();
+            foreach (var user in users.ToList())
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                UsersWithRoles.Add(new UserWithRoles
+                UsersWithRoles.Add(new UserRoleViewModel
                 {
                     User = user,
                     Roles = roles
                 });
             }
-
-            // Define all the roles that can be assigned
-            Roles = new List<string> { "Pending", "Visitor", "Member", "Staff", "Admin" };
         }
 
-        public async Task<IActionResult> OnPostChangeRoleAsync()
+        public async Task<IActionResult> OnPostEditRoleAsync(string userId, string newRole)
         {
-            var user = await _userManager.FindByIdAsync(UserId);
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "User not found.");
-                return Page();
+                return NotFound();
             }
 
-            // Check if the user making the request is Admin or Staff
-            var currentUser = await _userManager.GetUserAsync(User);
-            var currentUserRoles = await _userManager.GetRolesAsync(currentUser);
-
-            if (currentUserRoles.Contains("Admin"))
-            {
-                // Admin can assign any role up to "Staff"
-                if (SelectedRole == "Admin" || SelectedRole == "Staff")
-                {
-                    await UpdateUserRole(user, SelectedRole);
-                }
-            }
-            else if (currentUserRoles.Contains("Staff"))
-            {
-                // Staff can only assign from "Pending" to "Visitor"
-                if (SelectedRole == "Visitor" && (await _userManager.IsInRoleAsync(user, "Pending")))
-                {
-                    await UpdateUserRole(user, SelectedRole);
-                }
-            }
-
-            return RedirectToPage();
-        }
-
-        private async Task UpdateUserRole(AppUser user, string newRole)
-        {
-            // Remove user from all roles
             var currentRoles = await _userManager.GetRolesAsync(user);
-            await _userManager.RemoveFromRolesAsync(user, currentRoles);
 
-            // Add user to the selected new role
-            await _userManager.AddToRoleAsync(user, newRole);
-        }
+            // admin can change all roles, Staff can change roles except Admin and Staff
+            if (User.IsInRole("Admin") || (User.IsInRole("Staff") && (newRole != "Admin" && newRole != "Staff")))
+            {
+                await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                await _userManager.AddToRoleAsync(user, newRole);
+                return RedirectToPage();
+            }
 
-        public class UserWithRoles
-        {
-            public AppUser User { get; set; }
-            public IList<string> Roles { get; set; }
+            return Forbid();
         }
     }
 }
+
 
