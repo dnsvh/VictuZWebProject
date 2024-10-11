@@ -4,84 +4,71 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
+<h1 class="d-flex justify-content-center">Suggestions</h1>
+<h5 class="d-flex justify-content-center">Login and like a suggestion or create a new suggestion if you have a cool idea!</h5>
+</div>
+<p class="d-flex justify-content-center">
+    <a asp-action="Create" class="btn btn-primary" style="background-color: #20c997; color: white;">Suggest Something</a>
 </p>
-<div class="container">
+
+<div class="container mt-4">
     <div class="row">
         @foreach (var item in Model)
         {
-            <div class="col">
-                <div class="card m-5 p-3">
-                    <h3 class="">@Html.DisplayFor(modelItem => item.Suggestion.Title)</h3>
-                    <p>Suggested by: @Html.DisplayFor(modelItem => item.Suggestion.Author)</p>
+
+            <div class="col-md-4 mb-4 d-flex">
+                <div class="card h-100 shadow-sm" style="width: 100%;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Suggestion.Title)</h5>
+                        <small class="card-subtitle">Suggested by @Html.DisplayFor(modelItem => item.Suggestion.Author)</small>
+                        <p class="card-text">@Html.DisplayFor(modelItem => item.Suggestion.Body)</p>
+                        <small></small>
+                    </div>
+                    <div class="card-footer bg-white border-top-0 mt-auto d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a asp-action="Like" asp-route-id="@item.Suggestion.Id" class="btn me-2">
+                                    @if (item.HasUserLiked)
+                                    {
+                                        <i class="fa-solid fa-heart" style="color:red"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa-solid fa-heart"></i>
+                                    }
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="#" class="btn me-2" onclick="showLoginAlert(event)">
+                                    <i class="fa-solid fa-heart"></i>
+                                </a>
+                            }
+                            <span class="like-count">@item.Suggestion.Likes</span>
+                        </div>
+                        <div class="ms-auto">
+                            <a asp-action="Details" asp-route-id="@item.Suggestion.Id" class="btn btn-primary me-2" style="background-color: #20c997; color: white;">Details</a>
+
+                            @* Check if the current user is the author of the suggestion *@
+                            @if (User.Identity.Name == item.Suggestion.Author)
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Suggestion.Id" class="btn btn-primary me-2" style="background-color: #20c997; color: white;">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Suggestion.Id" class="btn btn-primary me-2" style="background-color: #20c997; color: white;">Delete</a>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
         }
     </div>
-    <div class="row">
-        <div class="col"></div>
-    </div>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Suggestion.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Suggestion.Author)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Suggestion.Body)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Suggestion.Likes)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Suggestion.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Suggestion.Author)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Suggestion.Body)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Suggestion.Likes)
-                </td>
-                <td>
+<script>
+    function showLoginAlert(event) {
+        event.preventDefault(); // Prevent any default action
+        alert('Please log in to like this suggestion.'); // Show the alert message
+    }
+</script>
 
-                    <a asp-action="Details" asp-route-id="@item.Suggestion.Id" class="btn btn-primary">Details</a> |
-
-                    @* Check if the current user is the author of the suggestion *@
-                    @if (User.Identity.Name == item.Suggestion.Author)
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.Suggestion.Id" class="btn btn-primary">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.Suggestion.Id" class="btn btn-primary">Delete</a>
-                    }
-
-                    @if (item.HasUserLiked)
-                    {
-                        <a asp-action="Like" asp-route-id="@item.Suggestion.Id" class="btn btn-danger">Unlike</a>
-                    }
-                    else
-                    {
-                        <a asp-action="Like" asp-route-id="@item.Suggestion.Id" class="btn btn-primary">Like</a>
-                    }
-                   
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<script src="https://kit.fontawesome.com/8073668e9d.js" crossorigin="anonymous"></script>
