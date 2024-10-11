@@ -4,26 +4,51 @@
     ViewData["Title"] = "Index";
 }
 
-<h1 class="d-flex justify-content-center">Suggestions</h1>
-<h5 class="d-flex justify-content-center">Login and like a suggestion or create a new suggestion if you have a cool idea!</h5>
-</div>
-<p class="d-flex justify-content-center">
-    <a asp-action="Create" class="btn" style="background-color: #20c997; color: white;">Suggest Something</a>
-</p>
+<h1 class="d-flex justify-content-center">Suggesties</h1>
+<h5 class="d-flex justify-content-center">Login en like een suggestie of maak een nieuwe suggestie aan!</h5>
+@if (User.Identity.IsAuthenticated)
+{
+    <p class="d-flex justify-content-center">
+        <a asp-action="Create" class="btn" style="background-color: #20c997; color: white;">Maak een suggestie</a>
+    </p>
+}
+
 
 <div class="container mt-4">
     <div class="row">
         @foreach (var item in Model)
         {
-
             <div class="col-md-4 mb-4 d-flex">
-                <div class="card h-100 shadow-sm" style="width: 100%;">
+                <div class="card h-100 shadow-sm" style="width: 100%; position: relative;">
+                    <div class="dropdown position-absolute top-0 end-0 m-2">
+                        @if (User.Identity.Name == item.Suggestion.Author || User.IsInRole("Admin") || User.IsInRole("Staff"))
+                        {
+                            <a href="#" class="btn p-0 px-1" id="settingsDropdown-@item.Suggestion.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-gear"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown-@item.Suggestion.Id">
+
+                                @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                                {
+                                    <li><a asp-action="ConvertToActivityPage" asp-route-id="@item.Suggestion.Id" class="m-2 btn btn-light d-flex justify-content-center">Convert</a></li>
+                                    <li><a asp-action="Edit" asp-route-id="@item.Suggestion.Id" class="m-2 btn btn-light d-flex justify-content-center">Edit</a></li>
+                                    <li><a asp-action="Delete" asp-route-id="@item.Suggestion.Id" class="m-2 btn btn-light d-flex justify-content-center">Delete</a></li>
+                                }
+                                else if (User.Identity.Name == item.Suggestion.Author)
+                                {
+                                    <li><a asp-action="Delete" asp-route-id="@item.Suggestion.Id" class="m-2 btn btn-light">Delete</a></li>
+                                }
+                            </ul>
+                        }
+                        
+                    </div>
+
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">@Html.DisplayFor(modelItem => item.Suggestion.Title)</h5>
                         <small class="card-subtitle">Suggested by @Html.DisplayFor(modelItem => item.Suggestion.Author)</small>
                         <p class="card-text">@Html.DisplayFor(modelItem => item.Suggestion.Body)</p>
-                        <small></small>
                     </div>
+
                     <div class="card-footer bg-white border-top-0 mt-auto d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center">
                             @if (User.Identity.IsAuthenticated)
@@ -47,27 +72,12 @@
                             }
                             <span class="like-count">@item.Suggestion.Likes</span>
                         </div>
-                        <div class="ms-auto">
-                            <a asp-action="Details" asp-route-id="@item.Suggestion.Id" class="btn me-2" style="background-color: #20c997; color: white;">Details</a>
-
-                            @if (User.Identity.Name == item.Suggestion.Author)
-                            {
-                                <a asp-action="Delete" asp-route-id="@item.Suggestion.Id" class="btn me-2" style="background-color: #20c997; color: white;">Delete</a>
-                            }
-                            else if (User.IsInRole("Admin") || User.IsInRole("Staff"))
-                            {
-                                <a asp-action="ConvertToActivityPage" asp-route-id="@item.Suggestion.Id" class="btn me-2" style="background-color: #20c997; color: white;">Convert</a>
-                                <a asp-action="Edit" asp-route-id="@item.Suggestion.Id" class="btn me-2" style="background-color: #20c997; color: white;">Edit</a>
-                                <a asp-action="Delete" asp-route-id="@item.Suggestion.Id" class="btn me-2" style="background-color: #20c997; color: white;">Delete</a>
-                            }
-                        </div>
                     </div>
                 </div>
             </div>
         }
     </div>
 </div>
-
 
 <script>
     function showLoginAlert(event) {
@@ -77,5 +87,3 @@
 </script>
 
 <script src="https://kit.fontawesome.com/8073668e9d.js" crossorigin="anonymous"></script>
-
-

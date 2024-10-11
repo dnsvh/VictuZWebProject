@@ -6,6 +6,7 @@
         public string Name { get; set; }
         public string Body { get; set; }
         public string Location { get; set; }
+        public string ?ImageUrl { get; set; }
         public int Registered { get; set; }
         public int MaxCapacity { get; set; }
         public DateTime DatePublished { get; set; }

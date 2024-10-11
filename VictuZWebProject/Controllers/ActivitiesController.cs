@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VictuZ_Lars.Data;
 using VictuZ_Lars.Models;
+using VictuZWebProject.Models;
 
 namespace VictuZ_Lars.Controllers
 {
@@ -21,14 +23,26 @@ namespace VictuZ_Lars.Controllers
         }
 
         // GET: Activities
-        [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Activity.ToListAsync());
+            var activities = await _context.Activity.ToListAsync();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var userRegistrations = await _context.UserRegistration
+                .Where(r => r.UserId == userId)
+                .Select(r => r.ActivityId)
+                .ToListAsync();
+
+            var viewModel = activities.Select(a => new ActivityViewModel
+            {
+                Activity = a,
+                IsUserRegistered = userRegistrations.Contains(a.ActivityId)
+            }).ToList();
+
+            return View(viewModel);
         }
 
         // GET: Activities/Details/5
-        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,30 +60,53 @@ namespace VictuZ_Lars.Controllers
             return View(activity);
         }
 
-        [Authorize]
-        public async Task<IActionResult> Register(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            // Find the activity by ID
-            var activity = await _context.Activity.FirstOrDefaultAsync(m => m.ActivityId == id);
-            if (activity == null)
-            {
-                return NotFound();
-            }
-
-            // Increment the registered count
-            activity.Registered += 1;
-
-            // Update the database
-            _context.Activity.Update(activity);
-            await _context.SaveChangesAsync();
-
-            return View(activity);
-        }
+        //public async Task<IActionResult> Register(int? Id)
+        //{
+        //    if (Id == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //
+        //    var existingRegistration = await _context.UserRegistration
+        //        .FirstOrDefaultAsync(r => r.UserId == userId && r.ActivityId == Id);
+        //
+        //    if (existingRegistration != null)
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
+        //
+        //    var registration = new UserRegistration
+        //    {
+        //        UserId = userId,
+        //        ActivityId = (int)Id,
+        //    };
+        //
+        //
+        //    _context.UserRegistration.Add(registration);
+        //
+        //    var activity = await _context.Activity.FirstOrDefaultAsync(m => m.ActivityId == Id);
+        //    if (activity == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //
+        //    if (activity.Registered < activity.MaxCapacity)
+        //    {
+        //        // Update the database
+        //        activity.Registered += 1;
+        //        _context.Activity.Update(activity);
+        //        _context.UserRegistration.Add(registration);
+        //        await _context.SaveChangesAsync();
+        //
+        //        return RedirectToAction("Index");
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
+        //}
 
         // GET: Activities/Create
         [Authorize]
@@ -84,7 +121,7 @@ namespace VictuZ_Lars.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("ActivityId,Name,Body,Location,Registered,MaxCapacity,DatePublished,DateDue")] Activity activity)
+        public async Task<IActionResult> Create([Bind("ActivityId,Name,Body,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue")] Activity activity)
         {
             if (ModelState.IsValid)
             {
@@ -118,7 +155,7 @@ namespace VictuZ_Lars.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ActivityId,Name,Body,Location,Registered,MaxCapacity,DatePublished,DateDue")] Activity activity)
+        public async Task<IActionResult> Edit(int id, [Bind("ActivityId,Name,Body,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue")] Activity activity)
         {
             if (id != activity.ActivityId)
             {
@@ -187,5 +224,53 @@ namespace VictuZ_Lars.Controllers
         {
             return _context.Activity.Any(e => e.ActivityId == id);
         }
+
+
+        public async Task<IActionResult> Register(int? Id)
+        {
+            if (Id == null)
+            {
+                return NotFound();
+            }
+
+            // Get the current user's ID
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Check if the user has already liked this suggestion
+            var existingRegister = await _context.UserRegistration
+                .FirstOrDefaultAsync(l => l.UserId == userId && l.ActivityId == Id);
+
+            var registration = await _context.Activity.FirstOrDefaultAsync(m => m.ActivityId == Id);
+            if (registration == null)
+            {
+                return NotFound();
+            }
+
+            if (existingRegister != null)
+            {
+                // User has already liked this suggestion, so remove the like (Unlike)
+                _context.UserRegistration.Remove(existingRegister);
+                registration.Registered -= 1; // Decrement the like count
+            }
+            else
+            {
+                // User hasn't liked this suggestion yet, so add the like
+                var reg = new UserRegistration
+                {
+                    UserId = userId,
+                    ActivityId = (int)Id
+                };
+
+                _context.UserRegistration.Add(reg);
+                registration.Registered += 1; // Increment the like count
+            }
+
+            // Update the suggestion and save changes to the database
+            _context.Activity.Update(registration);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
     }
 }
