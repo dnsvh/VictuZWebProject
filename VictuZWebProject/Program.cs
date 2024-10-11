@@ -3,18 +3,22 @@ using Microsoft.EntityFrameworkCore;
 using VictuZ_Lars.Data;
 using VictuZWebProject.Areas.Identity.Data;
 using VictuZWebProject.Data;
+
 namespace VictuZWebProject
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var connectionString = builder.Configuration.GetConnectionString("VictuZAccountDbContextConnection") ?? throw new InvalidOperationException("Connection string 'VictuZAccountDbContextConnection' not found.");
+            var connectionString = builder.Configuration.GetConnectionString("VictuZAccountDbContextConnection")
+                ?? throw new InvalidOperationException("Connection string 'VictuZAccountDbContextConnection' not found.");
 
             builder.Services.AddDbContext<VictuZAccountDbContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddDbContext<VictuZ_Lars_Db>();
-            builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<VictuZAccountDbContext>();
+            builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<VictuZAccountDbContext>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -26,8 +30,7 @@ namespace VictuZWebProject
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHsts();  // HSTS configuration
             }
 
             app.UseHttpsRedirection();
@@ -43,7 +46,54 @@ namespace VictuZWebProject
 
             app.MapRazorPages();
 
+            // Role seeding
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var roles = new[] { "Admin", "Staff", "Member", "Visitor", "Pending" };
+
+                foreach (var role in roles)
+                {
+                    if (!await roleManager.RoleExistsAsync(role))
+                    {
+                        await roleManager.CreateAsync(new IdentityRole(role));
+                    }
+                }
+            }
+
+            // Admin user seeding
+            using (var scope = app.Services.CreateScope())
+            {
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+
+                string adminEmail = "adminaccount@zuyd.nl";
+                string adminPassword = "AdminAccount123!";
+                string adminFirstName = "Admin";
+                string adminLastName = "Account";
+
+                // Correctly await FindByEmailAsync to get the user
+                var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
+                if (existingAdmin == null)
+                {
+                    var adminUser = new AppUser
+                    {
+                        Email = adminEmail,
+                        UserName = adminEmail,
+                        FirstName = adminFirstName,
+                        LastName = adminLastName,
+                        EmailConfirmed = true
+                    };
+
+                    var createAdminResult = await userManager.CreateAsync(adminUser, adminPassword);
+                    if (createAdminResult.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(adminUser, "Admin");
+                    }
+                }
+            }
+
             app.Run();
         }
     }
 }
+
