@@ -2,45 +2,52 @@
 
 <h1>Current Activities</h1>
 
-<div class="row">
-    @foreach (var item in Model)
-    {
-        <div class="col-md-4">
-            <div class="card mb-4" style="width: 18rem;">
-                <img src="..." class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.Activity.Name)</h5>
-                    <p class="card-text">@Html.DisplayFor(modelItem => item.Activity.Body)</p>
-                    <div class="d-flex justify-content-between">
-                        <p class="card-text"><small>Location: @Html.DisplayFor(modelItem => item.Activity.Location)</small></p>
-                        <p class="card-text"><small>@Html.DisplayFor(modelItem => item.Activity.Registered) / @Html.DisplayFor(modelItem => item.Activity.MaxCapacity)</small></p>
+<div class="container mt-4">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4 d-flex">
+                <div class="card h-100 shadow-sm" style="width: 100%;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Activity.Name)</h5>
+                        <p class="card-text">@Html.DisplayFor(modelItem => item.Activity.Body)</p>
+                        <div class="d-flex justify-content-between mb-3">
+                            <small class="text-muted">Location: @Html.DisplayFor(modelItem => item.Activity.Location)</small>
+                            <small class="text-muted">@Html.DisplayFor(modelItem => item.Activity.Registered) / @Html.DisplayFor(modelItem => item.Activity.MaxCapacity)</small>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">Due: @item.Activity.DateDue.ToString("MMMM dd, h:mm tt")</small>
+                        </div>
                     </div>
-
-                    <a asp-action="Details" asp-route-id="@item.Activity.ActivityId" class="btn btn-primary">Details</a>
-
-                    @if (item.Activity.Registered >= item.Activity.MaxCapacity)
-                    {
-                        <a class="btn btn-secondary disabled" aria-disabled="true">Full</a>
-                    }
-                    else if (!User.Identity.IsAuthenticated)
-                    {
-                        <a class="btn btn-secondary disabled" aria-disabled="true">Login to Register</a>
-                    }
-                    else if (item.IsUserRegistered)
-                    {
-                        // Show the delete button if the user is registered
-                        <form asp-action="Delete" asp-route-id="@item.Activity.ActivityId" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-danger">Delete Registration</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <a asp-action="Register" asp-route-id="@item.Activity.ActivityId" class="btn btn-primary">Register</a>
-                    }
+                    <div class="card-footer bg-white border-top-0 mt-auto">
+                        <div class="d-flex justify-content-end">
+                            <a asp-action="Details" asp-route-id="@item.Activity.ActivityId" class="btn btn-primary me-2">Details</a>
+                            @if (item.IsUserRegistered)
+                            {
+                                <form asp-action="Delete" asp-route-id="@item.Activity.ActivityId" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger">Delete Registration</button>
+                                </form>
+                            }
+                            else if (item.Activity.Registered >= item.Activity.MaxCapacity)
+                            {
+                                <a class="btn btn-secondary disabled" aria-disabled="true">Full</a>
+                            }
+                            else if (!User.Identity.IsAuthenticated)
+                            {
+                                <a class="btn btn-secondary disabled" aria-disabled="true">Login to Register</a>
+                            }
+                            else
+                            {
+                                <a asp-action="Register" asp-route-id="@item.Activity.ActivityId" class="btn btn-primary">Register</a>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
+</div>
+
     <h2>Upcoming Activities</h2>
 
     <!-- Date filter form -->
@@ -61,4 +68,51 @@
             }
         </ul>
     }
+    <div class="row">
+                            @foreach (var item in Model)
+                            {
+                                <div class="col-md-4 mb-4">
+                                    <div class="card mt-5 mb-3 p-4">
+                                        <div class="d-flex flex-row justify-content-between align-items-center">
+                                            <small class="text-muted">@Html.DisplayFor(modelItem => item.Activity.DateDue)</small>
+                                        </div>
+                                        <h5 class="mt-3">@Html.DisplayFor(modelItem => item.Activity.Name)</h5>
+                                        <p class="text-muted">@Html.DisplayFor(modelItem => item.Activity.Body)</p>
+                                        <div class="d-flex flex-row mt-3">
+                                            <div class="d-flex flex-row justify-content-end">
+                                                <i class="fas fa-desktop"></i>
+                                                <i class="fas fa-mobile-alt"></i>
+                                            </div>
+                                            <a asp-action="Details" asp-route-id="@item.Activity.ActivityId" class="btn btn-primary">Details</a>
+                                            @if (item.IsUserRegistered)
+                                            {
+                                                <form asp-action="Delete" asp-route-id="@item.Activity.ActivityId" method="post" style="display:inline;">
+                                                    <button type="submit" class="btn btn-danger">Delete Registration</button>
+                                                </form>
+                                            }
+                                            else if (item.Activity.Registered >= item.Activity.MaxCapacity)
+                                            {
+                                                <a class="btn btn-secondary disabled" aria-disabled="true">Full</a>
+                                            }
+                                            else if (!User.Identity.IsAuthenticated)
+                                            {
+                                                <a class="btn btn-secondary disabled" aria-disabled="true">Login to Register</a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-action="Register" asp-route-id="@item.Activity.ActivityId" class="btn btn-primary">Register</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>

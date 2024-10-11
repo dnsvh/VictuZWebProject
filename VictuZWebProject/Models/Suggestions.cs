@@ -9,5 +9,6 @@ namespace VictuZWebProject.Models
         public string ?Author { get; set; }
         public string Body { get; set; }
         public int Likes { get; set; }
+
     }
 }
