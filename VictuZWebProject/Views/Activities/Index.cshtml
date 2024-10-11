@@ -1,71 +1,99 @@
-﻿@model IEnumerable<VictuZ_Lars.Models.Activity>
+﻿@model IEnumerable<VictuZWebProject.Models.ActivityViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Current Activities";
 }
 
-<h1>Index</h1>
+<h1 class="d-flex justify-content-center">Activiteiten</h1>
+<h5 class="d-flex justify-content-center">Registreer je hier voor de opkomende activiteiten.</h5>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Body)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Registered)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MaxCapacity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DatePublished)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateDue)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Body)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Registered)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaxCapacity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DatePublished)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateDue)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ActivityId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ActivityId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ActivityId">Delete</a>
-            </td>
-        </tr>
+@if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+{
+    <p class="d-flex justify-content-center">
+        <a asp-action="Create" class="btn" style="background-color: #20c997; color: white;">Nieuwe activiteit</a>
+    </p>
 }
-    </tbody>
-</table>
+
+<div class="container mt-4">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4 d-flex">
+                <div class="card h-100 shadow-sm" style="width: 100%; position: relative;">
+
+                    <!-- Image at the top of the card -->
+                    <img src="@Html.DisplayFor(modelItem => item.Activity.ImageUrl)" class="card-img-top" alt="Activity image">
+
+                    <div class="card-body d-flex flex-column">
+
+                        <!-- Title with gear icon next to it -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Activity.Name)</h5>
+
+                            <!-- Dropdown for Admin/Staff -->
+                            @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                            {
+                                <div class="dropdown">
+                                    <a href="#" class="btn p-0 px-1" id="settingsDropdown-@item.Activity.ActivityId" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-solid fa-gear"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown-@item.Activity.ActivityId">
+                                        <li><a asp-action="Edit" asp-route-id="@item.Activity.ActivityId" class="m-2 btn btn-light d-flex justify-content-center">Edit</a></li>
+                                        <li><a asp-action="Delete" asp-route-id="@item.Activity.ActivityId" class="m-2 btn btn-light d-flex justify-content-center">Delete</a></li>
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+
+                        <p class="card-text">@Html.DisplayFor(modelItem => item.Activity.Body)</p>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <small class="text-muted">Locatie: @Html.DisplayFor(modelItem => item.Activity.Location)</small>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">Datum: @item.Activity.DateDue.ToString("MMMM dd, h:mm tt")</small>
+                        </div>
+                    </div>
+
+                    <!-- Registration info aligned to the right -->
+                    <div class="card-footer bg-white border-top-0 mt-auto">
+                        <div class="d-flex justify-content-end mb-2">
+                            <small class="text-muted">@Html.DisplayFor(modelItem => item.Activity.Registered) / @Html.DisplayFor(modelItem => item.Activity.MaxCapacity) Registered</small>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            @if (item.IsUserRegistered)
+                            {
+                                <form asp-action="Delete" asp-route-id="@item.Activity.ActivityId" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger">Uitschrijven</button>
+                                </form>
+                            }
+                            else if (item.Activity.Registered >= item.Activity.MaxCapacity)
+                            {
+                                <a class="btn btn-secondary disabled" aria-disabled="true">Vol</a>
+                            }
+                            else if (!User.Identity.IsAuthenticated)
+                            {
+                                <a class="btn btn-secondary disabled" aria-disabled="true">Login om in te schrijven</a>
+                            }
+                            else
+                            {
+                                <a asp-action="Register" asp-route-id="@item.Activity.ActivityId" class="btn" style="background-color: #20c997; color: white;">Inschrijven</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function showLoginAlert(event) {
+        event.preventDefault(); // Prevent default action
+        alert('Log in om je in te schrijven voor deze activiteit'); // Show the alert message
+    }
+</script>
+
+<script src="https://kit.fontawesome.com/8073668e9d.js" crossorigin="anonymous"></script>
