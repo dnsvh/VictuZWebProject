@@ -3,7 +3,7 @@
 ![afbeelding](https://github.com/user-attachments/assets/8f2cac03-71c0-4869-b949-2ce524ee07d0)
 
 ### 2. update the database
-First update Main database
+First update Main database in the nuget package manager console
 ```
 update-database -Context Victuz_Lars_Db
 ```
