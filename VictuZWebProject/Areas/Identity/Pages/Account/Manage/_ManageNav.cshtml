@@ -17,4 +17,12 @@
     <li class="nav-item" style="margin-top: 10px;">
         <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext) btn" style="background-color: #20c997; color: white;" id="change-password" asp-page="./ChangePassword">Change Password</a>
     </li>
+
+    <!-- Manage User Roles link, redirects to the account/manage/manageuserroles page, only accessible for Staff and Admin accounts -->
+    @if (User.IsInRole("Staff") || User.IsInRole("Admin"))
+    {
+        <li class="nav-item" style="margin-top: 10px;">
+            <a class="nav-link @ManageNavPages.ManageUserRolesNavClass(ViewContext) btn" style="background-color: #20c997; color: white;" id="manage-user-roles" asp-page="./ManageUserRoles">Manage User Roles</a>
+        </li>
+    }
 </ul>
