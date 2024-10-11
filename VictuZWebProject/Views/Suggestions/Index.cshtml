@@ -6,10 +6,13 @@
 
 <h1 class="d-flex justify-content-center">Suggesties</h1>
 <h5 class="d-flex justify-content-center">Login en like een suggestie of maak een nieuwe suggestie aan!</h5>
+@if (User.Identity.IsAuthenticated)
+{
+    <p class="d-flex justify-content-center">
+        <a asp-action="Create" class="btn" style="background-color: #20c997; color: white;">Maak een suggestie</a>
+    </p>
+}
 
-<p class="d-flex justify-content-center">
-    <a asp-action="Create" class="btn" style="background-color: #20c997; color: white;">Maak een suggestie</a>
-</p>
 
 <div class="container mt-4">
     <div class="row">

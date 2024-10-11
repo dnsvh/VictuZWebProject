@@ -65,8 +65,8 @@
                         <div class="d-flex justify-content-end">
                             @if (item.IsUserRegistered)
                             {
-                                <form asp-action="Delete" asp-route-id="@item.Activity.ActivityId" method="post" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger">Uitschrijven</button>
+                                <form asp-action="Register" asp-route-id="@item.Activity.ActivityId" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger">Delete Registration</button>
                                 </form>
                             }
                             else if (item.Activity.Registered >= item.Activity.MaxCapacity)
