@@ -5,7 +5,7 @@
 }
 
 <h1 class="d-flex justify-content-center">Suggesties</h1>
-<h5 class="d-flex justify-content-center">Login en like een suggestie of maak een nieuwe suggestie aan!</h5>
+<h5 class="d-flex justify-content-center">Log in en like een suggestie of maak een nieuwe suggestie aan!</h5>
 @if (User.Identity.IsAuthenticated)
 {
     <p class="d-flex justify-content-center">
@@ -30,13 +30,13 @@
 
                                 @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
                                 {
-                                    <li><a asp-action="ConvertToActivityPage" asp-route-id="@item.Suggestion.Id" class="m-2 btn btn-light d-flex justify-content-center">Convert</a></li>
-                                    <li><a asp-action="Edit" asp-route-id="@item.Suggestion.Id" class="m-2 btn btn-light d-flex justify-content-center">Edit</a></li>
-                                    <li><a asp-action="Delete" asp-route-id="@item.Suggestion.Id" class="m-2 btn btn-light d-flex justify-content-center">Delete</a></li>
+                                    <li><a asp-action="ConvertToActivityPage" asp-route-id="@item.Suggestion.Id" class="m-2 btn btn-light d-flex justify-content-center">Converteren</a></li>
+                                    <li><a asp-action="Edit" asp-route-id="@item.Suggestion.Id" class="m-2 btn btn-light d-flex justify-content-center">Aanpassen</a></li>
+                                    <li><a asp-action="Delete" asp-route-id="@item.Suggestion.Id" class="m-2 btn btn-light d-flex justify-content-center">Verwijder</a></li>
                                 }
                                 else if (User.Identity.Name == item.Suggestion.Author)
                                 {
-                                    <li><a asp-action="Delete" asp-route-id="@item.Suggestion.Id" class="m-2 btn btn-light">Delete</a></li>
+                                    <li><a asp-action="Delete" asp-route-id="@item.Suggestion.Id" class="m-2 btn btn-light">Verwijder</a></li>
                                 }
                             </ul>
                         }
@@ -82,7 +82,7 @@
 <script>
     function showLoginAlert(event) {
         event.preventDefault(); // Prevent any default action
-        alert('Please log in to like this suggestion.'); // Show the alert message
+        alert('Log in om deze suggestie een like te geven'); // Show the alert message
     }
 </script>
 
