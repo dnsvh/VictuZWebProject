@@ -5,24 +5,24 @@
 <ul class="nav flex-column">
     <!-- Profile link -->
     <li class="nav-item">
-        <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext) btn" style="background-color: #20c997; color: white;" id="profile" asp-page="./Index">Profile</a>
+        <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext) btn" style="background-color: #20c997; color: white;" id="profile" asp-page="./Index">Mijn Profiel</a>
     </li>
 
     <!-- Change email link -->
     <li class="nav-item" style="margin-top: 10px;">
-        <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext) btn" style="background-color: #20c997; color: white;" id="email" asp-page="./Email">Change Email</a>
+        <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext) btn" style="background-color: #20c997; color: white;" id="email" asp-page="./Email">E-mail wijzigen</a>
     </li>
 
     <!-- Change password link -->
     <li class="nav-item" style="margin-top: 10px;">
-        <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext) btn" style="background-color: #20c997; color: white;" id="change-password" asp-page="./ChangePassword">Change Password</a>
+        <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext) btn" style="background-color: #20c997; color: white;" id="change-password" asp-page="./ChangePassword">Wachtwoord wijzigen</a>
     </li>
 
     <!-- Manage User Roles link, redirects to the account/manage/manageuserroles page, only accessible for Staff and Admin accounts -->
     @if (User.IsInRole("Staff") || User.IsInRole("Admin"))
     {
         <li class="nav-item" style="margin-top: 10px;">
-            <a class="nav-link @ManageNavPages.ManageUserRolesNavClass(ViewContext) btn" style="background-color: #20c997; color: white;" id="manage-user-roles" asp-page="./ManageUserRoles">Manage User Roles</a>
+            <a class="nav-link @ManageNavPages.ManageUserRolesNavClass(ViewContext) btn" style="background-color: #20c997; color: white;" id="manage-user-roles" asp-page="./ManageUserRoles">Gebruikersrollen beheren</a>
         </li>
     }
 </ul>

@@ -1,11 +1,11 @@
 ﻿@model IEnumerable<VictuZWebProject.Models.ActivityViewModel>
 
 @{
-    ViewData["Title"] = "Current Activities";
+    ViewData["Title"] = "Activiteiten";
 }
 
 <h1 class="d-flex justify-content-center">Activiteiten</h1>
-<h5 class="d-flex justify-content-center">Registreer je hier voor de opkomende activiteiten.</h5>
+<h5 class="d-flex justify-content-center">Registreer je hier voor VictuZ activiteiten!</h5>
 
 @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
 {
@@ -22,7 +22,7 @@
                 <div class="card h-100 shadow-sm" style="width: 100%; position: relative;">
 
                     <!-- Image at the top of the card -->
-                    <img src="@Html.DisplayFor(modelItem => item.Activity.ImageUrl)" class="card-img-top" alt="Activity image">
+                    <!-- <img src="@Html.DisplayFor(modelItem => item.Activity.ImageUrl)" class="card-img-top" alt="Activity image"> -->
 
                     <div class="card-body d-flex flex-column">
 
