@@ -11,30 +11,5 @@
         public DateTime DatePublished { get; set; }
         public DateTime DateDue { get; set; }
 
-        public void CreateActivity()
-        {
-
-        }
-
-        public void ReadActivity()
-        {
-
-        }
-
-        public void UpdateActivity()
-        {
-
-        }
-
-        public void DeleteActivity()
-        {
-
-        }
-
-        public void LogIn()
-        {
-
-        }
-
     }
 }
