@@ -25,7 +25,9 @@ namespace VictuZ_Lars.Controllers
         // GET: Activities
         public async Task<IActionResult> Index()
         {
-            var activities = await _context.Activity.ToListAsync();
+            var activities = await _context.Activity
+           .OrderBy(a => a.DateDue) // Voeg deze regel toe om te sorteren
+           .ToListAsync();
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var userRegistrations = await _context.UserRegistration
