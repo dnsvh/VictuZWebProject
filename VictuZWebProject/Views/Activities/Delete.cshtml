@@ -35,7 +35,10 @@
                     </dl>
 
                     <div class="d-flex justify-content-between">
-                        <a asp-action="DeleteConfirmed" asp-route-id="@Model.ActivityId" class="btn btn-danger w-45">Verwijder</a>
+                        <form asp-action="Delete">
+                            <input type="hidden" asp-for="ActivityId" />
+                            <input type="submit" value="Verwijder" class="btn btn-danger" />
+                        </form>
                         <a asp-action="Index" class="btn btn-secondary w-45">Annuleer</a>
                     </div>
                 </div>
