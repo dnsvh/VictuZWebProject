@@ -40,7 +40,7 @@ namespace VictuZWebProject.Controllers
                 HasUserLiked = _context.SuggestionLike.Any(sl => sl.UserId == userId && sl.SuggestionId == s.Id)
             }).ToList();
 
-            return View(suggestionViewModels); // Pass the mapped view models to the view
+            return View(suggestionViewModels);
         }
 
         // GET: Suggestions/Details/5
@@ -80,7 +80,7 @@ namespace VictuZWebProject.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user != null)
                 {
-                    // Set Author as "FirstName LastName"
+                    // Author = name
                     suggestion.Author = $"{user.FirstName} {user.LastName}";
                 }
                 suggestion.Likes = 0;
@@ -189,10 +189,10 @@ namespace VictuZWebProject.Controllers
                 return NotFound();
             }
 
-            // Get the current user's ID
+            // Get user ID
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Check if the user has already liked this suggestion
+            // Check if user has liked
             var existingLike = await _context.SuggestionLike
                 .FirstOrDefaultAsync(l => l.UserId == userId && l.SuggestionId == Id);
 
@@ -204,13 +204,13 @@ namespace VictuZWebProject.Controllers
 
             if (existingLike != null)
             {
-                // User has already liked this suggestion, so remove the like (Unlike)
+                // Unlike
                 _context.SuggestionLike.Remove(existingLike);
-                suggestion.Likes -= 1; // Decrement the like count
+                suggestion.Likes -= 1;
             }
             else
             {
-                // User hasn't liked this suggestion yet, so add the like
+                // Like
                 var like = new SuggestionLike
                 {
                     UserId = userId,
@@ -218,10 +218,10 @@ namespace VictuZWebProject.Controllers
                 };
 
                 _context.SuggestionLike.Add(like);
-                suggestion.Likes += 1; // Increment the like count
+                suggestion.Likes += 1;
             }
 
-            // Update the suggestion and save changes to the database
+            // Update
             _context.Suggestion.Update(suggestion);
             await _context.SaveChangesAsync();
 
@@ -243,14 +243,14 @@ namespace VictuZWebProject.Controllers
             var model = new CreateActivityViewModel
             {
                 SuggestionId = suggestion.Id,
-                Name = suggestion.Title,  // Automatically fill in the Name
-                Body = suggestion.Body,    // Automatically fill in the Body
-                Location = "",             // This can be filled by the user
-                MaxCapacity = 10,          // Default value, can be updated
-                DateDue = DateTime.UtcNow.AddDays(7) // Default to 7 days from now
+                Name = suggestion.Title,  
+                Body = suggestion.Body,    
+                Location = "",             
+                MaxCapacity = 10,          
+                DateDue = DateTime.UtcNow.AddDays(7) 
             };
 
-            return View(model); // Return the view with the model
+            return View(model);
         }
 
         // POST: Suggestions/ConvertToActivity
@@ -266,28 +266,18 @@ namespace VictuZWebProject.Controllers
                     Name = model.Name,
                     Body = model.Body,
                     Location = model.Location,
-                    Registered = 0, // Initially, no one is registered
+                    Registered = 0, 
                     MaxCapacity = model.MaxCapacity,
                     DatePublished = DateTime.UtcNow,
-                    DateDue = model.DateDue // Use the user-specified date
+                    DateDue = model.DateDue
                 };
 
                 // Add the new activity to the context
                 _context.Activity.Add(activity);
                 await _context.SaveChangesAsync();
 
-                // Optionally, remove the suggestion
-                // var suggestion = await _context.Suggestion.FindAsync(model.SuggestionId);
-                // if (suggestion != null)
-                // {
-                //     _context.Suggestion.Remove(suggestion);
-                //     await _context.SaveChangesAsync();
-                // }
-
-                return RedirectToAction(nameof(Index)); // Redirect to index or another relevant page
+                return RedirectToAction(nameof(Index));
             }
-
-            // If model state is invalid, return to the view with the model
             return View(model);
         }
 

@@ -1,38 +1,37 @@
 ﻿@model VictuZWebProject.Models.Suggestion
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Suggestion";
 }
 
-<h1>Create</h1>
+<div class="container d-flex justify-content-center mt-5">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="text-center mb-4">Suggestie</h2>
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
-<h4>Suggestion</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Title" class="form-control" placeholder="Suggestion Title" />
+                        <label asp-for="Title">Titel</label>
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="Body" class="form-control" placeholder="Suggestion Body"></textarea>
+                        <label asp-for="Body">Beschrijving</label>
+                        <span asp-validation-for="Body" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn w-100" style="background-color: #5ac6aa; color: white;">Maak suggestie</button>
+                    <a asp-action="Index" class="btn btn-secondary w-100 mt-2">Annuleer</a>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Body" class="control-label"></label>
-                <input asp-for="Body" class="form-control" />
-                <span asp-validation-for="Body" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }

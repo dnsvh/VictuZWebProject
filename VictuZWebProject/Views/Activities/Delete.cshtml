@@ -1,63 +1,45 @@
 ﻿@model VictuZ_Lars.Models.Activity
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Verwijder Activiteit";
 }
 
-<h1>Delete</h1>
+<div class="container d-flex justify-content-center mt-5">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="text-center text-danger">Weet je zeker dat je deze activiteit wil verwijderen?</h3>
+                <div class="mt-4">
+                    <hr />
+                    <dl class="row">
+                        <dt class="col-sm-3">Naam</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Activity</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Body)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Body)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Location)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Registered)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Registered)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MaxCapacity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MaxCapacity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DatePublished)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DatePublished)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateDue)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateDue)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="ActivityId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+                        <dt class="col-sm-3">Beschrijving</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Body)</dd>
+
+                        <dt class="col-sm-3">Locatie</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Location)</dd>
+
+                        <dt class="col-sm-3">Aanmeldingen</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Registered)</dd>
+
+                        <dt class="col-sm-3">Max Capaciteit</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.MaxCapacity)</dd>
+
+                        <dt class="col-sm-3">Datum gepubliceerd</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.DatePublished)</dd>
+
+                        <dt class="col-sm-3">Datum</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.DateDue)</dd>
+                    </dl>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="DeleteConfirmed" asp-route-id="@Model.ActivityId" class="btn btn-danger w-45">Verwijder</a>
+                        <a asp-action="Index" class="btn btn-secondary w-45">Annuleer</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
