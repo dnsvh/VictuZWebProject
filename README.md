@@ -14,3 +14,10 @@ update-database -Context VictuzAccountDbContext
 
 ### 3. Start the project
 ![afbeelding](https://github.com/user-attachments/assets/7f4a8abf-7ed3-4d98-8eec-bedd81a692ad)
+
+### 4. (Optional) Log in to the primary admin account
+```
+adminaccount@zuyd.nl
+AdminAccount123!
+```
+You can use this to edit the roles of existing accounts, up to Admin, through the 'Accountgegevens' tab.
