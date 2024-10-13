@@ -27,12 +27,24 @@
         box-sizing: border-box;
     }
 
+    
+
+    /* Container die volledige hoogte inneemt */
+    .container {
+        flex: 1; /* Zorgt ervoor dat de inhoud zich uitstrekt */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100vw;
+    }
+
     /* Header */
     .header {
         background-color: #56b5c4;
         color: #fff;
-        padding: 40px 20px;
+        padding: 40px 0;
         text-align: center;
+        width: 100vw;
     }
 
         .header h1 {
@@ -54,8 +66,8 @@
         display: flex;
         justify-content: space-around;
         flex-wrap: wrap;
-        padding: 20px;
-        
+        padding: 20px 0;
+        width: 100vw;
     }
 
     .card {
@@ -93,10 +105,12 @@
 
     .content-box {
         background-color: #56b5c4;
-        padding: 40px;
+        padding: 40px 0;
         border-radius: 8px;
-        width: 100%;
+        width: 100vw;
     }
+
+
 
 </style>
 
@@ -273,6 +287,7 @@
             </div>
         </div>
     </section>
+ 
 </body>
 </html>
 
