@@ -233,10 +233,10 @@ namespace VictuZ_Lars.Controllers
                 return NotFound();
             }
 
-            // Get the current user's ID
+            // Get the current user ID
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Check if the user has already liked this suggestion
+            // Check if liked
             var existingRegister = await _context.UserRegistration
                 .FirstOrDefaultAsync(l => l.UserId == userId && l.ActivityId == Id);
 
@@ -248,13 +248,13 @@ namespace VictuZ_Lars.Controllers
 
             if (existingRegister != null)
             {
-                // User has already liked this suggestion, so remove the like (Unlike)
+                // delete registration
                 _context.UserRegistration.Remove(existingRegister);
-                registration.Registered -= 1; // Decrement the like count
+                registration.Registered -= 1;
             }
             else
             {
-                // User hasn't liked this suggestion yet, so add the like
+                // register
                 var reg = new UserRegistration
                 {
                     UserId = userId,
@@ -262,10 +262,10 @@ namespace VictuZ_Lars.Controllers
                 };
 
                 _context.UserRegistration.Add(reg);
-                registration.Registered += 1; // Increment the like count
+                registration.Registered += 1; 
             }
 
-            // Update the suggestion and save changes to the database
+            // Update
             _context.Activity.Update(registration);
             await _context.SaveChangesAsync();
 

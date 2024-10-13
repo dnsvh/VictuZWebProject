@@ -22,7 +22,10 @@
                 <div class="card h-100 shadow-sm" style="width: 100%; position: relative;">
 
                     <!-- Image at the top of the card -->
-                    <!-- <img src="@Html.DisplayFor(modelItem => item.Activity.ImageUrl)" class="card-img-top" alt="Activity image"> -->
+                    @if (item.Activity.ImageUrl != null)
+                    {
+                        <img src="@Html.DisplayFor(modelItem => item.Activity.ImageUrl)" class="card-img-top" alt="Activity image">
+                    }
 
                     <div class="card-body d-flex flex-column">
 
@@ -38,8 +41,8 @@
                                         <i class="fa-solid fa-gear"></i>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown-@item.Activity.ActivityId">
-                                        <li><a asp-action="Edit" asp-route-id="@item.Activity.ActivityId" class="m-2 btn btn-light d-flex justify-content-center">Edit</a></li>
-                                        <li><a asp-action="Delete" asp-route-id="@item.Activity.ActivityId" class="m-2 btn btn-light d-flex justify-content-center">Delete</a></li>
+                                        <li><a asp-action="Edit" asp-route-id="@item.Activity.ActivityId" class="m-2 btn btn-light d-flex justify-content-center">Aanpassen</a></li>
+                                        <li><a asp-action="Delete" asp-route-id="@item.Activity.ActivityId" class="m-2 btn btn-light d-flex justify-content-center">Verwijder</a></li>
                                     </ul>
                                 </div>
                             }
@@ -88,12 +91,5 @@
         }
     </div>
 </div>
-
-<script>
-    function showLoginAlert(event) {
-        event.preventDefault(); // Prevent default action
-        alert('Log in om je in te schrijven voor deze activiteit'); // Show the alert message
-    }
-</script>
 
 <script src="https://kit.fontawesome.com/8073668e9d.js" crossorigin="anonymous"></script>

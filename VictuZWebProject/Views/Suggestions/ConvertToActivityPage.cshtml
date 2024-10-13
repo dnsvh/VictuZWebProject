@@ -1,36 +1,43 @@
 ﻿@model CreateActivityViewModel
 
-<h2>Convert Suggestion to Activity</h2>
+<div class="container d-flex justify-content-center mt-5">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="text-center mb-4">Converteer Suggestie naar activiteit</h2>
+                <form asp-action="ConvertToActivity" method="post">
+                    <input type="hidden" asp-for="SuggestionId" />
 
-<form asp-action="ConvertToActivity" method="post">
-    <input type="hidden" asp-for="SuggestionId" />
+                    <div class="form-floating mb-3">
+                        <input asp-for="Name" class="form-control" placeholder="Activity Name" required />
+                        <label asp-for="Name">Naam</label>
+                    </div>
 
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" required/>
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="Body" class="form-control" placeholder="Activity Description" required></textarea>
+                        <label asp-for="Body">Beschrijving</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Location" class="form-control" placeholder="Location" required />
+                        <label asp-for="Location">Locatie</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="MaxCapacity" type="number" class="form-control" placeholder="Max Capacity" required min="1" />
+                        <label asp-for="MaxCapacity">Max Capaciteit</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="DateDue" class="form-control" placeholder="Due Date" />
+                        <label asp-for="DateDue">Datum</label>
+                        <span asp-validation-for="DateDue" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn w-100" style="background-color: #5ac6aa; color: white;">Maak activiteit</button>
+                    <a asp-action="Index" class="btn btn-secondary w-100 mt-2">Annuleer</a>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Body"></label>
-        <textarea asp-for="Body" class="form-control" required></textarea>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Location"></label>
-        <input asp-for="Location" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="MaxCapacity"></label>
-        <input asp-for="MaxCapacity" type="number" class="form-control" required min="1" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="DateDue" class="control-label"></label>
-        <input asp-for="DateDue" class="form-control" />
-        <span asp-validation-for="DateDue" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create Activity</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+</div>

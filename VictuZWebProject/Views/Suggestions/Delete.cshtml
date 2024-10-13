@@ -1,45 +1,36 @@
 ﻿@model VictuZWebProject.Models.Suggestion
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Verwijder Suggestie";
 }
 
-<h1>Delete</h1>
+<div class="container d-flex justify-content-center mt-5">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="text-center text-danger">Weet je zeker dat je dit wil verwijderen?</h3>
+                <div class="mt-4">
+                    <hr />
+                    <dl class="row">
+                        <dt class="col-sm-3">Titel</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Title)</dd>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Suggestion</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Author)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Author)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Body)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Body)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Likes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Likes)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+                        <dt class="col-sm-3">Auteur</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Author)</dd>
+
+                        <dt class="col-sm-3">Beschrijving</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Body)</dd>
+
+                        <dt class="col-sm-3">Likes</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Likes)</dd>
+                    </dl>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="DeleteConfirmed" asp-route-id="@Model.Id" class="btn btn-danger w-45">Verwijder</a>
+                        <a asp-action="Index" class="btn btn-secondary w-45">Annuleren</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
