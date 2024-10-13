@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VictuZWebProject", "VictuZWebProject\VictuZWebProject.csproj", "{6C5AC834-6A83-4298-BA68-C8040BACC0CE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VictuZReviewsAPI", "VictuZReviewsAPI\VictuZReviewsAPI.csproj", "{6991BCC5-2A35-4311-B9D9-F2F6C89FBF04}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VictuZActivitiesAPI", "VictuZActivitiesAPI\VictuZActivitiesAPI.csproj", "{6B6D4BBC-F607-4CB8-B691-3617213D7C00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{6C5AC834-6A83-4298-BA68-C8040BACC0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C5AC834-6A83-4298-BA68-C8040BACC0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C5AC834-6A83-4298-BA68-C8040BACC0CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6991BCC5-2A35-4311-B9D9-F2F6C89FBF04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6991BCC5-2A35-4311-B9D9-F2F6C89FBF04}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6991BCC5-2A35-4311-B9D9-F2F6C89FBF04}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6991BCC5-2A35-4311-B9D9-F2F6C89FBF04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B6D4BBC-F607-4CB8-B691-3617213D7C00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B6D4BBC-F607-4CB8-B691-3617213D7C00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B6D4BBC-F607-4CB8-B691-3617213D7C00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B6D4BBC-F607-4CB8-B691-3617213D7C00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
