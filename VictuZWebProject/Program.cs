@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using VictuZ_Lars.Data;
 using VictuZWebProject.Areas.Identity.Data;
 using VictuZWebProject.Data;
@@ -25,6 +26,25 @@ namespace VictuZWebProject
             builder.Services.AddRazorPages();
 
             var app = builder.Build();
+
+            // Cultuur instellen met een punt als decimaalteken
+            var cultureInfo = new CultureInfo("en-US")
+            {
+                NumberFormat = {
+                    CurrencyDecimalSeparator = ".",
+                    NumberDecimalSeparator = "."
+    }
+            };
+
+            // Standaard cultuur instellen voor de hele applicatie
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
