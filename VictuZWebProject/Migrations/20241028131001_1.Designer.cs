@@ -9,11 +9,11 @@ using VictuZ_Lars.Data;
 
 #nullable disable
 
-namespace VictuZWebProject.Migrations.VictuZ_Lars_DbMigrations
+namespace VictuZWebProject.Migrations
 {
     [DbContext(typeof(VictuZ_Lars_Db))]
-    [Migration("20241028124348_StoreUpdate4")]
-    partial class StoreUpdate4
+    [Migration("20241028131001_1")]
+    partial class _1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
