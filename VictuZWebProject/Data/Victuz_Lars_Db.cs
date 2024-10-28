@@ -18,7 +18,7 @@ namespace VictuZ_Lars.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connection = @"Data Source=.;Initial Catalog=VictuzWebsite;Integrated Security=true;TrustServerCertificate=True;";
+            string connection = @"Data Source=.;Initial Catalog=VictuzWebsite-store;Integrated Security=true;TrustServerCertificate=True;";
             optionsBuilder.UseSqlServer(connection);
         }
 
