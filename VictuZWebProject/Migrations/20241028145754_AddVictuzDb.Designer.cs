@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VictuZ_Lars.Data;
 
@@ -11,9 +12,11 @@ using VictuZ_Lars.Data;
 namespace VictuZWebProject.Migrations
 {
     [DbContext(typeof(VictuZ_Lars_Db))]
-    partial class VictuZ_Lars_DbModelSnapshot : ModelSnapshot
+    [Migration("20241028145754_AddVictuzDb")]
+    partial class AddVictuzDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,8 +49,7 @@ namespace VictuZWebProject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasPrecision(3, 2)
-                        .HasColumnType("decimal(3,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Size")
                         .HasColumnType("nvarchar(max)");

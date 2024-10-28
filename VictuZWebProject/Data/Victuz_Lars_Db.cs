@@ -29,6 +29,12 @@ namespace VictuZ_Lars.Data
             modelBuilder.Entity<Suggestion>().ToTable("Suggestion");
             modelBuilder.Entity<SuggestionLike>().ToTable("SuggestionLike");
 
+            modelBuilder.Entity<Store>()
+                .Property(s => s.Price)
+                .HasPrecision(3, 2);
+
+            base.OnModelCreating(modelBuilder);
+
         }
         public DbSet<Activity> Activity_1 { get; set; } = default!;
         public DbSet<UserRegistration> UserRegistration_1 { get; set; } = default!;
