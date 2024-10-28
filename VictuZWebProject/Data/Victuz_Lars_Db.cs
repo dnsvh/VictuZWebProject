@@ -35,6 +35,7 @@ namespace VictuZ_Lars.Data
         public DbSet<Suggestion> Suggestion_1 { get; set; } = default!;
 
         public DbSet<SuggestionLike> SuggestionLike_1 { get; set; } = default!;
+        public DbSet<VictuZWebProject.Models.Store> Store { get; set; } = default!;
 
 
 
