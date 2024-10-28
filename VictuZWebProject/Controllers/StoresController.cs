@@ -54,7 +54,7 @@ namespace VictuZWebProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,Image,Category,Stock")] Store store)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,ImageUrl,Category,Stock")] Store store)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace VictuZWebProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,Image,Category,Stock")] Store store)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,ImageUrl,Category,Stock")] Store store)
         {
             if (id != store.Id)
             {
