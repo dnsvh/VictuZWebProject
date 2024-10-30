@@ -19,6 +19,20 @@ namespace VictuZWebProject.Controllers
             _context = context;
         }
 
+        public IActionResult Create()
+        {
+            // Current Categories
+            var categories = new List<string> {"Clothing", "Stickers", "Miscellanious" };
+            ViewBag.CategoryList = categories.Select(c => new SelectListItem
+            {
+                Value = c,
+                Text = c
+            }).ToList();
+
+            return View();
+        }
+
+
         // GET: Stores
         public async Task<IActionResult> Index()
         {
@@ -43,11 +57,6 @@ namespace VictuZWebProject.Controllers
             return View(store);
         }
 
-        // GET: Stores/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
 
         // POST: Stores/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
