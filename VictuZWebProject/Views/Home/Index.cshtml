@@ -5,15 +5,60 @@
 <!-- Header-->
 <header class="bg-dark py-5" style="margin-top: 0; padding-top: 0;">
     <div class="container px-5">
-        <div class="row gx-5 justify-content-center">
-            <div class="col-lg-6">
-                <div class="text-center my-5">
-                    <img src="~/images/VictuZLogoTransparent.webp" alt="VictuZ Logo" style="height: 200px;" />
-                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center p-2">
-                        <a class="btn btn-lg px-4 me-sm-3" href="https://localhost:7141/Identity/Account/Register" style="background-color: #5ac6aa; color: white;">Word lid!</a>
-                        <a class="btn btn-outline-light btn-lg px-4" href="https://localhost:7141/Activities">Activiteiten</a>
-                    </div>
+        <div class="row gx-5 justify-content-between align-items-center">
+            <!-- Left side: Logo and Buttons -->
+            <div class="col-lg-4 d-flex flex-column align-items-center align-items-lg-start text-center text-lg-start">
+                <img src="~/images/VictuZLogoTransparent.webp" alt="VictuZ Logo" style="height: 200px;" />
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center p-2 mt-4">
+                    <a class="btn btn-lg px-4 me-sm-3" href="https://localhost:7141/Identity/Account/Register" style="background-color: #5ac6aa; color: white;">Word lid!</a>
+                    <a class="btn btn-outline-light btn-lg px-4" href="https://localhost:7141/Activities">Activiteiten</a>
                 </div>
+            </div>
+
+            <!-- Right side: Next Upcoming Activity -->
+            <div class="col-lg-6 mt-5 mt-lg-0">
+                <div class="card shadow-sm p-4 h-100">
+                    <h4 class="text-center">Volgende Activiteit</h4>
+                    <div class="card-body">
+                        <h5 class="card-title">@Model.FirstOrDefault()?.Activity.Name</h5>
+                        <p class="card-text">@Model.FirstOrDefault()?.Activity.Body"</p>
+                        <div class="d-flex justify-content-between mb-3">
+                            <small class="text-muted">Location: @Model.FirstOrDefault()?.Activity.Location</small>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">Date: @Model.FirstOrDefault()?.Activity.DateDue.ToString("MMMM dd, h:mm tt")"</small>
+                        </div>
+                    </div>
+                    <div class="card-footer border-top-0">
+                        <small class="text-muted">@Model.FirstOrDefault()?.Activity.Registered / @Model.FirstOrDefault()?.Activity.MaxCapacity Ingeschreven</small>
+                        <div class="d-flex justify-content-end">
+                            @if (Model.FirstOrDefault()?.IsUserRegistered == true)
+                            {
+                                <form asp-action="Register" asp-controller="Activities" asp-route-id="@Model.FirstOrDefault()?.Activity.ActivityId" method="post" style="display:inline;">
+                                    <input type="hidden" name="returnUrl" value="~/">
+                                    <button type="submit" class="btn btn-danger">Delete Registration</button>
+                                </form>
+                            }
+                            else if (Model.FirstOrDefault()?.Activity.Registered >= Model.FirstOrDefault()?.Activity.MaxCapacity)
+                            {
+                                <a class="btn btn-secondary disabled" aria-disabled="true">Vol</a>
+                            }
+                            else if (!User.Identity.IsAuthenticated)
+                            {
+                                <a class="btn btn-secondary disabled" aria-disabled="true">Login om in te schrijven</a>
+                            }
+                            else
+                            {
+                                <form asp-action="Register" asp-controller="Activities" asp-route-id="@Model.FirstOrDefault()?.Activity.ActivityId" method="post" style="display:inline;">
+                                    
+                                    <button type="submit" class="btn" style="background-color: #20c997; color: white;">Inschrijven</button>
+                                    <input type="hidden" name="returnUrl" value="~/">
+                                </form>
+                            }
+                        </div>
+                    </div>
+
+            </div>
             </div>
         </div>
     </div>
