@@ -1,41 +1,46 @@
 ﻿@model VictuZWebProject.Models.Store
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Store Details";
 }
 
-<div class="container d-flex justify-content-center mt-5">
-    <div class="col-lg-6 col-md-8 col-sm-10">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h2 class="text-center mb-4">Winkel Details</h2>
-                <hr />
-                <dl class="row">
-                    <dt class="col-sm-4">Naam</dt>
-                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Name)</dd>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">@Model.Name</h2>
+                    <hr />
+                    <div class="row">
+                        <!-- Image Section -->
+                        <div class="col-md-4 d-flex align-items-center justify-content-center">
+                            <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded">
+                        </div>
 
-                    <dt class="col-sm-4">Beschrijving</dt>
-                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Description)</dd>
+                        <!-- Details Section -->
+                        <div class="col-md-8">
+                            <dl class="row">
+                                <dt class="col-sm-4">Description</dt>
+                                <dd class="col-sm-8">@Model.Description</dd>
 
-                    <dt class="col-sm-4">Grootte</dt>
-                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Size)</dd>
+                                <dt class="col-sm-4">Size</dt>
+                                <dd class="col-sm-8">@Model.Size</dd>
 
-                    <dt class="col-sm-4">Prijs</dt>
-                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Price)</dd>
+                                <dt class="col-sm-4">Price</dt>
+                                <dd class="col-sm-8">@Model.Price</dd>
 
-                    <dt class="col-sm-4">Afbeeldings-URL</dt>
-                    <dd class="col-sm-8">@Html.DisplayFor(model => model.ImageUrl)</dd>
+                                <dt class="col-sm-4">Category</dt>
+                                <dd class="col-sm-8">@Model.Category</dd>
 
-                    <dt class="col-sm-4">Categorie</dt>
-                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Category)</dd>
-
-                    <dt class="col-sm-4">Voorraad</dt>
-                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Stock)</dd>
-                </dl>
-
-                <div class="d-flex justify-content-between mt-4">
-                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary w-45">Bewerken</a>
-                    <a asp-action="Index" class="btn btn-secondary w-45">Terug naar Lijst</a>
+                                <dt class="col-sm-4">Stock</dt>
+                                <dd class="col-sm-8">@Model.Stock</dd>
+                            </dl>
+                            <div class="d-flex justify-content-between mt-4">
+                                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+                                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                            </div>
+                        </div>
+                    </div> <!-- End of Row -->
                 </div>
             </div>
         </div>
