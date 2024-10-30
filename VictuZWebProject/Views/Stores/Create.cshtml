@@ -2,13 +2,14 @@
 
 @{
     ViewData["Title"] = "Create";
+    var categoryList = ViewBag.CategoryList as List<SelectListItem>;
 }
 
 <div class="container d-flex justify-content-center mt-5">
     <div class="col-lg-6 col-md-8 col-sm-10">
         <div class="card shadow-sm">
             <div class="card-body">
-                <h2 class="text-center mb-4">Maak Winkel</h2>
+                <h2 class="text-center mb-4">Maak product</h2>
                 <form asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
@@ -43,7 +44,9 @@
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input asp-for="Category" class="form-control" placeholder="Category" />
+                        <select asp-for="Category" asp-items="categoryList" class="form-control">
+                            <option value="">-- Selecteer Categorie --</option>
+                        </select>
                         <label asp-for="Category">Categorie</label>
                         <span asp-validation-for="Category" class="text-danger"></span>
                     </div>
@@ -54,7 +57,7 @@
                         <span asp-validation-for="Stock" class="text-danger"></span>
                     </div>
 
-                    <button type="submit" class="btn w-100" style="background-color: #5ac6aa; color: white;">Maak winkel</button>
+                    <button type="submit" class="btn w-100" style="background-color: #5ac6aa; color: white;">Maak product</button>
                     <a asp-action="Index" class="btn btn-secondary w-100 mt-2">Annuleer</a>
                 </form>
             </div>

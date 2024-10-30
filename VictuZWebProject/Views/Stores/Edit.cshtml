@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    var categoryList = ViewBag.CategoryList as List<SelectListItem>;
 }
 
 <div class="container d-flex justify-content-center mt-5">
@@ -45,7 +46,9 @@
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input asp-for="Category" class="form-control" placeholder="Category" />
+                        <select asp-for="Category" asp-items="categoryList" class="form-control">
+                            <option value="">-- Selecteer Categorie --</option>
+                        </select>
                         <label asp-for="Category">Categorie</label>
                         <span asp-validation-for="Category" class="text-danger"></span>
                     </div>
