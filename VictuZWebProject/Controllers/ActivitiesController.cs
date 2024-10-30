@@ -228,11 +228,17 @@ namespace VictuZ_Lars.Controllers
         }
 
 
-        public async Task<IActionResult> Register(int? Id)
+        public async Task<IActionResult> Register(int? Id, string returnUrl = null)
         {
             if (Id == null)
             {
                 return NotFound();
+            }
+
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
             }
 
             // Get the current user ID
@@ -271,7 +277,7 @@ namespace VictuZ_Lars.Controllers
             _context.Activity.Update(registration);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Activities");
         }
 
     }

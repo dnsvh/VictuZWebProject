@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using VictuZ_Lars.Models;
 using VictuZWebProject.Models;
@@ -15,6 +11,8 @@ namespace VictuZ_Lars.Data
         public DbSet<UserRegistration> UserRegistration { get; set; }
         public DbSet<Suggestion> Suggestion { get; set; }
         public DbSet<SuggestionLike> SuggestionLike { get; set; }
+        public DbSet<Memberships> Memberships { get; set; }
+        public DbSet<Store> Store { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -28,22 +26,14 @@ namespace VictuZ_Lars.Data
             modelBuilder.Entity<UserRegistration>().ToTable("UserRegistration");
             modelBuilder.Entity<Suggestion>().ToTable("Suggestion");
             modelBuilder.Entity<SuggestionLike>().ToTable("SuggestionLike");
+            modelBuilder.Entity<Memberships>().ToTable("Memberships");
 
+            // Update precision for Price column in Store
             modelBuilder.Entity<Store>()
                 .Property(s => s.Price)
-                .HasPrecision(3, 2);
+                .HasPrecision(10, 2); // Increased precision
 
             base.OnModelCreating(modelBuilder);
-
         }
-        public DbSet<Activity> Activity_1 { get; set; } = default!;
-        public DbSet<UserRegistration> UserRegistration_1 { get; set; } = default!;
-        public DbSet<Suggestion> Suggestion_1 { get; set; } = default!;
-
-        public DbSet<SuggestionLike> SuggestionLike_1 { get; set; } = default!;
-        public DbSet<VictuZWebProject.Models.Store> Store { get; set; } = default!;
-
-
-
     }
 }

@@ -1,0 +1,50 @@
+﻿@model IEnumerable<VictuZWebProject.Models.Memberships>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<section class="container py-5">
+    <div class="text-center mb-5">
+        <h2>Our Pricing Plans</h2>
+        <p class="text-muted">Choose a plan that fits your needs.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <!-- Basic Plan -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header text-center text-white" style="background-color: #808080">
+                    <h4>Basic Plan</h4>
+                </div>
+                <div class="card-body text-center">
+                    <h2 class="card-title">Gratis</h2>
+                    <ul class="list-unstyled my-4">
+                        <li>Geen extra features</li>
+                    </ul>
+                    <a href="#" class="btn" style="background-color: #808080; color: white;">Kies lidmaatschap</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Standard Plan -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header text-center text-white" style="background-color: #20c997">
+                    <h4>Lidmaatschap</h4>
+                </div>
+                <div class="card-body text-center">
+                    <h2 class="card-title">€ 19.99</h2>
+                    <p class="text-muted">per jaar</p>
+                    <ul class="list-unstyled my-4">
+                        <li>Eerder inschrijven voor activiteiten</li>
+                        <li>Toegang tot de shop</li>
+                        <li>Lol</li>
+                    </ul>
+                    <a href="#" class="btn" style="background-color: #20c997; color: white;">Kies lidmaatschap</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
