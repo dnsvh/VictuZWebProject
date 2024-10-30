@@ -87,6 +87,15 @@ namespace VictuZWebProject.Controllers
             {
                 return NotFound();
             }
+
+            // Example categories, replace with your actual data source
+            var categories = new List<string> { "Electronics", "Clothing", "Books", "Groceries" };
+            ViewBag.CategoryList = categories.Select(c => new SelectListItem
+            {
+                Value = c,
+                Text = c
+            }).ToList();
+
             return View(store);
         }
 
