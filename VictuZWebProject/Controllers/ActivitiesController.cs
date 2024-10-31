@@ -77,10 +77,11 @@ namespace VictuZ_Lars.Controllers
             }
 
             // Controleer of de activiteit alleen zichtbaar is voor members
-            if (activity.OnlyMembers && !User.IsInRole("member"))
+            if (activity.OnlyMembers && !(User.IsInRole("Member") || User.IsInRole("Admin") || User.IsInRole("Staff")))
             {
-                return Forbid(); // Weiger toegang als de gebruiker geen "member" is
+                return Forbid(); // Weiger toegang als de gebruiker geen "Member", "Admin", of "Staff" is
             }
+
 
             return View(activity);
         }
@@ -150,6 +151,7 @@ namespace VictuZ_Lars.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 _context.Add(activity);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

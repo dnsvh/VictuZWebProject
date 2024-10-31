@@ -12,13 +12,13 @@
         public DateTime DatePublished { get; set; }
         public DateTime DateDue { get; set; }
 
-        public bool OnlyMembers { get; set; }//Alleen members kunnen zich aanmelden
+        public bool OnlyMembers { get; set; } = false;//Alleen members kunnen zich aanmelden
         //Kan zijn dat members zich eerder kunnen aanmelden
         public DateTime? MembersOnlyVisibilityEnd { get; set; }// Tijd eindigt voor members only
-        
+
         //Members plekken reserveren binnen een activiteit
-        public bool MembersPreRegistration { get; set; }//Plekken voor members reserveren
-        public int MembersOnlyCapacity { get; set; }//Hoeveel plekken er voor members zijn gereserveerd
+        public bool MembersPreRegistration { get; set; } = false;//Plekken voor members reserveren
+        public int? MembersOnlyCapacity { get; set; }//Hoeveel plekken er voor members zijn gereserveerd
 
 
     }
