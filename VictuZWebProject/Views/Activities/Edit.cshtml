@@ -49,6 +49,29 @@
                         <span asp-validation-for="DateDue" class="text-danger"></span>
                     </div>
 
+                    <div class="form-check">
+                        <input asp-for="OnlyMembers" type="checkbox" id="OnlyMembersCheckbox" class="form-check-input" />
+                        <label asp-for="OnlyMembers" class="form-check-label"></label>
+                    </div>
+
+                    <!-- Alleen zichtbaar wanneer OnlyMembers is aangevinkt -->
+                    <div class="form-group" id="MembersOnlyVisibilityEndField" style="display: none;">
+                        <label asp-for="MembersOnlyVisibilityEnd"></label>
+                        <input asp-for="MembersOnlyVisibilityEnd" class="form-control" type="datetime-local" />
+                        <p></p>
+                    </div>
+
+                    <div class="form-check">
+                        <input asp-for="MembersPreRegistration" type="checkbox" id="MembersPreRegistrationCheckbox" class="form-check-input" />
+                        <label asp-for="MembersPreRegistration" class="form-check-label"></label>
+                    </div>
+
+                    <!-- Alleen zichtbaar wanneer MembersPreRegistration is aangevinkt -->
+                    <div class="form-group" id="MembersOnlyCapacityField" style="display: none;">
+                        <label asp-for="MembersOnlyCapacity"></label>
+                        <input asp-for="MembersOnlyCapacity" class="form-control" type="number" />
+                    </div>
+
                     <button type="submit" class="btn w-100" style="background-color: #5ac6aa; color: white;">Opslaan</button>
                     <a asp-action="Index" class="btn btn-secondary w-100 mt-2">Annuleer</a>
                 </form>
@@ -59,4 +82,26 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const onlyMembersCheckbox = document.getElementById("OnlyMembersCheckbox");
+            const membersPreRegistrationCheckbox = document.getElementById("MembersPreRegistrationCheckbox");
+            const visibilityEndField = document.getElementById("MembersOnlyVisibilityEndField");
+            const capacityField = document.getElementById("MembersOnlyCapacityField");
+
+            // Functie om zichtbaarheid van velden te wisselen op basis van checkbox-status
+            function toggleFields() {
+                visibilityEndField.style.display = onlyMembersCheckbox.checked ? "block" : "none";
+                capacityField.style.display = membersPreRegistrationCheckbox.checked ? "block" : "none";
+            }
+
+            // Zet de initiële zichtbaarheid van velden
+            toggleFields();
+
+            // Event listeners voor verandering van de checkboxes
+            onlyMembersCheckbox.addEventListener("change", toggleFields);
+            membersPreRegistrationCheckbox.addEventListener("change", toggleFields);
+        });
+    </script>
 }

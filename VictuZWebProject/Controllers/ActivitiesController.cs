@@ -25,16 +25,33 @@ namespace VictuZ_Lars.Controllers
         // GET: Activities
         public async Task<IActionResult> Index()
         {
-            var activities = await _context.Activity
-           .OrderBy(a => a.DateDue) // Voeg deze regel toe om te sorteren
-           .ToListAsync();
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Controleer of de gebruiker de rol "Member" heeft
+            bool isMember = User.IsInRole("Member");
+            bool isStaff = User.IsInRole("Staff");
+            bool isAdmin = User.IsInRole("Admin");
 
+            // Haal de activiteiten op en filter activiteiten met `OnlyMembers = true` voor niet-leden
+            var activitiesQuery = _context.Activity.AsQueryable();
+
+            if (!isMember && !isStaff && !isAdmin)
+            {
+                // Als de gebruiker geen van de drie rollen heeft, filter dan de activiteiten die alleen voor leden zijn
+                activitiesQuery = activitiesQuery.Where(a => !a.OnlyMembers);
+            }
+
+            // Haal de gefilterde activiteiten op en sorteer op datum
+            var activities = await activitiesQuery
+                .OrderBy(a => a.DateDue)
+                .ToListAsync();
+
+            // Haal de registratiegegevens van de gebruiker op
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userRegistrations = await _context.UserRegistration
                 .Where(r => r.UserId == userId)
                 .Select(r => r.ActivityId)
                 .ToListAsync();
 
+            // Bouw het viewmodel
             var viewModel = activities.Select(a => new ActivityViewModel
             {
                 Activity = a,
@@ -44,8 +61,8 @@ namespace VictuZ_Lars.Controllers
             return View(viewModel);
         }
 
-        // GET: Activities/Details/5
-        public async Task<IActionResult> Details(int? id)
+    // GET: Activities/Details/5
+    public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -57,6 +74,12 @@ namespace VictuZ_Lars.Controllers
             if (activity == null)
             {
                 return NotFound();
+            }
+
+            // Controleer of de activiteit alleen zichtbaar is voor members
+            if (activity.OnlyMembers && !User.IsInRole("member"))
+            {
+                return Forbid(); // Weiger toegang als de gebruiker geen "member" is
             }
 
             return View(activity);
@@ -123,7 +146,7 @@ namespace VictuZ_Lars.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("ActivityId,Name,Body,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue")] Activity activity)
+        public async Task<IActionResult> Create([Bind("ActivityId,Name,Body,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue,OnlyMembers,MembersOnlyVisibilityEnd,MembersPreRegistration,MembersOnlyCapacity")] Activity activity)
         {
             if (ModelState.IsValid)
             {
@@ -157,7 +180,7 @@ namespace VictuZ_Lars.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ActivityId,Name,Body,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue")] Activity activity)
+        public async Task<IActionResult> Edit(int id, [Bind("ActivityId,Name,Body,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue,OnlyMembers,MembersOnlyVisibilityEnd,MembersPreRegistration,MembersOnlyCapacity")] Activity activity)
         {
             if (id != activity.ActivityId)
             {

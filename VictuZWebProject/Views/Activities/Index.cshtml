@@ -21,76 +21,79 @@
         {
             @foreach (var item in Model)
             {
-                <div class="col-md-4 mb-4 d-flex">
-                    <div class="card h-100 shadow-sm" style="width: 100%; position: relative;">
+                    <div class="col-md-4 mb-4 d-flex">
+                        <div class="card h-100 shadow-sm" style="width: 100%; position: relative;">
 
-                        <!-- Image at the top of the card -->
-                        @if (item.Activity.ImageUrl != null)
-                        {
-                            <img src="@Html.DisplayFor(modelItem => item.Activity.ImageUrl)" class="card-img-top" alt="Activity image">
-                        }
+                            <!-- Image at the top of the card -->
+                            @if (item.Activity.ImageUrl != null)
+                            {
+                                <img src="@Html.DisplayFor(modelItem => item.Activity.ImageUrl)" class="card-img-top" alt="Activity image">
+                            }
 
-                        <div class="card-body d-flex flex-column">
+                            <div class="card-body d-flex flex-column">
 
-                            <!-- Title with gear icon next to it -->
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="card-title">@Html.DisplayFor(modelItem => item.Activity.Name)</h5>
+                                <!-- Title with gear icon next to it -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.Activity.Name)</h5>
 
-                                <!-- Dropdown for Admin/Staff -->
-                                @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
-                                {
-                                    <div class="dropdown">
-                                        <a href="#" class="btn p-0 px-1" id="settingsDropdown-@item.Activity.ActivityId" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fa-solid fa-gear"></i>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown-@item.Activity.ActivityId">
-                                            <li><a asp-action="Edit" asp-route-id="@item.Activity.ActivityId" class="m-2 btn btn-light d-flex justify-content-center">Aanpassen</a></li>
-                                            <li><a asp-action="Delete" asp-route-id="@item.Activity.ActivityId" class="m-2 btn btn-light d-flex justify-content-center">Verwijder</a></li>
-                                        </ul>
-                                    </div>
-                                }
+                                    <!-- Dropdown for Admin/Staff -->
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                                    {
+                                        <div class="dropdown">
+                                            <a href="#" class="btn p-0 px-1" id="settingsDropdown-@item.Activity.ActivityId" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa-solid fa-gear"></i>
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown-@item.Activity.ActivityId">
+                                                <li><a asp-action="Edit" asp-route-id="@item.Activity.ActivityId" class="m-2 btn btn-light d-flex justify-content-center">Aanpassen</a></li>
+                                                <li><a asp-action="Delete" asp-route-id="@item.Activity.ActivityId" class="m-2 btn btn-light d-flex justify-content-center">Verwijder</a></li>
+                                            </ul>
+                                        </div>
+                                    }
+                                </div>
+
+
+                                <p class="card-text">@Html.DisplayFor(modelItem => item.Activity.Body)</p>
+
+                                <div class="d-flex justify-content-between mb-3">
+                                    <small class="text-muted">Locatie: @Html.DisplayFor(modelItem => item.Activity.Location)</small>
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <small class="text-muted">Datum: @item.Activity.DateDue.ToString("MMMM dd, h:mm tt")</small>
+                                </div>
                             </div>
 
-                            <p class="card-text">@Html.DisplayFor(modelItem => item.Activity.Body)</p>
+                            <!-- Registration info aligned to the right -->
+                            <div class="card-footer bg-white border-top-0 mt-auto">
+                                <div class="d-flex justify-content-end mb-2">
+                                    <small class="text-muted">@Html.DisplayFor(modelItem => item.Activity.Registered) / @Html.DisplayFor(modelItem => item.Activity.MaxCapacity) Ingeschreven</small>
+                                </div>
 
-                            <div class="d-flex justify-content-between mb-3">
-                                <small class="text-muted">Locatie: @Html.DisplayFor(modelItem => item.Activity.Location)</small>
-                            </div>
-
-                            <div class="d-flex justify-content-between">
-                                <small class="text-muted">Datum: @item.Activity.DateDue.ToString("MMMM dd, h:mm tt")</small>
-                            </div>
-                        </div>
-
-                        <!-- Registration info aligned to the right -->
-                        <div class="card-footer bg-white border-top-0 mt-auto">
-                            <div class="d-flex justify-content-end mb-2">
-                                <small class="text-muted">@Html.DisplayFor(modelItem => item.Activity.Registered) / @Html.DisplayFor(modelItem => item.Activity.MaxCapacity) Ingeschreven</small>
-                            </div>
-
-                            <div class="d-flex justify-content-end">
-                                @if (item.IsUserRegistered)
-                                {
-                                    <form asp-action="Register" asp-route-id="@item.Activity.ActivityId" method="post" style="display:inline;">
-                                        <button type="submit" class="btn btn-danger">Delete Registration</button>
-                                    </form>
-                                }
-                                else if (item.Activity.Registered >= item.Activity.MaxCapacity)
-                                {
-                                    <a class="btn btn-secondary disabled" aria-disabled="true">Vol</a>
-                                }
-                                else if (!User.Identity.IsAuthenticated)
-                                {
-                                    <a class="btn btn-secondary disabled" aria-disabled="true">Login om in te schrijven</a>
-                                }
-                                else
-                                {
-                                    <a asp-action="Register" asp-route-id="@item.Activity.ActivityId" class="btn" style="background-color: #20c997; color: white;">Inschrijven</a>
-                                }
+                                <div class="d-flex justify-content-end">
+                                    @if (item.IsUserRegistered)
+                                    {
+                                        <form asp-action="Register" asp-route-id="@item.Activity.ActivityId" method="post" style="display:inline;">
+                                            <button type="submit" class="btn btn-danger">Delete Registration</button>
+                                        </form>
+                                    }
+                                    else if (item.Activity.Registered >= item.Activity.MaxCapacity)
+                                    {
+                                        <a class="btn btn-secondary disabled" aria-disabled="true">Vol</a>
+                                    }
+                                    else if (!User.Identity.IsAuthenticated)
+                                    {
+                                        <a class="btn btn-secondary disabled" aria-disabled="true">Login om in te schrijven</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Register" asp-route-id="@item.Activity.ActivityId" class="btn" style="background-color: #20c997; color: white;">Inschrijven</a>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+            
+                
             }
         }
         else
