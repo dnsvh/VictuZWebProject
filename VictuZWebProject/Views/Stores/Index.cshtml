@@ -17,7 +17,7 @@
 @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
 {
     <p class="d-flex justify-content-center">
-        <a id="createCategory" onclick="openCategoryForm()" class="btn" style="background-color: #20c997; color: white;">Maak een nieuwe categorie.</a>
+        <a asp-controller="Categories" asp-action="Index" class="btn" style="background-color: #20c997; color: white;">Bekijk categorieën</a>
     </p>
 }
 <div id="categoryFormContainer" style="display:none;">
