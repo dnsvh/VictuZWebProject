@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VictuZWebProject.Models;
 using VictuZ_Lars.Data;
+using Microsoft.AspNetCore.Identity;
+using VictuZWebProject.Areas.Identity.Data;
 
 namespace VictuZWebProject.Controllers
 {
     public class MembershipsController : Controller
     {
         private readonly VictuZ_Lars_Db _context;
+        private readonly UserManager<AppUser> _userManager;
 
-        public MembershipsController(VictuZ_Lars_Db context)
+        public MembershipsController(VictuZ_Lars_Db context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Memberships
@@ -63,6 +67,22 @@ namespace VictuZWebProject.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(memberships);
+        }
+
+        // Get payment plan and confirm plan
+        public IActionResult ConfirmFreePlan()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmFreePlanResponse(bool confirm)
+        {
+            if (confirm)
+            {
+                return RedirectToAction("Payment", new { plan = "Basic" });
+            }
+            return RedirectToAction("Index");
         }
 
         // GET: Memberships/Edit/5
@@ -153,5 +173,43 @@ namespace VictuZWebProject.Controllers
         {
             return _context.Memberships.Any(e => e.Id == id);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateMembership(string userId, int planId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user != null)
+            {
+                // Update membership plan
+                var membership = await _context.Memberships.FirstOrDefaultAsync(m => m.UserId == user.Id);
+                membership.MembershipId = planId;
+                _context.Memberships.Update(membership);
+                await _context.SaveChangesAsync();
+
+                // Update roles based on plan selection
+                if (planId == 1) // Free plan
+                {
+                    await _userManager.RemoveFromRoleAsync(user, "Member");
+                    await _userManager.AddToRoleAsync(user, "Visitor");
+                }
+                else if (planId == 2) // Paid plan
+                {
+                    await _userManager.RemoveFromRoleAsync(user, "Visitor");
+                    await _userManager.AddToRoleAsync(user, "Member");
+                }
+            }
+
+            return RedirectToAction("Index"); // Or another appropriate view
+        }
+
+        public IActionResult Payment(string plan)
+        {
+            int planId = plan == "Basic" ? 1 : 2;
+            string userId = _userManager.GetUserId(User);
+
+            return RedirectToAction("UpdateMembership", new { userId = userId, planId = planId });
+        }
     }
+}
 }

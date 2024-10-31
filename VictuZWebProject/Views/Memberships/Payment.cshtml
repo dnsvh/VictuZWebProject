@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Payment";
+}
+<div class="container py-5">
+    <h2 class="text-center">Payment for @ViewBag.SelectedPlan Plan</h2>
+    <form>
+        <!-- Payment form details using Bootstrap -->
+        <div class="form-group">
+            <label for="cardNumber">Card Number</label>
+            <input type="text" class="form-control" id="cardNumber" placeholder="Enter card number">
+        </div>
+        <div class="form-group">
+            <label for="expiry">Expiry Date</label>
+            <input type="text" class="form-control" id="expiry" placeholder="MM/YY">
+        </div>
+        <div class="form-group">
+            <label for="cvv">CVV</label>
+            <input type="text" class="form-control" id="cvv" placeholder="CVV">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block mt-4">Pay Now</button>
+    </form>
+</div>

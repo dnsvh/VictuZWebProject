@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Confirm Free Plan";
+}
+
+<div class="container py-5">
+    <h2 class="text-center">Are you sure you want to go back to the Free Plan?</h2>
+    <p class="text-center">This will remove any paid features.</p>
+
+    <div class="text-center mt-4">
+        <form asp-action="ConfirmFreePlanResponse" method="post">
+            <button type="submit" name="confirm" value="true" class="btn btn-danger">Yes, switch to Free Plan</button>
+            <button type="submit" name="confirm" value="false" class="btn btn-secondary">Cancel</button>
+        </form>
+    </div>
+</div>
