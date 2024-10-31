@@ -14,6 +14,16 @@
     </p>
 }
 
+@if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+{
+    <p class="d-flex justify-content-center">
+        <a asp-controller="Categories" asp-action="Index" class="btn" style="background-color: #20c997; color: white;">Bekijk categorieën</a>
+    </p>
+}
+<div id="categoryFormContainer" style="display:none;">
+    @await Html.PartialAsync("_CreateCategoryPartial", new VictuZWebProject.Models.Category())
+</div>
+
 <div class="container mt-4">
     <div class="row">
         @if (Model != null && Model.Any())
@@ -81,5 +91,13 @@
         }
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function openCategoryForm() {
+            document.getElementById('categoryFormContainer').style.display = 'block';
+        }
+    </script>
+}
 
 <script src="https://kit.fontawesome.com/8073668e9d.js" crossorigin="anonymous"></script>

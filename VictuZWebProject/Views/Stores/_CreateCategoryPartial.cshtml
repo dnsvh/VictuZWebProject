@@ -1,0 +1,10 @@
+﻿@model VictuZWebProject.Models.Category
+
+<form asp-action="CreateCategory" method="post" id="createCategoryForm">
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Category</button>
+</form>

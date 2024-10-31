@@ -1,0 +1,35 @@
+﻿@model IEnumerable<VictuZWebProject.Models.Category>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="d-flex justify-content-center">Categories</h1>
+
+<p class="d-flex justify-content-center">
+    <a asp-action="Create" class="btn" style="background-color: #20c997; color: white;">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-light" style="background-color: #20c997; color: white; margin-right: 5px;">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-light" style="background-color: #dc3545; color: white;">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
