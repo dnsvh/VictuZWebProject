@@ -183,6 +183,26 @@ namespace VictuZWebProject.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> CreateCategory([Bind("Id,Name")] Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(category);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return PartialView("_CreateCategoryPartial", category);
+        }
+
+        [Authorize(Roles = "Admin,Staff")]
+        public IActionResult CreateCategoryForm()
+        {
+            return PartialView("_CreateCategoryPartial", new Category());
+        }
+
         private bool StoreExists(int id)
         {
             return _context.Store.Any(e => e.Id == id);
