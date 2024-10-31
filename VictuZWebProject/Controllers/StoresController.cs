@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VictuZWebProject.Models;
 using VictuZ_Lars.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VictuZWebProject.Controllers
 {
@@ -59,10 +60,9 @@ namespace VictuZWebProject.Controllers
 
 
         // POST: Stores/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Size,Price,ImageUrl,Category,Stock")] Store store)
         {
             if (ModelState.IsValid)
@@ -75,6 +75,7 @@ namespace VictuZWebProject.Controllers
         }
 
         // GET: Stores/Edit/5
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,7 +90,7 @@ namespace VictuZWebProject.Controllers
             }
 
             // Current Categories
-            var categories = new List<string> { "Clothing", "Stickers", "Miscellanious" };
+            var categories = new List<string> { "Kleding", "Stickers" };
             ViewBag.CategoryList = categories.Select(c => new SelectListItem
             {
                 Value = c,
@@ -104,6 +105,7 @@ namespace VictuZWebProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Size,Price,ImageUrl,Category,Stock")] Store store)
         {
             if (id != store.Id)
@@ -135,6 +137,7 @@ namespace VictuZWebProject.Controllers
         }
 
         // GET: Stores/Delete/5
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -155,6 +158,7 @@ namespace VictuZWebProject.Controllers
         // POST: Stores/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var store = await _context.Store.FindAsync(id);
