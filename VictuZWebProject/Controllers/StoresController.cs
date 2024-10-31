@@ -20,18 +20,19 @@ namespace VictuZWebProject.Controllers
             _context = context;
         }
 
-        public IActionResult Create()
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> Create()
         {
-            // Current Categories
-            var categories = new List<string> {"Clothing", "Stickers", "Miscellanious" };
-            ViewBag.CategoryList = categories.Select(c => new SelectListItem
-            {
-                Value = c,
-                Text = c
-            }).ToList();
+            ViewBag.CategoryList = await _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Name,
+                    Text = c.Name
+                }).ToListAsync();
 
             return View();
         }
+
 
 
         // GET: Stores
@@ -71,6 +72,12 @@ namespace VictuZWebProject.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.CategoryList = await _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Name,
+                    Text = c.Name
+                }).ToListAsync();
             return View(store);
         }
 
@@ -89,13 +96,12 @@ namespace VictuZWebProject.Controllers
                 return NotFound();
             }
 
-            // Current Categories
-            var categories = new List<string> { "Kleding", "Stickers" };
-            ViewBag.CategoryList = categories.Select(c => new SelectListItem
-            {
-                Value = c,
-                Text = c
-            }).ToList();
+            ViewBag.CategoryList = await _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Name,
+                    Text = c.Name
+                }).ToListAsync();
 
             return View(store);
         }
@@ -133,6 +139,12 @@ namespace VictuZWebProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.CategoryList = await _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Name,
+                    Text = c.Name
+                }).ToListAsync();
             return View(store);
         }
 
