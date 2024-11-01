@@ -54,6 +54,10 @@
                             <p class="card-text">@Html.DisplayFor(modelItem => item.Activity.Body)</p>
 
                             <div class="d-flex justify-content-between mb-3">
+                                <small class="text-muted">Host: @Html.DisplayFor(modelItem => item.Activity.Host)</small>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-3">
                                 <small class="text-muted">Locatie: @Html.DisplayFor(modelItem => item.Activity.Location)</small>
                             </div>
 
