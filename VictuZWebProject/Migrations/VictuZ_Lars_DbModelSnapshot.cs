@@ -183,10 +183,6 @@ namespace VictuZWebProject.Migrations
                     b.Property<DateTime>("DatePublished")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Host")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 

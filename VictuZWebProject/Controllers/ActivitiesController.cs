@@ -123,7 +123,7 @@ namespace VictuZ_Lars.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("ActivityId,Name,Body,Host,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue")] Activity activity)
+        public async Task<IActionResult> Create([Bind("ActivityId,Name,Body,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue")] Activity activity)
         {
             if (ModelState.IsValid)
             {
