@@ -71,26 +71,31 @@
 
                     <div class="form-check">
                         <input asp-for="OnlyMembers" type="checkbox" id="OnlyMembersCheckbox" class="form-check-input" />
-                        <label asp-for="OnlyMembers" class="form-check-label"></label>
+                        <label asp-for="OnlyMembers" class="form-check-label">Only Members</label>
+                    </div>
+              
+                    <div class="form-check">
+                        <input asp-for="MembersPreRegistration" type="checkbox" id="MembersPreRegistrationCheckbox" class="form-check-input" />
+                        <label asp-for="MembersPreRegistration" class="form-check-label">Members Pre-Registration</label>
                     </div>
 
                     <!-- Alleen zichtbaar wanneer OnlyMembers is aangevinkt -->
                     <div class="form-group" id="MembersOnlyVisibilityEndField" style="display: none;">
-                        <label asp-for="MembersOnlyVisibilityEnd"></label>
+                        <label asp-for="MembersOnlyVisibilityEnd">Members Only Visibility End</label>
                         <input asp-for="MembersOnlyVisibilityEnd" class="form-control" type="datetime-local" />
-                        <p></p>
-                    </div>                
+                    </div>  
 
                     <div class="form-check">
-                        <input asp-for="MembersPreRegistration" type="checkbox" id="MembersPreRegistrationCheckbox" class="form-check-input" />
-                        <label asp-for="MembersPreRegistration" class="form-check-label"></label>
+                        <input asp-for="MembersPriorityCapacity" type="checkbox" id="MembersPriorityCapacityCheckbox" class="form-check-input" />
+                        <label asp-for="MembersPriorityCapacity" class="form-check-label">Members Priority Capacity</label>
                     </div>
 
-                    <!-- Alleen zichtbaar wanneer MembersPreRegistration is aangevinkt -->
+                    <!-- Alleen zichtbaar wanneer MembersPriorityCapacity is aangevinkt -->
                     <div class="form-group" id="MembersOnlyCapacityField" style="display: none;">
-                        <label asp-for="MembersOnlyCapacity"></label>
+                        <label asp-for="MembersOnlyCapacity">Members Only Capacity</label>
                         <input asp-for="MembersOnlyCapacity" class="form-control" type="number" />
                     </div>
+
 
                     <p></p>
 
@@ -108,25 +113,36 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
-    <script>
+       <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Verwijs naar de checkboxes en velden
             const onlyMembersCheckbox = document.getElementById("OnlyMembersCheckbox");
             const membersPreRegistrationCheckbox = document.getElementById("MembersPreRegistrationCheckbox");
+            const membersPriorityCapacityCheckbox = document.getElementById("MembersPriorityCapacityCheckbox");
+        
             const visibilityEndField = document.getElementById("MembersOnlyVisibilityEndField");
-            const capacityField = document.getElementById("MembersOnlyCapacityField");
+            const membersOnlyCapacityField = document.getElementById("MembersOnlyCapacityField");
 
-            // Functie om zichtbaarheid van velden te wisselen op basis van checkbox-status
+            // Functie om de zichtbaarheid van velden te wisselen op basis van de checkbox-status
             function toggleFields() {
-                visibilityEndField.style.display = onlyMembersCheckbox.checked ? "block" : "none";
-                capacityField.style.display = membersPreRegistrationCheckbox.checked ? "block" : "none";
+                console.log("ToggleFields called"); // Voor debuggen
+                console.log("OnlyMembers checked:", onlyMembersCheckbox.checked);
+            
+                // Zet visibilityEndField zichtbaar als OnlyMembersCheckbox is aangevinkt
+                visibilityEndField.style.display = membersPreRegistrationCheckbox.checked ? "block" : "none";
+            
+                // Zet membersOnlyCapacityField zichtbaar als MembersPriorityCapacityCheckbox is aangevinkt
+                membersOnlyCapacityField.style.display = membersPriorityCapacityCheckbox.checked ? "block" : "none";
             }
 
-            // Zet de initiële zichtbaarheid van velden
+            // Initialiseer zichtbaarheid van velden bij pagina laden
             toggleFields();
 
             // Event listeners voor verandering van de checkboxes
             onlyMembersCheckbox.addEventListener("change", toggleFields);
             membersPreRegistrationCheckbox.addEventListener("change", toggleFields);
+            membersPriorityCapacityCheckbox.addEventListener("change", toggleFields);
         });
     </script>
+
 }
