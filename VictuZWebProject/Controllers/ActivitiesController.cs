@@ -26,7 +26,7 @@ namespace VictuZ_Lars.Controllers
         public async Task<IActionResult> Index()
         {
             var activities = await _context.Activity
-           .OrderBy(a => a.DateDue) // Voeg deze regel toe om te sorteren
+           .OrderBy(a => a.DateDue) 
            .ToListAsync();
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -111,7 +111,7 @@ namespace VictuZ_Lars.Controllers
         //}
 
         // GET: Activities/Create
-        [Authorize]
+        [Authorize(Roles = "Staff,Admin")]
         public IActionResult Create()
         {
             return View();
@@ -122,7 +122,7 @@ namespace VictuZ_Lars.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Staff,Admin")]
         public async Task<IActionResult> Create([Bind("ActivityId,Name,Body,Host,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue")] Activity activity)
         {
             if (ModelState.IsValid)
@@ -135,7 +135,7 @@ namespace VictuZ_Lars.Controllers
         }
 
         // GET: Activities/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Staff,Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -154,7 +154,7 @@ namespace VictuZ_Lars.Controllers
         // POST: Activities/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Staff,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ActivityId,Name,Body,Host,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue")] Activity activity)
@@ -188,7 +188,7 @@ namespace VictuZ_Lars.Controllers
         }
 
         // GET: Activities/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Staff,Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -207,7 +207,7 @@ namespace VictuZ_Lars.Controllers
         }
 
         // POST: Activities/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Staff,Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

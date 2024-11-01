@@ -91,7 +91,7 @@ namespace VictuZWebProject
                 string adminFirstName = "Admin";
                 string adminLastName = "Account";
 
-                // Correctly await FindByEmailAsync to get the user
+                // FindByEmailAsync to get the user
                 var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
                 if (existingAdmin == null)
                 {
