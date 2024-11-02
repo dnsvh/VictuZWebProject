@@ -21,6 +21,9 @@
         {
             @foreach (var item in Model)
             {
+
+                if (!item.Activity.OnlyMembers || (User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin")))
+                {
                     <div class="col-md-4 mb-4 d-flex">
                         <div class="card h-100 shadow-sm" style="width: 100%; position: relative;">
 
@@ -29,6 +32,7 @@
                             {
                                 <img src="@Html.DisplayFor(modelItem => item.Activity.ImageUrl)" class="card-img-top" alt="Activity image">
                             }
+
 
                             <div class="card-body d-flex flex-column">
 
@@ -50,7 +54,6 @@
                                         </div>
                                     }
                                 </div>
-
 
                                 <p class="card-text">@Html.DisplayFor(modelItem => item.Activity.Body)</p>
 
@@ -92,7 +95,8 @@
                             </div>
                         </div>
                     </div>
-            
+
+                }               
                 
             }
         }

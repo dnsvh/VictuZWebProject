@@ -30,6 +30,8 @@ namespace VictuZ_Lars.Controllers
             bool isStaff = User.IsInRole("Staff");
             bool isAdmin = User.IsInRole("Admin");
 
+            var currentTime = DateTime.UtcNow;
+
             // Haal de activiteiten op en filter activiteiten met `OnlyMembers = true` voor niet-leden
             var activitiesQuery = _context.Activity.AsQueryable();
 
@@ -38,6 +40,19 @@ namespace VictuZ_Lars.Controllers
                 // Als de gebruiker geen van de drie rollen heeft, filter dan de activiteiten die alleen voor leden zijn
                 activitiesQuery = activitiesQuery.Where(a => !a.OnlyMembers);
             }
+
+            /*
+            activitiesQuery = activitiesQuery.Where(a =>
+                // Activiteit is alleen voor leden als de einddatum nog niet is verstreken en alleen leden mogen kijken
+                (a.MembersPreRegistration && currentTime < (a.MembersOnlyVisibilityEnd ?? DateTime.MaxValue) &&
+                 (isMember || isStaff || isAdmin))
+                ||
+                // Activiteit wordt openbaar na de einddatum of als MembersPreRegistration uit staat
+                (!a.MembersPreRegistration || (a.MembersOnlyVisibilityEnd.HasValue && currentTime >= a.MembersOnlyVisibilityEnd.Value))
+            );*/
+
+            
+
 
             // Haal de gefilterde activiteiten op en sorteer op datum
             var activities = await activitiesQuery
@@ -55,14 +70,56 @@ namespace VictuZ_Lars.Controllers
             var viewModel = activities.Select(a => new ActivityViewModel
             {
                 Activity = a,
-                IsUserRegistered = userRegistrations.Contains(a.ActivityId)
+                IsUserRegistered = userRegistrations.Contains(a.ActivityId),
+                AvailableForMembers = CalculateAvailableForMembers(a),
+                AvailableForNonMembers = CalculateAvailableForNonMembers(a),
+                CanRegisterAsMember = isMember && a.MembersOnlyCapacity.HasValue && CalculateAvailableForMembers(a) > 0,
+                CanRegisterAsNonMember = !isMember && CalculateAvailableForNonMembers(a) > 0
             }).ToList();
 
             return View(viewModel);
         }
 
-    // GET: Activities/Details/5
-    public async Task<IActionResult> Details(int? id)
+        private int CalculateAvailableForMembers(Activity activity)
+        {
+            if (activity.MembersOnlyCapacity.HasValue)
+            {
+                // Tel het aantal geregistreerde Members, Staff en Admins
+                int membersIngeschreven = _context.UserRegistration
+                    .Count(r => r.ActivityId == activity.ActivityId &&
+                                (User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin")));
+
+                return Math.Max(0, activity.MembersOnlyCapacity.Value - membersIngeschreven);
+            }
+            return 0; // Geen gereserveerde plekken
+        }
+
+        private int CalculateAvailableForNonMembers(Activity activity)
+        {
+            if (activity.MembersOnlyCapacity.HasValue)
+            {
+                // Bereken de beschikbare plekken voor Visitors
+                int totalMembersRegistered = _context.UserRegistration
+                    .Count(r => r.ActivityId == activity.ActivityId &&
+                                (User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin")));
+
+                int visitorCapacity = activity.MaxCapacity - activity.MembersOnlyCapacity.Value; // Totale capaciteit minus gereserveerde plekken
+
+                int visitorsIngeschreven = _context.UserRegistration
+                    .Count(r => r.ActivityId == activity.ActivityId &&
+                                !User.IsInRole("Member") &&
+                                !User.IsInRole("Staff") &&
+                                !User.IsInRole("Admin"));
+
+                return Math.Max(0, visitorCapacity - visitorsIngeschreven);
+            }
+            return Math.Max(0, activity.MaxCapacity - activity.Registered); // Geen gereserveerde plekken
+        }
+
+
+
+        // GET: Activities/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -255,6 +312,7 @@ namespace VictuZ_Lars.Controllers
 
         public async Task<IActionResult> Register(int? Id, string returnUrl = null)
         {
+
             if (Id == null)
             {
                 return NotFound();
@@ -268,6 +326,15 @@ namespace VictuZ_Lars.Controllers
 
             // Get the current user ID
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            bool isMember = User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin");
+            bool isVisitor = User.IsInRole("Visitor");
+
+            // Controleer of de activiteit bestaat
+            var activity = await _context.Activity.FirstOrDefaultAsync(m => m.ActivityId == Id);
+            if (activity == null)
+            {
+                return NotFound();
+            }
 
             // Check if liked
             var existingRegister = await _context.UserRegistration
@@ -281,13 +348,35 @@ namespace VictuZ_Lars.Controllers
 
             if (existingRegister != null)
             {
-                // delete registration
+                // Verwijder registratie als de gebruiker al geregistreerd is
                 _context.UserRegistration.Remove(existingRegister);
-                registration.Registered -= 1;
+                activity.Registered -= 1;
             }
             else
             {
-                // register
+                // Bereken het aantal huidige registraties
+                int memberCount = _context.UserRegistration.Count(r => r.ActivityId == Id &&
+                                  (User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin")));
+                int visitorCount = _context.UserRegistration.Count(r => r.ActivityId == Id && User.IsInRole("Visitor"));
+
+                if (isVisitor)
+                {
+                    // Bezoekers kunnen zich alleen registreren als er plaatsen over zijn buiten de gereserveerde capaciteit
+                    if (visitorCount >= activity.MaxCapacity - activity.MembersOnlyCapacity)
+                    {
+                        return BadRequest("Geen beschikbare plaatsen voor bezoekers.");
+                    }
+                }
+                else if (isMember)
+                {
+                    // Leden kunnen zich registreren zolang MaxCapacity niet bereikt is
+                    if (activity.Registered >= activity.MaxCapacity)
+                    {
+                        return BadRequest("De activiteit zit vol.");
+                    }
+                }
+
+                // Voeg registratie toe
                 var reg = new UserRegistration
                 {
                     UserId = userId,
@@ -295,7 +384,7 @@ namespace VictuZ_Lars.Controllers
                 };
 
                 _context.UserRegistration.Add(reg);
-                registration.Registered += 1; 
+                activity.Registered += 1;
             }
 
             // Update
