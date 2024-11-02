@@ -25,33 +25,29 @@ namespace VictuZ_Lars.Controllers
         // GET: Activities
         public async Task<IActionResult> Index()
         {
-            // Controleer of de gebruiker de rol "Member" heeft
-            bool isMember = User.IsInRole("Member");
-            bool isStaff = User.IsInRole("Staff");
-            bool isAdmin = User.IsInRole("Admin");
-
+            // Haal huidige tijd op
             var currentTime = DateTime.UtcNow;
+
+            // Controleer of de gebruiker de rol "Member" heeft
+            bool isMember = User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin");
+
 
             // Haal de activiteiten op en filter activiteiten met `OnlyMembers = true` voor niet-leden
             var activitiesQuery = _context.Activity.AsQueryable();
 
-            if (!isMember && !isStaff && !isAdmin)
+            if (!isMember)
             {
                 // Als de gebruiker geen van de drie rollen heeft, filter dan de activiteiten die alleen voor leden zijn
                 activitiesQuery = activitiesQuery.Where(a => !a.OnlyMembers);
             }
 
-            /*
-            activitiesQuery = activitiesQuery.Where(a =>
-                // Activiteit is alleen voor leden als de einddatum nog niet is verstreken en alleen leden mogen kijken
-                (a.MembersPreRegistration && currentTime < (a.MembersOnlyVisibilityEnd ?? DateTime.MaxValue) &&
-                 (isMember || isStaff || isAdmin))
-                ||
-                // Activiteit wordt openbaar na de einddatum of als MembersPreRegistration uit staat
-                (!a.MembersPreRegistration || (a.MembersOnlyVisibilityEnd.HasValue && currentTime >= a.MembersOnlyVisibilityEnd.Value))
-            );*/
-
-            
+            if (!isMember)
+            {
+                // Voor niet-leden filteren we activiteiten die alleen voor members zichtbaar zijn
+                activitiesQuery = activitiesQuery.Where(a =>
+                    (!a.MembersPreRegistration ||
+                     (a.MembersOnlyVisibilityEnd.HasValue && currentTime >= a.MembersOnlyVisibilityEnd.Value)));
+            }
 
 
             // Haal de gefilterde activiteiten op en sorteer op datum
@@ -72,9 +68,7 @@ namespace VictuZ_Lars.Controllers
                 Activity = a,
                 IsUserRegistered = userRegistrations.Contains(a.ActivityId),
                 AvailableForMembers = CalculateAvailableForMembers(a),
-                AvailableForNonMembers = CalculateAvailableForNonMembers(a),
-                CanRegisterAsMember = isMember && a.MembersOnlyCapacity.HasValue && CalculateAvailableForMembers(a) > 0,
-                CanRegisterAsNonMember = !isMember && CalculateAvailableForNonMembers(a) > 0
+                AvailableForNonMembers = CalculateAvailableForNonMembers(a)
             }).ToList();
 
             return View(viewModel);

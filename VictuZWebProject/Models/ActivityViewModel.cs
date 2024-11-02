@@ -8,8 +8,7 @@ namespace VictuZWebProject.Models
         public bool IsUserRegistered { get; set; }  // Indicates if the current user is registered for the activity
         public int AvailableForMembers { get; set; }
         public int AvailableForNonMembers { get; set; }
-        public bool CanRegisterAsMember { get; set; }
-        public bool CanRegisterAsNonMember { get; set; }
+
     }
 
 
