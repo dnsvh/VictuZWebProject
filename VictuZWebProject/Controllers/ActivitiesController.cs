@@ -35,12 +35,14 @@ namespace VictuZ_Lars.Controllers
             // Haal de activiteiten op en filter activiteiten met `OnlyMembers = true` voor niet-leden
             var activitiesQuery = _context.Activity.AsQueryable();
 
+            //OnlyMembers
             if (!isMember)
             {
                 // Als de gebruiker geen van de drie rollen heeft, filter dan de activiteiten die alleen voor leden zijn
                 activitiesQuery = activitiesQuery.Where(a => !a.OnlyMembers);
             }
 
+            //MembersOnlyVisibilityEnd
             if (!isMember)
             {
                 // Voor niet-leden filteren we activiteiten die alleen voor members zichtbaar zijn
@@ -233,7 +235,7 @@ namespace VictuZ_Lars.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ActivityId,Name,Body,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue,OnlyMembers,MembersOnlyVisibilityEnd,MembersPreRegistration,MembersOnlyCapacity")] Activity activity)
+        public async Task<IActionResult> Edit(int id, [Bind("ActivityId,Name,Body,Location,ImageUrl,MaxCapacity,DatePublished,DateDue,OnlyMembers,MembersOnlyVisibilityEnd,MembersPreRegistration,MembersOnlyCapacity")] Activity activity)
         {
             if (id != activity.ActivityId)
             {
@@ -244,7 +246,21 @@ namespace VictuZ_Lars.Controllers
             {
                 try
                 {
-                    _context.Update(activity);
+                    // Haal de bestaande activiteit op vanuit de database om `Registered` te behouden
+                    var existingActivity = await _context.Activity
+                        .AsNoTracking()  // Voorkom tracking om bestaande waardes op te halen
+                        .FirstOrDefaultAsync(a => a.ActivityId == id);
+
+                    if (existingActivity == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Behoud de bestaande waarde van `Registered`
+                    activity.Registered = existingActivity.Registered;
+
+                    // Update de activiteit zonder `Registered` te resetten
+                    _context.Entry(activity).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -260,8 +276,10 @@ namespace VictuZ_Lars.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(activity);
         }
+
 
         // GET: Activities/Delete/5
         [Authorize]
