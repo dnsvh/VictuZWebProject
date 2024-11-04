@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VictuZWebProject.Models;
 using VictuZ_Lars.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VictuZWebProject.Controllers
 {
@@ -36,7 +37,14 @@ namespace VictuZWebProject.Controllers
         // GET: Stores
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Store.ToListAsync());
+
+
+            // Haal de activiteiten op en filter activiteiten met `OnlyMembers = true` voor niet-leden
+            var storesQuery = _context.Store.AsQueryable();
+
+
+            var products = await storesQuery.ToListAsync();
+            return View(products);
         }
 
         // GET: Stores/Details/5
@@ -54,6 +62,12 @@ namespace VictuZWebProject.Controllers
                 return NotFound();
             }
 
+            // Controleer of de activiteit alleen zichtbaar is voor members
+            if (store.MemberPlusProduct && !(User.IsInRole("Member") || User.IsInRole("Admin") || User.IsInRole("Staff")))
+            {
+                return Forbid(); // Weiger toegang als de gebruiker geen "Member", "Admin", of "Staff" is
+            }
+
             return View(store);
         }
 
@@ -63,7 +77,8 @@ namespace VictuZWebProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Size,Price,ImageUrl,Category,Stock")] Store store)
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Size,Price,ImageUrl,Category,Stock,MemberPlusProduct")] Store store)
         {
             if (ModelState.IsValid)
             {
@@ -104,7 +119,8 @@ namespace VictuZWebProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Size,Price,ImageUrl,Category,Stock")] Store store)
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Size,Price,ImageUrl,Category,Stock,MemberPlusProduct")] Store store)
         {
             if (id != store.Id)
             {
@@ -155,6 +171,7 @@ namespace VictuZWebProject.Controllers
         // POST: Stores/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var store = await _context.Store.FindAsync(id);

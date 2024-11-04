@@ -199,7 +199,7 @@ namespace VictuZ_Lars.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Create([Bind("ActivityId,Name,Body,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue,OnlyMembers,MembersOnlyVisibilityEnd,MembersPreRegistration,MembersOnlyCapacity")] Activity activity)
         {
             if (ModelState.IsValid)
@@ -213,7 +213,7 @@ namespace VictuZ_Lars.Controllers
         }
 
         // GET: Activities/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -232,7 +232,7 @@ namespace VictuZ_Lars.Controllers
         // POST: Activities/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Admin,Staff")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ActivityId,Name,Body,Location,ImageUrl,MaxCapacity,DatePublished,DateDue,OnlyMembers,MembersOnlyVisibilityEnd,MembersPreRegistration,MembersOnlyCapacity")] Activity activity)
@@ -282,7 +282,7 @@ namespace VictuZ_Lars.Controllers
 
 
         // GET: Activities/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -301,7 +301,7 @@ namespace VictuZ_Lars.Controllers
         }
 
         // POST: Activities/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin,Staff")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

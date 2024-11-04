@@ -9,6 +9,7 @@ namespace VictuZWebProject.Models
         public int AvailableForMembers { get; set; }
         public int AvailableForNonMembers { get; set; }
 
+
     }
 
 

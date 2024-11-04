@@ -10,5 +10,7 @@
         public string ? ImageUrl { get; set; }
         public string Category { get; set; }
         public int Stock { get; set; }
+
+        public bool MemberPlusProduct { get; set; } = false;//Alleen members kunnen dit product kopen
     }
 }
