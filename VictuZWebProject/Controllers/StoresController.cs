@@ -13,10 +13,12 @@ namespace VictuZWebProject.Controllers
 {
     public class StoresController : Controller
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly VictuZ_Lars_Db _context;
 
-        public StoresController(VictuZ_Lars_Db context)
+        public StoresController(IWebHostEnvironment webHostEnvironment, VictuZ_Lars_Db context)
         {
+            _webHostEnvironment = webHostEnvironment;
             _context = context;
         }
 
@@ -82,6 +84,7 @@ namespace VictuZWebProject.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 _context.Add(store);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

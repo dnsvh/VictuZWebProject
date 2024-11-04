@@ -34,7 +34,8 @@
 @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
 {
     <p class="d-flex justify-content-center">
-        <a asp-action="Create" class="btn" style="background-color: #20c997; color: white;">Maak een nieuw product.</a>
+        <!--enctype="multipart/form-data" is toegevoegd om bestanden te kunnen uploaden-->
+        <a asp-action="Create" enctype="multipart/form-data" class="btn" style="background-color: #20c997; color: white;">Maak een nieuw product.</a>
     </p>
 }
 

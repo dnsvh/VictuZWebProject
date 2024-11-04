@@ -36,7 +36,7 @@
 @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
 {
     <p class="d-flex justify-content-center">
-        <a asp-action="Create" class="btn" style="background-color: #20c997; color: white;">Nieuwe activiteit</a>
+        <a asp-action="Create" enctype="multipart/form-data" class="btn" style="background-color: #20c997; color: white;">Nieuwe activiteit</a>
     </p>
 }
 

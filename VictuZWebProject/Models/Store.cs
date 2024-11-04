@@ -1,4 +1,6 @@
-﻿namespace VictuZWebProject.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace VictuZWebProject.Models
 {
     public class Store
     {
@@ -12,5 +14,6 @@
         public int Stock { get; set; }
 
         public bool MemberPlusProduct { get; set; } = false;//Alleen members kunnen dit product kopen
+
     }
 }
