@@ -36,7 +36,10 @@
                                 <dd class="col-sm-8">@Model.Stock</dd>
                             </dl>
                             <div class="d-flex justify-content-between mt-4">
-                                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+                                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+                                }
                                 <a asp-action="Index" class="btn btn-secondary">Back to List</a>
                             </div>
                         </div>

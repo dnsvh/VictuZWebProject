@@ -1,0 +1,35 @@
+﻿@model IEnumerable<VictuZWebProject.Models.Category>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="d-flex justify-content-center">Categories</h1>
+
+<p class="d-flex justify-content-center">
+    <a asp-action="Create" class="btn mx-1" style="background-color: #20c997; color: white;">Nieuwe categorie</a>
+    <a asp-controller="Stores" asp-action="Index" class="btn btn-secondary mx-1">Terug naar winkel</a>
+</p>
+
+<div class="list-group mx-5">
+    @foreach (var item in Model)
+    {
+        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+            <div class="d-flex align-items-center">
+
+                <!-- Content section -->
+                <div>
+                    <h5 class="mb-1">@item.Name</h5>
+                </div>
+            </div>
+
+            <!-- Right section with delete button -->
+            <div class="text-end">
+                <!-- Delete form -->
+                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-danger mt-1">Delete</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>

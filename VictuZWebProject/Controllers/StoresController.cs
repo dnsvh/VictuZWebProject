@@ -22,31 +22,36 @@ namespace VictuZWebProject.Controllers
             _context = context;
         }
 
-        public IActionResult Create()
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> Create()
         {
-            // Current Categories
-            var categories = new List<string> {"Clothing", "Stickers", "Miscellanious" };
-            ViewBag.CategoryList = categories.Select(c => new SelectListItem
-            {
-                Value = c,
-                Text = c
-            }).ToList();
+            ViewBag.CategoryList = await _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Name,
+                    Text = c.Name
+                }).ToListAsync();
 
             return View();
         }
 
 
+
         // GET: Stores
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
 
+            ViewData["CurrentFilter"] = searchString;
 
-            // Haal de activiteiten op en filter activiteiten met `OnlyMembers = true` voor niet-leden
-            var storesQuery = _context.Store.AsQueryable();
+            var stores = from s in _context.Store
+                         select s;
 
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                stores = stores.Where(s => s.Name.Contains(searchString) || s.Description.Contains(searchString));
+            }
 
-            var products = await storesQuery.ToListAsync();
-            return View(products);
+            return View(await stores.ToListAsync());
         }
 
         // GET: Stores/Details/5
@@ -75,8 +80,6 @@ namespace VictuZWebProject.Controllers
 
 
         // POST: Stores/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Staff")]
@@ -89,10 +92,17 @@ namespace VictuZWebProject.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.CategoryList = await _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Name,
+                    Text = c.Name
+                }).ToListAsync();
             return View(store);
         }
 
         // GET: Stores/Edit/5
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -106,13 +116,12 @@ namespace VictuZWebProject.Controllers
                 return NotFound();
             }
 
-            // Current Categories
-            var categories = new List<string> { "Clothing", "Stickers", "Miscellanious" };
-            ViewBag.CategoryList = categories.Select(c => new SelectListItem
-            {
-                Value = c,
-                Text = c
-            }).ToList();
+            ViewBag.CategoryList = await _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Name,
+                    Text = c.Name
+                }).ToListAsync();
 
             return View(store);
         }
@@ -150,10 +159,17 @@ namespace VictuZWebProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.CategoryList = await _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Name,
+                    Text = c.Name
+                }).ToListAsync();
             return View(store);
         }
 
         // GET: Stores/Delete/5
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -186,6 +202,28 @@ namespace VictuZWebProject.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> CreateCategory([Bind("Id,Name")] Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(category);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return PartialView("_CreateCategoryPartial", category);
+        }
+
+        [Authorize(Roles = "Admin,Staff")]
+        public IActionResult CreateCategoryForm()
+        {
+            return PartialView("_CreateCategoryPartial", new Category());
+        }
+
+
 
         private bool StoreExists(int id)
         {
