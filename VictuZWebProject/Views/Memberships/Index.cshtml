@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Index";
 }
-
 <section class="container py-5">
     <div class="text-center mb-5">
         <h2>Our Pricing Plans</h2>
@@ -11,40 +10,62 @@
     </div>
 
     <div class="row justify-content-center">
-        <!-- Basic Plan -->
+        <!-- Basic Plan (VictuZ Gast) -->
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm h-100">
                 <div class="card-header text-center text-white" style="background-color: #808080">
-                    <h4>Basic Plan</h4>
+                    <h4>VictuZ Gast</h4>
                 </div>
-                <div class="card-body text-center">
+                <div class="card-body text-center d-flex flex-column">
                     <h2 class="card-title">Gratis</h2>
-                    <ul class="list-unstyled my-4">
-                        <li>Geen extra features</li>
-                    </ul>
-                    <a href="#" class="btn" style="background-color: #808080; color: white;">Kies lidmaatschap</a>
+                    <p class="text-muted"></p>
+                    <div class="d-flex justify-content-center">
+                        <ul class="list-unstyled my-4 text-start">
+                            <li>✓ Activiteiten bijwonen</li>
+                            <li>✓ Suggesties maken</li>
+                        </ul>
+                    </div>
+                    <!-- Button to assign Visitor role -->
+                    <form method="post" asp-action="AssignVisitorRole" asp-controller="Memberships">
+                        <button type="submit" class="btn mt-auto" style="background-color: #808080; color: white;">
+                            Kies lidmaatschap
+                        </button>
+                    </form>
+
                 </div>
             </div>
         </div>
 
-        <!-- Standard Plan -->
+        <!-- Paid Plan (VictuZ+ Lidmaatschap) -->
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm h-100">
                 <div class="card-header text-center text-white" style="background-color: #20c997">
-                    <h4>Lidmaatschap</h4>
+                    <h4>VictuZ+ Lidmaatschap</h4>
                 </div>
-                <div class="card-body text-center">
+                <div class="card-body text-center d-flex flex-column">
                     <h2 class="card-title">€ 19.99</h2>
                     <p class="text-muted">per jaar</p>
-                    <ul class="list-unstyled my-4">
-                        <li>Eerder inschrijven voor activiteiten</li>
-                        <li>Toegang tot de shop</li>
-                        <li>Lol</li>
-                    </ul>
-                    <a href="#" class="btn" style="background-color: #20c997; color: white;">Kies lidmaatschap</a>
+                    <div class="d-flex justify-content-center">
+                        <ul class="list-unstyled my-4 text-start">
+                            <li>✓ Alles van VictuZ Gast</li>
+                            <li>✓ Eerder inschrijven voor activiteiten</li>
+                            <li>✓ Toegang tot de shop</li>
+                            <li>✓ Lol</li>
+                        </ul>
+                    </div>
+                    <form method="post" asp-action="AssignMemberRole" asp-controller="Memberships">
+                        <button type="submit" class="btn mt-auto" style="background-color: #20c997; color: white;">
+                            Kies lidmaatschap
+                        </button>
+                    </form>
+
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+
+
+
 

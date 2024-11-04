@@ -6,7 +6,7 @@ namespace VictuZWebProject.Models
     {
         [Key]
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public int MembershipId { get; set; }
+        public string UserId { get; set; }
+        public string MembershipId { get; set; }
     }
 }
