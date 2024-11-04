@@ -12,7 +12,6 @@ namespace VictuZ_Lars.Data
         public DbSet<Suggestion> Suggestion { get; set; }
         public DbSet<SuggestionLike> SuggestionLike { get; set; }
         public DbSet<Memberships> Memberships { get; set; }
-        public DbSet<ActivityViewModel> ActivityViewModel { get; set; }
         public DbSet<Store> Store { get; set; }
         public DbSet<Category> Categories { get; set; } // Add this line
 
