@@ -7,11 +7,41 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/VictuZWebProject.styles.css" asp-append-version="true" />
-</head>
+    <style>
+        /* Sidebar styles */
+        #sidebar {
+            min-height: 100vh;
+            background-color: #343a40;
+            color: white;
+            padding-top: 1rem;
+            transition: width 0.3s;
+        }
 
-<style>
-    
-</style>
+            #sidebar.collapsed {
+                width: 80px;
+            }
+
+            #sidebar ul li a {
+                color: #adb5bd;
+                text-decoration: none;
+                padding: 0.75rem 1rem;
+                display: block;
+            }
+
+                #sidebar ul li a:hover {
+                    background-color: #495057;
+                    color: white;
+                }
+
+        .sidebar-toggle {
+            cursor: pointer;
+            color: white;
+            text-align: center;
+            padding: 0.75rem;
+            display: block;
+        }
+    </style>
+</head>
 
 <body>
     <header>
@@ -38,18 +68,48 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Stores" asp-action="Index">Winkel</a>
                         </li>
-
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
-
     </header>
-    <div class="layout">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <!-- Sidebar (only for admin pages) -->
+            @if (ViewContext.RouteData.Values["controller"]?.ToString().Equals("Admin", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
+                    <div class="sidebar-sticky">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Dashboard", "Admin")">
+                                    <i class="bi bi-speedometer2"></i> Gebruikers rollen
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Users", "Admin")">
+                                    <i class="bi bi-people"></i> Aanvragen
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Settings", "Admin")">
+                                    <i class="bi bi-gear"></i> Lorem Ipsum
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            }
+
+            <!-- Main Content -->
+            <main role="main" class="col">
+                <div class="pb-3">
+                    @RenderBody()
+                </div>
+            </main>
+        </div>
     </div>
 
     <footer class="border-top footer text-muted">
@@ -58,10 +118,15 @@
         </div>
     </footer>
 
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+    </script>
 </body>
 </html>
