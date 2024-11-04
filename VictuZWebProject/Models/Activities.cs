@@ -1,4 +1,6 @@
-﻿namespace VictuZ_Lars.Models
+﻿using VictuZWebProject.Areas.Identity.Data;
+
+namespace VictuZ_Lars.Models
 {
     public class Activity
     {
@@ -13,30 +15,16 @@
         public DateTime DatePublished { get; set; }
         public DateTime DateDue { get; set; }
 
-        public void CreateActivity()
-        {
+        public bool OnlyMembers { get; set; } = false;//Alleen members kunnen zich aanmelden
 
-        }
+        //Members plekken reserveren binnen een activiteit
+        public bool MembersPreRegistration { get; set; } = false;//Plekken voor members reserveren
+        //Kan zijn dat members zich eerder kunnen aanmelden
+        public DateTime? MembersOnlyVisibilityEnd { get; set; }// Tijd eindigt voor members only
 
-        public void ReadActivity()
-        {
+        public bool MembersPriorityCapacity { get; set; } = false;
+        public int? MembersOnlyCapacity { get; set; }//Hoeveel plekken er voor members zijn gereserveerd
 
-        }
-
-        public void UpdateActivity()
-        {
-
-        }
-
-        public void DeleteActivity()
-        {
-
-        }
-
-        public void LogIn()
-        {
-
-        }
 
     }
 }

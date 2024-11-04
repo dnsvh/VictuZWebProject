@@ -33,7 +33,7 @@ namespace VictuZWebProject
                 NumberFormat = {
                     CurrencyDecimalSeparator = ".",
                     NumberDecimalSeparator = "."
-    }
+                 }
             };
 
             // Standaard cultuur instellen voor de hele applicatie

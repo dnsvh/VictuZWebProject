@@ -4,6 +4,27 @@
     ViewData["Title"] = "Create";
 }
 
+<style>
+    /* Standaard beide velden verbergen */
+    #VisibilityFields {
+        display: none;
+    }
+
+    #MembersOnlyCapacityField {
+        display: none;
+    }
+
+    /* Toon het veld VisibilityFields als OnlyMembers is aangevinkt */
+    #OnlyMembersCheckbox:checked ~ #MembersOnlyVisibilityEndField {
+        display: block;
+    }
+
+    /* Toon het veld MembersOnlyCapacity als MembersPreRegistration is aangevinkt */
+    #MembersPreRegistrationCheckbox:checked ~ #MembersOnlyCapacityField {
+        display: block;
+    }
+</style>
+
 <div class="container d-flex justify-content-center mt-5">
     <div class="col-lg-6 col-md-8 col-sm-10">
         <div class="card shadow-sm">
@@ -54,6 +75,36 @@
                         <span asp-validation-for="DateDue" class="text-danger"></span>
                     </div>
 
+                    <div class="form-check">
+                        <input asp-for="OnlyMembers" type="checkbox" id="OnlyMembersCheckbox" class="form-check-input" />
+                        <label asp-for="OnlyMembers" class="form-check-label">Only Members</label>
+                    </div>
+              
+                    <div class="form-check">
+                        <input asp-for="MembersPreRegistration" type="checkbox" id="MembersPreRegistrationCheckbox" class="form-check-input" />
+                        <label asp-for="MembersPreRegistration" class="form-check-label">Members Pre-Registration</label>
+                    </div>
+
+                    <!-- Alleen zichtbaar wanneer OnlyMembers is aangevinkt -->
+                    <div class="form-group" id="MembersOnlyVisibilityEndField" style="display: none;">
+                        <label asp-for="MembersOnlyVisibilityEnd">Members Only Visibility End</label>
+                        <input asp-for="MembersOnlyVisibilityEnd" class="form-control" type="datetime-local" />
+                    </div>  
+
+                    <div class="form-check">
+                        <input asp-for="MembersPriorityCapacity" type="checkbox" id="MembersPriorityCapacityCheckbox" class="form-check-input" />
+                        <label asp-for="MembersPriorityCapacity" class="form-check-label">Members Priority Capacity</label>
+                    </div>
+
+                    <!-- Alleen zichtbaar wanneer MembersPriorityCapacity is aangevinkt -->
+                    <div class="form-group" id="MembersOnlyCapacityField" style="display: none;">
+                        <label asp-for="MembersOnlyCapacity">Members Only Capacity</label>
+                        <input asp-for="MembersOnlyCapacity" class="form-control" type="number" />
+                    </div>
+
+
+                    <p></p>
+
                     <button type="submit" class="btn w-100" style="background-color: #5ac6aa; color: white;">Maak activiteit</button>
                     <a asp-action="Index" class="btn btn-secondary w-100 mt-2">Annuleer</a>
                 </form>
@@ -62,8 +113,42 @@
     </div>
 </div>
 
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+       <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Verwijs naar de checkboxes en velden
+            const onlyMembersCheckbox = document.getElementById("OnlyMembersCheckbox");
+            const membersPreRegistrationCheckbox = document.getElementById("MembersPreRegistrationCheckbox");
+            const membersPriorityCapacityCheckbox = document.getElementById("MembersPriorityCapacityCheckbox");
+        
+            const visibilityEndField = document.getElementById("MembersOnlyVisibilityEndField");
+            const membersOnlyCapacityField = document.getElementById("MembersOnlyCapacityField");
+
+            // Functie om de zichtbaarheid van velden te wisselen op basis van de checkbox-status
+            function toggleFields() {
+                console.log("ToggleFields called"); // Voor debuggen
+                console.log("OnlyMembers checked:", onlyMembersCheckbox.checked);
+            
+                // Zet visibilityEndField zichtbaar als OnlyMembersCheckbox is aangevinkt
+                visibilityEndField.style.display = membersPreRegistrationCheckbox.checked ? "block" : "none";
+            
+                // Zet membersOnlyCapacityField zichtbaar als MembersPriorityCapacityCheckbox is aangevinkt
+                membersOnlyCapacityField.style.display = membersPriorityCapacityCheckbox.checked ? "block" : "none";
+            }
+
+            // Initialiseer zichtbaarheid van velden bij pagina laden
+            toggleFields();
+
+            // Event listeners voor verandering van de checkboxes
+            onlyMembersCheckbox.addEventListener("change", toggleFields);
+            membersPreRegistrationCheckbox.addEventListener("change", toggleFields);
+            membersPriorityCapacityCheckbox.addEventListener("change", toggleFields);
+        });
+    </script>
+
 }

@@ -63,6 +63,11 @@
                         <button type="submit" class="btn btn-primary w-45">Opslaan</button>
                         <a asp-action="Index" class="btn btn-secondary w-45">Annuleer</a>
                     </div>
+
+                    <div class="form-check">
+                        <input asp-for="MemberPlusProduct" type="checkbox" id="MemberPlusProductCheckbox" class="form-check-input" />
+                        <label asp-for="MemberPlusProduct" class="form-check-label">MemberPlusProduct</label>
+                    </div>
                 </form>
             </div>
         </div>
@@ -73,4 +78,24 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Verwijs naar de checkboxes en velden
+            const memberPlusProductCheckbox = document.getElementById("MemberPlusProductCheckbox");
+
+            // Functie om de zichtbaarheid van velden te wisselen op basis van de checkbox-status
+            function toggleFields() {
+                console.log("ToggleFields called"); // Voor debuggen
+                console.log("OnlyMembers checked:", memberPlusProductCheckbox.checked);
+
+            }
+
+            // Initialiseer zichtbaarheid van velden bij pagina laden
+            toggleFields();
+
+            // Event listeners voor verandering van de checkboxes
+            memberPlusProductCheckbox.addEventListener("change", toggleFields);
+        });
+    </script>
 }

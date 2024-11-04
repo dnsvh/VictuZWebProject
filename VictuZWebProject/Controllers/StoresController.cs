@@ -13,10 +13,12 @@ namespace VictuZWebProject.Controllers
 {
     public class StoresController : Controller
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly VictuZ_Lars_Db _context;
 
-        public StoresController(VictuZ_Lars_Db context)
+        public StoresController(IWebHostEnvironment webHostEnvironment, VictuZ_Lars_Db context)
         {
+            _webHostEnvironment = webHostEnvironment;
             _context = context;
         }
 
@@ -38,6 +40,7 @@ namespace VictuZWebProject.Controllers
         // GET: Stores
         public async Task<IActionResult> Index(string searchString)
         {
+
             ViewData["CurrentFilter"] = searchString;
 
             var stores = from s in _context.Store
@@ -66,6 +69,12 @@ namespace VictuZWebProject.Controllers
                 return NotFound();
             }
 
+            // Controleer of de activiteit alleen zichtbaar is voor members
+            if (store.MemberPlusProduct && !(User.IsInRole("Member") || User.IsInRole("Admin") || User.IsInRole("Staff")))
+            {
+                return Forbid(); // Weiger toegang als de gebruiker geen "Member", "Admin", of "Staff" is
+            }
+
             return View(store);
         }
 
@@ -74,10 +83,11 @@ namespace VictuZWebProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Size,Price,ImageUrl,Category,Stock")] Store store)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Size,Price,ImageUrl,Category,Stock,MemberPlusProduct")] Store store)
         {
             if (ModelState.IsValid)
             {
+
                 _context.Add(store);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -122,7 +132,7 @@ namespace VictuZWebProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Size,Price,ImageUrl,Category,Stock")] Store store)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Size,Price,ImageUrl,Category,Stock,MemberPlusProduct")] Store store)
         {
             if (id != store.Id)
             {
