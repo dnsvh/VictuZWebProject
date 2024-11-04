@@ -7,8 +7,10 @@
 <h1 class="d-flex justify-content-center">Categories</h1>
 
 <p class="d-flex justify-content-center">
-    <a asp-action="Create" class="btn" style="background-color: #20c997; color: white;">Create New</a>
+    <a asp-action="Create" class="btn" style="background-color: #20c997; color: white;">Nieuwe categorie</a>
+    <a asp-controller="Stores" asp-action="Index" class="btn btn-secondary">Terug naar winkel</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -26,8 +28,8 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-light" style="background-color: #20c997; color: white; margin-right: 5px;">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-light" style="background-color: #dc3545; color: white;">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-light" style="background-color: #20c997; color: white; margin-right: 5px;">Bewerken</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-light" style="background-color: #dc3545; color: white;">Verwijderen</a>
                 </td>
             </tr>
         }
