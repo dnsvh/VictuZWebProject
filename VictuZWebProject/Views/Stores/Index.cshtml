@@ -8,11 +8,12 @@
 <h5 class="d-flex justify-content-center">Verkrijg hier je merchandise!</h5>
 
 <div class="d-flex justify-content-center mb-4">
-    <form asp-action="Index" method="get" class="form-inline">
-        <input type="text" name="searchString" class="form-control mr-sm-2" placeholder="Zoek producten..." value="@ViewData["CurrentFilter"]" />
-        <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Zoeken</button>
+    <form asp-action="Index" method="get" class="form-inline d-flex">
+        <input type="text" name="searchString" class="form-control mr-2" placeholder="Zoek producten..." value="@ViewData["CurrentFilter"]" />
+        <button type="submit" class="btn btn-outline-success">Zoeken</button>
     </form>
 </div>
+
 
 @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
 {
