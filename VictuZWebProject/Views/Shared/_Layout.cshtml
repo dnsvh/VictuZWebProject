@@ -6,42 +6,110 @@
     <title>@ViewData["Title"] - VictuZWebProject</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/VictuZWebProject.styles.css" asp-append-version="true" />
-    <style>
-        /* Sidebar styles */
-        #sidebar {
-            min-height: 100vh;
-            background-color: #343a40;
-            color: white;
-            padding-top: 1rem;
-            transition: width 0.3s;
-        }
-
-            #sidebar.collapsed {
-                width: 80px;
-            }
-
-            #sidebar ul li a {
-                color: #adb5bd;
-                text-decoration: none;
-                padding: 0.75rem 1rem;
-                display: block;
-            }
-
-                #sidebar ul li a:hover {
-                    background-color: #495057;
-                    color: white;
-                }
-
-        .sidebar-toggle {
-            cursor: pointer;
-            color: white;
-            text-align: center;
-            padding: 0.75rem;
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" />
 </head>
+
+<style>
+
+    body, html {
+        height: 100%;
+        margin: 0;
+    }
+
+
+    .navbar {
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .navbar-nav .nav-link {
+        color: #cccccc;
+        position: relative;
+        transition: color 0.3s ease;
+    }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: #00c2c2;
+        }
+
+        .navbar-nav .nav-link::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 3px;
+            background-color: #00c2c2;
+            bottom: -5px;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+
+        .navbar-nav .nav-link.active::after,
+        .navbar-nav .nav-link:hover::after {
+            width: 100%;
+        }
+
+
+    .layout {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; 
+    }
+
+    main {
+        flex: 1; 
+        padding-bottom: 3rem; 
+    }
+
+
+    .footer {
+        background-color: #2c2f33;
+        color: #aaaaaa;
+        padding: 1.5rem 0;
+        font-size: 0.9rem;
+        text-align: center;
+        margin-top: auto; 
+    }
+
+        .footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem; 
+        }
+
+    .footer-section {
+        flex: 1;
+        padding: 0 10px;
+        min-width: 180px;
+        margin: 0 10px; */
+    }
+
+    .footer .section-title {
+        font-weight: bold;
+        font-size: 1rem;
+        color: #ffffff;
+        margin-bottom: 0.5rem;
+    }
+
+    .footer .footer-content a {
+        color: #00c2c2;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+        .footer .footer-content a:hover {
+            color: #ffffff;
+        }
+
+    .footer-bottom {
+        border-top: 1px solid #444;
+        padding-top: 0.5rem; 
+        font-size: 0.8rem;
+        color: #777;
+    }
+</style>
 
 <body>
     <header>
@@ -75,58 +143,59 @@
         </nav>
     </header>
 
-    <div class="container-fluid">
-        <div class="row flex-nowrap">
-            <!-- Sidebar (only for admin pages) -->
-            @if (ViewContext.RouteData.Values["controller"]?.ToString().Equals("Admin", StringComparison.OrdinalIgnoreCase) == true)
-            {
-                <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
-                    <div class="sidebar-sticky">
-                        <ul class="nav flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Dashboard", "Admin")">
-                                    <i class="bi bi-speedometer2"></i> Gebruikers rollen
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Users", "Admin")">
-                                    <i class="bi bi-people"></i> Aanvragen
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Settings", "Admin")">
-                                    <i class="bi bi-gear"></i> Lorem Ipsum
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            }
+    <div class="layout">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
 
-            <!-- Main Content -->
-            <main role="main" class="col">
-                <div class="pb-3">
-                    @RenderBody()
+        <!-- Footer -->
+        <footer class="footer border-top">
+            <div class="container">
+                <div class="footer-content">
+                    <!-- Left Section: Address -->
+                    <div class="footer-section">
+                        <div class="section-title">Adres</div>
+                        Zuyd Hogeschool<br>
+                        Nieuw Eyckholt, 300<br>
+                        Heerlen
+                    </div>
+
+                    <!-- Middle Section: Contact Information -->
+                    <div class="footer-section">
+                        <div class="section-title">Contact</div>
+                        <a href="mailto:info@victuz.com">vergeetemailniet@gmail.com</a><br>
+                        +1 (555) 012-3456
+                    </div>
+
+                    <!-- Right: Social Media Links -->
+                    <div class="footer-section">
+                        <div class="section-title">Volg ons</div>
+                        <a href="#" aria-label="Volg ons op Facebook">
+                            <i class="bi bi-facebook"></i> Facebook
+                        </a><br>
+                        <a href="#" aria-label="Volg ons op Twitter">
+                            <i class="bi bi-twitter"></i> Twitter
+                        </a><br>
+                        <a href="#" aria-label="Volg ons op Instagram">
+                            <i class="bi bi-instagram"></i> Instagram
+                        </a>
+                    </div>
                 </div>
-            </main>
-        </div>
+                <div class="footer-bottom">
+                    &copy; 2024 VictuZWebProject - All Rights Reserved
+                </div>
+            </div>
+        </footer>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="footer-content">
-            &copy; 2024 - VictuZWebProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
-    <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-        }
-    </script>
 </body>
 </html>
+
+
+
+
