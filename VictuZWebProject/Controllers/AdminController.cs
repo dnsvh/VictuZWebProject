@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using VictuZWebProject.Areas.Identity.Data;
 using VictuZWebProject.Models;
@@ -19,6 +20,8 @@ namespace VictuZWebProject.Controllers
             _roleManager = roleManager;
         }
 
+
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Index(string searchString)
         {
             var usersWithRoles = await GetUsersWithRoles(searchString);
@@ -31,6 +34,7 @@ namespace VictuZWebProject.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> EditRole(string userId, string newRole)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -46,6 +50,7 @@ namespace VictuZWebProject.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin,Staff")]
         private async Task<List<UserRoleViewModel>> GetUsersWithRoles(string searchString)
         {
             var users = _userManager.Users;
