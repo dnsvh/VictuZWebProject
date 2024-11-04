@@ -406,5 +406,12 @@ namespace VictuZ_Lars.Controllers
             return RedirectToAction("Index", "Activities");
         }
 
+
+
+
+
+
+
+
     }
 }

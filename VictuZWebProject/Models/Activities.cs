@@ -1,4 +1,6 @@
-﻿namespace VictuZ_Lars.Models
+﻿using VictuZWebProject.Areas.Identity.Data;
+
+namespace VictuZ_Lars.Models
 {
     public class Activity
     {
