@@ -36,9 +36,19 @@ namespace VictuZWebProject.Controllers
 
 
         // GET: Stores
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Store.ToListAsync());
+            ViewData["CurrentFilter"] = searchString;
+
+            var stores = from s in _context.Store
+                         select s;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                stores = stores.Where(s => s.Name.Contains(searchString) || s.Description.Contains(searchString));
+            }
+
+            return View(await stores.ToListAsync());
         }
 
         // GET: Stores/Details/5
@@ -202,6 +212,8 @@ namespace VictuZWebProject.Controllers
         {
             return PartialView("_CreateCategoryPartial", new Category());
         }
+
+
 
         private bool StoreExists(int id)
         {

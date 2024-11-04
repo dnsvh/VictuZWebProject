@@ -7,29 +7,29 @@
 <h1 class="d-flex justify-content-center">Categories</h1>
 
 <p class="d-flex justify-content-center">
-    <a asp-action="Create" class="btn" style="background-color: #20c997; color: white;">Create New</a>
+    <a asp-action="Create" class="btn mx-1" style="background-color: #20c997; color: white;">Nieuwe categorie</a>
+    <a asp-controller="Stores" asp-action="Index" class="btn btn-secondary mx-1">Terug naar winkel</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-light" style="background-color: #20c997; color: white; margin-right: 5px;">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-light" style="background-color: #dc3545; color: white;">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+<div class="list-group mx-5">
+    @foreach (var item in Model)
+    {
+        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+            <div class="d-flex align-items-center">
+
+                <!-- Content section -->
+                <div>
+                    <h5 class="mb-1">@item.Name</h5>
+                </div>
+            </div>
+
+            <!-- Right section with delete button -->
+            <div class="text-end">
+                <!-- Delete form -->
+                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-danger mt-1">Delete</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
