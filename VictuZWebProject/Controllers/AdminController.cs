@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using VictuZWebProject.Areas.Identity.Data;
+using VictuZWebProject.Models;
+using VictuZWebProject.Pages.Identity;
 using static VictuZWebProject.Pages.Identity.ManageUserRolesModel;
+using UserRoleViewModel = VictuZWebProject.Models.UserRoleViewModel;
 
 namespace VictuZWebProject.Controllers
 {
@@ -19,6 +22,7 @@ namespace VictuZWebProject.Controllers
         public async Task<IActionResult> Index(string searchString)
         {
             var usersWithRoles = await GetUsersWithRoles(searchString);
+
             var model = new AdminUserRolesViewModel
             {
                 SearchString = searchString,
@@ -43,20 +47,21 @@ namespace VictuZWebProject.Controllers
             return RedirectToAction("Index");
         }
 
-        private async Task<List<UserRoleViewModel>> GetUsersWithRoles(string searchString)
+        private async Task<List<ManageUserRolesModel.UserRoleViewModel>> GetUsersWithRoles(string searchString)
         {
             var users = _userManager.Users;
+
             if (!string.IsNullOrEmpty(searchString))
             {
                 users = users.Where(u => u.Email.Contains(searchString));
             }
 
-            var userRoles = new List<UserRoleViewModel>();
+            var userRoles = new List<ManageUserRolesModel.UserRoleViewModel>();
 
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                userRoles.Add(new UserRoleViewModel
+                userRoles.Add(new ManageUserRolesModel.UserRoleViewModel
                 {
                     User = user,
                     Roles = roles
@@ -67,4 +72,5 @@ namespace VictuZWebProject.Controllers
         }
     }
 
-}
+
+    }
