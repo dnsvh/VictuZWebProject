@@ -10,12 +10,10 @@
 </head>
 
 <style>
-
     body, html {
         height: 100%;
         margin: 0;
     }
-
 
     .navbar {
         font-size: 1.1rem;
@@ -49,18 +47,53 @@
             width: 100%;
         }
 
-
     .layout {
         display: flex;
         flex-direction: column;
-        min-height: 100vh; 
+        min-height: 100vh;
+    }
+
+    .content-wrapper {
+        display: flex;
+        flex-grow: 1;
+    }
+
+    #sidebar {
+        min-width: 250px;
+        max-width: 250px;
+        background-color: #343a40;
+        color: white;
+        padding-top: 1rem;
+        transition: width 0.3s;
+    }
+
+        #sidebar.collapsed {
+            width: 80px;
+        }
+
+        #sidebar ul li a {
+            color: #adb5bd;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            display: block;
+        }
+
+            #sidebar ul li a:hover {
+                background-color: #495057;
+                color: white;
+            }
+
+    .sidebar-toggle {
+        cursor: pointer;
+        color: white;
+        text-align: center;
+        padding: 0.75rem;
+        display: block;
     }
 
     main {
-        flex: 1; 
-        padding-bottom: 3rem; 
+        flex: 1;
     }
-
 
     .footer {
         background-color: #2c2f33;
@@ -68,7 +101,6 @@
         padding: 1.5rem 0;
         font-size: 0.9rem;
         text-align: center;
-        margin-top: auto; 
     }
 
         .footer .footer-content {
@@ -76,14 +108,13 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 1rem; 
+            margin-bottom: 1rem;
         }
 
     .footer-section {
         flex: 1;
         padding: 0 10px;
         min-width: 180px;
-        margin: 0 10px; */
     }
 
     .footer .section-title {
@@ -105,7 +136,7 @@
 
     .footer-bottom {
         border-top: 1px solid #444;
-        padding-top: 0.5rem; 
+        padding-top: 0.5rem;
         font-size: 0.8rem;
         color: #777;
     }
@@ -113,7 +144,7 @@
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow sticky-top">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/images/VictuZLogoSmall.png" alt="VictuZ Logo" style="height: 40px;" />
@@ -144,9 +175,38 @@
     </header>
 
     <div class="layout">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        <div class="content-wrapper">
+            <!-- Sidebar (only for admin pages) -->
+            @if (ViewContext.RouteData.Values["controller"]?.ToString().Equals("Admin", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                <nav id="sidebar">
+                    <div class="sidebar-sticky">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "Admin")">
+                                    <i class="bi bi-people"></i> Gebruikersrollen
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Users", "Admin")">
+                                    <i class="bi bi-person-check"></i> Accounts in behandeling
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Settings", "Admin")">
+                                    <i class="bi bi-gear"></i> Settings
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            }
+
+            <!-- Main Content -->
+            <main role="main">
+                @RenderBody()
+            </main>
+        </div>
 
         <!-- Footer -->
         <footer class="footer border-top">
@@ -195,7 +255,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
-
-
-
