@@ -2,6 +2,18 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+
+<style>
+    /* General hover effect for both the top card and activity cards */
+    .hover-card, .activity-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-card:hover, .activity-card:hover {
+            transform: scale(1.05); /* Slightly enlarges the card */
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Adds shadow on hover */
+        }
+</style>
 <!-- Header-->
 <header class="bg-dark py-5" style="margin-top: 0; padding-top: 0;">
     <div class="container px-5">
@@ -17,8 +29,8 @@
 
             <!-- Right side: Next Upcoming Activity -->
             <div class="col-lg-6 mt-5 mt-lg-0">
-                <div class="card shadow-sm p-4 h-100">
-                    <h4 class="text-center">Volgende Activiteit</h4>
+                    <div class="card shadow-sm p-4 h-100 hover-card">
+                        <h4 class="text-center">Volgende Activiteit</h4>
                     <div class="card-body">
                         <h5 class="card-title">@Model.FirstOrDefault()?.Activity.Name</h5>
                         <p class="card-text">@Model.FirstOrDefault()?.Activity.Body"</p>
