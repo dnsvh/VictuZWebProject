@@ -63,14 +63,7 @@
                                     <span class="text-muted">Geen afbeelding beschikbaar</span>
                                 </div>
                             }
-                          
-                            <div class="d-flex justify-content-between mb-3">
-                                <small class="text-muted">Host: @Html.DisplayFor(modelItem => item.Activity.Host)</small>
-                            </div>
-
-                            <div class="d-flex justify-content-between mb-3">
-                                <small class="text-muted">Locatie: @Html.DisplayFor(modelItem => item.Activity.Location)</small>
-                            </div>
+                         
 
                             <div class="card-body d-flex flex-column">
 
@@ -99,6 +92,10 @@
                                 <div class="d-flex justify-content-between mb-3">
                                     <small class="text-muted">Locatie: @Html.DisplayFor(modelItem => item.Activity.Location)</small>
                                 </div>
+                                
+                                <div class="d-flex justify-content-between mb-3">
+                                    <small class="text-muted">Host: @Html.DisplayFor(modelItem => item.Activity.Organizer)</small>
+                                </div>
 
                                 <div class="d-flex justify-content-between">
                                     <small class="text-muted">Datum: @item.Activity.DateDue.ToString("MMMM dd, h:mm tt")</small>
@@ -115,7 +112,7 @@
                                     @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
                                     {
                                         <div class="d-flex justify-content-end">
-                                            <a asp-action="RegisteredUsers" asp-route-id="@item.Activity.ActivityId" class="btn btn-light me-2">Bekijk Geregistreerde Gebruikers</a>
+                                            <a asp-action="RegisteredUsers" asp-route-id="@item.Activity.ActivityId" class="btn btn-light me-2">Bekijk inschrijvingen</a>
                                         </div>
                                     }
 
@@ -123,7 +120,7 @@
                                     {
                                        
                                         <form asp-action="Register" asp-route-id="@item.Activity.ActivityId" method="post" style="display:inline;">
-                                            <button type="submit" class="btn btn-danger">Delete Registration</button>
+                                            <button type="submit" class="btn btn-danger">Uitschrijven</button>
                                         </form>
                                     }
                                     else if (item.Activity.Registered >= item.Activity.MaxCapacity)
@@ -132,7 +129,7 @@
                                     }
                                     else if (!User.Identity.IsAuthenticated)
                                     {
-                                        <a class="btn btn-secondary disabled" aria-disabled="true">Login om in te schrijven</a>
+                                        <a class="btn btn-secondary disabled" aria-disabled="true">Log in om in te schrijven</a>
                                     }
                                     else
                                     {
