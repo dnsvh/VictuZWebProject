@@ -200,7 +200,7 @@ namespace VictuZ_Lars.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> Create([Bind("ActivityId,Name,Body,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue,OnlyMembers,MembersOnlyVisibilityEnd,MembersPreRegistration,MembersOnlyCapacity")] Activity activity)
+        public async Task<IActionResult> Create([Bind("ActivityId,Name,Body,Organizer,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue,OnlyMembers,MembersOnlyVisibilityEnd,MembersPreRegistration,MembersOnlyCapacity")] Activity activity)
         {
             if (ModelState.IsValid)
             {
