@@ -12,8 +12,8 @@ using VictuZ_Lars.Data;
 namespace VictuZWebProject.Migrations
 {
     [DbContext(typeof(VictuZ_Lars_Db))]
-    [Migration("20241103185905_AddMemberProductStore")]
-    partial class AddMemberProductStore
+    [Migration("20241106093359_DatabaseReworkFix3")]
+    partial class DatabaseReworkFix3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,23 @@ namespace VictuZWebProject.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("VictuZWebProject.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("VictuZWebProject.Models.Memberships", b =>
                 {
                     b.Property<int>("Id")
@@ -33,11 +50,13 @@ namespace VictuZWebProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("MembershipId")
-                        .HasColumnType("int");
+                    b.Property<string>("MembershipId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -200,6 +219,10 @@ namespace VictuZWebProject.Migrations
 
                     b.Property<bool>("OnlyMembers")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Organizer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Registered")
                         .HasColumnType("int");

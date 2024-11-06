@@ -188,10 +188,6 @@ namespace VictuZWebProject.Migrations
                     b.Property<DateTime>("DatePublished")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Host")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -220,6 +216,10 @@ namespace VictuZWebProject.Migrations
 
                     b.Property<bool>("OnlyMembers")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Organizer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Registered")
                         .HasColumnType("int");

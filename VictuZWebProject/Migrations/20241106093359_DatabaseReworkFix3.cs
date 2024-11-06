@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VictuZWebProject.Migrations
 {
     /// <inheritdoc />
-    public partial class _1 : Migration
+    public partial class DatabaseReworkFix3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,16 +19,49 @@ namespace VictuZWebProject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Organizer = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Registered = table.Column<int>(type: "int", nullable: false),
                     MaxCapacity = table.Column<int>(type: "int", nullable: false),
                     DatePublished = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateDue = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DateDue = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OnlyMembers = table.Column<bool>(type: "bit", nullable: false),
+                    MembersPreRegistration = table.Column<bool>(type: "bit", nullable: false),
+                    MembersOnlyVisibilityEnd = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    MembersPriorityCapacity = table.Column<bool>(type: "bit", nullable: false),
+                    MembersOnlyCapacity = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Activity", x => x.ActivityId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Memberships",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MembershipId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Memberships", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -40,10 +73,11 @@ namespace VictuZWebProject.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Size = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Stock = table.Column<int>(type: "int", nullable: false)
+                    Stock = table.Column<int>(type: "int", nullable: false),
+                    MemberPlusProduct = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -111,6 +145,12 @@ namespace VictuZWebProject.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Activity");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Memberships");
 
             migrationBuilder.DropTable(
                 name: "Store");
