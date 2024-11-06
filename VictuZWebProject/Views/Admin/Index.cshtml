@@ -1,12 +1,13 @@
-﻿@page
-@model VictuZWebProject.Pages.Identity.ManageUserRolesModel
+﻿@model AdminUserRolesViewModel
+
 @{
     ViewData["Title"] = "Gebruikersrollen beheren";
 }
 
+<div class="p-1">
 <h1>Gebruikersrollen beheren</h1>
 
-<form method="get">
+<form method="get" asp-action="Index">
     <input type="text" name="searchString" placeholder="Zoeken op e-mailadres..." value="@Model.SearchString" />
     <input type="submit" value="Zoek" />
 </form>
@@ -34,7 +35,7 @@
                     }
                 </td>
                 <td>
-                    <form method="post" asp-page-handler="EditRole">
+                    <form method="post" asp-action="EditRole">
                         <input type="hidden" name="userId" value="@userRole.User.Id" />
                         <select name="newRole" required>
                             <option value="Member">Member</option>
@@ -44,7 +45,7 @@
                             @if (User.IsInRole("Admin"))
                             {
                                 <option value="Admin">Admin</option>
-                                <option value="Staff">Staff </option>
+                                <option value="Staff">Staff</option>
                             }
                         </select>
                         <input type="submit" value="Opslaan" />
@@ -54,6 +55,4 @@
         }
     </tbody>
 </table>
-
-
-
+</div>
