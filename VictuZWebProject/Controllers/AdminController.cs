@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VictuZWebProject.Areas.Identity.Data;
 using VictuZWebProject.Models;
 using static VictuZWebProject.Pages.Identity.ManageUserRolesModel;
@@ -73,6 +74,57 @@ namespace VictuZWebProject.Controllers
 
             return userRoles;
         }
+
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> PendingUsers()
+        {
+            var pendingUsers = await GetPendingUsers();
+            var model = new PendingUsersViewModel
+            {
+                PendingUsers = pendingUsers
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> AcceptPendingUser(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Remove all roles and assign the "Visitor" role
+            var roles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, roles);
+            await _userManager.AddToRoleAsync(user, "Visitor");
+
+            return RedirectToAction("PendingUsers");
+        }
+
+        private async Task<List<UserRoleViewModel>> GetPendingUsers()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var pendingUsers = new List<UserRoleViewModel>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                if (roles.Contains("Pending"))
+                {
+                    pendingUsers.Add(new UserRoleViewModel
+                    {
+                        User = user,
+                        Roles = roles
+                    });
+                }
+            }
+
+            return pendingUsers;
+        }
+
     }
 
 }

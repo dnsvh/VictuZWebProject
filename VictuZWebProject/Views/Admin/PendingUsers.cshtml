@@ -1,0 +1,40 @@
+﻿@model PendingUsersViewModel
+
+@{
+    ViewData["Title"] = "Pending Users";
+}
+
+<h1>Pending Users</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Naam</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Actie</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var userRole in Model.PendingUsers)
+        {
+            <tr>
+                <td>@userRole.User.FirstName @userRole.User.LastName</td>
+                <td>@userRole.User.Email</td>
+                <td>
+                    @foreach (var role in userRole.Roles)
+                    {
+                        @role
+                        <br />
+                    }
+                </td>
+                <td>
+                    <form method="post" asp-action="AcceptPendingUser">
+                        <input type="hidden" name="userId" value="@userRole.User.Id" />
+                        <input type="submit" value="Accepteren" class="btn" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
