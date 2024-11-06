@@ -110,8 +110,20 @@ namespace VictuZWebProject.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                // Find the user by email
+                var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+                if (user != null)
+                {
+                    // Check if the user's role is "Pending"
+                    var userRoles = await _signInManager.UserManager.GetRolesAsync(user);
+                    if (userRoles.Contains("Pending"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Uw account is nog niet geaccepteerd, probeer het later opnieuw!");
+                        return Page();
+                    }
+                }
+
+                // Proceed with the sign-in attempt
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
@@ -137,5 +149,6 @@ namespace VictuZWebProject.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
+
     }
 }

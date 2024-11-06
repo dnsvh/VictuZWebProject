@@ -22,7 +22,29 @@
             <div class="col-lg-4 d-flex flex-column align-items-center align-items-lg-start text-center text-lg-start">
                 <img src="~/images/VictuZLogoTransparent.webp" alt="VictuZ Logo" style="height: 200px;" />
                 <div class="d-grid gap-3 d-sm-flex justify-content-sm-center p-2 mt-4">
-                    <a class="btn btn-lg px-4 me-sm-3" href="https://localhost:7141/Identity/Account/Register" style="background-color: #5ac6aa; color: white;">Word lid!</a>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <!-- Not logged in: link to Registration page -->
+                        <a class="btn btn-lg px-4 me-sm-3" href="https://localhost:7141/Identity/Account/Register" style="background-color: #5ac6aa; color: white;">
+                            Word lid!
+                        </a>
+                    }
+                    else if (User.IsInRole("Visitor"))
+                    {
+                        <!-- Logged in as Visitor: link to Memberships page -->
+                        <a class="btn btn-lg px-4 me-sm-3" href="https://localhost:7141/Memberships" style="background-color: #5ac6aa; color: white;">
+                            Word lid!
+                        </a>
+                    }
+                    else if (User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin"))
+                    {
+                        <!-- Logged in as Member, Staff, or Admin: show alert -->
+                        <a class="btn btn-lg px-4 me-sm-3" href="javascript:void(0);" onclick="alert('Je bent al lid van VictuZ!');" style="background-color: #5ac6aa; color: white;">
+                            Word lid!
+                        </a>
+                    }
+
+                    <!-- Activiteiten button -->
                     <a class="btn btn-outline-light btn-lg px-4" href="https://localhost:7141/Activities">Activiteiten</a>
                 </div>
             </div>
