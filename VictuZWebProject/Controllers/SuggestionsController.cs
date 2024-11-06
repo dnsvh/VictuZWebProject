@@ -232,26 +232,26 @@ namespace VictuZWebProject.Controllers
         [HttpGet]
         public async Task<IActionResult> ConvertToActivityPage(int id)
         {
-            // Fetch the suggestion by ID
             var suggestion = await _context.Suggestion.FindAsync(id);
             if (suggestion == null)
             {
-                return NotFound(); // Return a 404 if the suggestion doesn't exist
+                return NotFound();
             }
 
-            // Initialize the ViewModel with suggestion details
             var model = new CreateActivityViewModel
             {
                 SuggestionId = suggestion.Id,
-                Name = suggestion.Title,  
-                Body = suggestion.Body,    
-                Location = "",             
-                MaxCapacity = 10,          
-                DateDue = DateTime.UtcNow.AddDays(7) 
+                Name = suggestion.Title,
+                Organizer = suggestion.Author,  // Set Organizer based on Suggestion's Author
+                Body = suggestion.Body,
+                Location = "",
+                MaxCapacity = 10,
+                DateDue = DateTime.UtcNow.AddDays(7)
             };
 
-            return View(model);
+            return View("ConvertToActivityPage", model);
         }
+
 
         // POST: Suggestions/ConvertToActivity
         [HttpPost]
@@ -260,25 +260,24 @@ namespace VictuZWebProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Create a new Activity object based on the ViewModel
                 var activity = new Activity
                 {
                     Name = model.Name,
                     Body = model.Body,
                     Location = model.Location,
-                    Registered = 0, 
+                    Organizer = model.Organizer,  // Assign Organizer from the ViewModel
+                    Registered = 0,
                     MaxCapacity = model.MaxCapacity,
                     DatePublished = DateTime.UtcNow,
                     DateDue = model.DateDue
                 };
 
-                // Add the new activity to the context
                 _context.Activity.Add(activity);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(model);
+            return View("ConvertToActivity", model);
         }
 
     }
