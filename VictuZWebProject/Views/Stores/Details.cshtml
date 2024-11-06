@@ -20,27 +20,27 @@
                         <!-- Details Section -->
                         <div class="col-md-8">
                             <dl class="row">
-                                <dt class="col-sm-4">Description</dt>
+                                <dt class="col-sm-4">Beschrijving</dt>
                                 <dd class="col-sm-8">@Model.Description</dd>
 
-                                <dt class="col-sm-4">Size</dt>
+                                <dt class="col-sm-4">Grootte</dt>
                                 <dd class="col-sm-8">@Model.Size</dd>
 
-                                <dt class="col-sm-4">Price</dt>
+                                <dt class="col-sm-4">Prijs</dt>
                                 <dd class="col-sm-8">@Model.Price</dd>
 
-                                <dt class="col-sm-4">Category</dt>
+                                <dt class="col-sm-4">Categorie</dt>
                                 <dd class="col-sm-8">@Model.Category</dd>
 
-                                <dt class="col-sm-4">Stock</dt>
+                                <dt class="col-sm-4">Voorraad</dt>
                                 <dd class="col-sm-8">@Model.Stock</dd>
                             </dl>
                             <div class="d-flex justify-content-between mt-4">
                                 @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                                 {
-                                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+                                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Aanpassen</a>
                                 }
-                                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                                <a asp-action="Index" class="btn btn-secondary">Terug naar de lijst</a>
                             </div>
                         </div>
                     </div> <!-- End of Row -->

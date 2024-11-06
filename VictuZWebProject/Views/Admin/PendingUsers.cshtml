@@ -4,8 +4,7 @@
     ViewData["Title"] = "Pending Users";
 }
 
-<h1>Pending Users</h1>
-
+<h1>Accounts in behandeling</h1>
 <table class="table">
     <thead>
         <tr>
@@ -31,7 +30,7 @@
                 <td>
                     <form method="post" asp-action="AcceptPendingUser">
                         <input type="hidden" name="userId" value="@userRole.User.Id" />
-                        <input type="submit" value="Accepteren" class="btn" />
+                        <input type="submit" value="Accepteren" class="btn" style="background-color: #5ac6aa; color: white;" />
                     </form>
                 </td>
             </tr>

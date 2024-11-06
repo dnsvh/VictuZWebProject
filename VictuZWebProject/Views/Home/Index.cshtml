@@ -2,6 +2,18 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+
+<style>
+    /* General hover effect for both the top card and activity cards */
+    .hover-card, .activity-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-card:hover, .activity-card:hover {
+            transform: scale(1.05); /* Slightly enlarges the card */
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Adds shadow on hover */
+        }
+</style>
 <!-- Header-->
 <header class="bg-dark py-5" style="margin-top: 0; padding-top: 0;">
     <div class="container px-5">
@@ -10,15 +22,37 @@
             <div class="col-lg-4 d-flex flex-column align-items-center align-items-lg-start text-center text-lg-start">
                 <img src="~/images/VictuZLogoTransparent.webp" alt="VictuZ Logo" style="height: 200px;" />
                 <div class="d-grid gap-3 d-sm-flex justify-content-sm-center p-2 mt-4">
-                    <a class="btn btn-lg px-4 me-sm-3" href="https://localhost:7141/Identity/Account/Register" style="background-color: #5ac6aa; color: white;">Word lid!</a>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <!-- Not logged in: link to Registration page -->
+                        <a class="btn btn-lg px-4 me-sm-3" href="https://localhost:7141/Identity/Account/Register" style="background-color: #5ac6aa; color: white;">
+                            Word lid!
+                        </a>
+                    }
+                    else if (User.IsInRole("Visitor"))
+                    {
+                        <!-- Logged in as Visitor: link to Memberships page -->
+                        <a class="btn btn-lg px-4 me-sm-3" href="https://localhost:7141/Memberships" style="background-color: #5ac6aa; color: white;">
+                            Word lid!
+                        </a>
+                    }
+                    else if (User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin"))
+                    {
+                        <!-- Logged in as Member, Staff, or Admin: show alert -->
+                        <a class="btn btn-lg px-4 me-sm-3" href="javascript:void(0);" onclick="alert('Je bent al lid van VictuZ!');" style="background-color: #5ac6aa; color: white;">
+                            Word lid!
+                        </a>
+                    }
+
+                    <!-- Activiteiten button -->
                     <a class="btn btn-outline-light btn-lg px-4" href="https://localhost:7141/Activities">Activiteiten</a>
                 </div>
             </div>
 
             <!-- Right side: Next Upcoming Activity -->
             <div class="col-lg-6 mt-5 mt-lg-0">
-                <div class="card shadow-sm p-4 h-100">
-                    <h4 class="text-center">Volgende Activiteit</h4>
+                    <div class="card shadow-sm p-4 h-100 hover-card">
+                        <h4 class="text-center">Volgende Activiteit</h4>
                     <div class="card-body">
                         <h5 class="card-title">@Model.FirstOrDefault()?.Activity.Name</h5>
                         <p class="card-text">@Model.FirstOrDefault()?.Activity.Body"</p>

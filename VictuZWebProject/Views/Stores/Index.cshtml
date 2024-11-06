@@ -91,8 +91,8 @@
                                             <i class="fa-solid fa-gear"></i>
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown-@item.Id">
-                                            <li><a asp-action="Edit" asp-route-id="@item.Id" class="m-2 btn btn-light d-flex justify-content-center">Edit</a></li>
-                                            <li><a asp-action="Delete" asp-route-id="@item.Id" class="m-2 btn btn-light d-flex justify-content-center">Delete</a></li>
+                                            <li><a asp-action="Edit" asp-route-id="@item.Id" class="m-2 btn btn-light d-flex justify-content-center">Aanpassen</a></li>
+                                            <li><a asp-action="Delete" asp-route-id="@item.Id" class="m-2 btn btn-light d-flex justify-content-center">Verwijderen</a></li>
                                         </ul>
                                     </div>
                                 }
@@ -101,11 +101,11 @@
                             <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
 
                             <div class="d-flex justify-content-between mb-3">
-                                <small class="text-muted">Category: @Html.DisplayFor(modelItem => item.Category)</small>
+                                <small class="text-muted">Categorie: @Html.DisplayFor(modelItem => item.Category)</small>
                             </div>
 
                             <div class="d-flex justify-content-between">
-                                <small class="text-muted">Price: @Html.DisplayFor(modelItem => item.Price)</small>
+                                <small class="text-muted">Prijs: @Html.DisplayFor(modelItem => item.Price)</small>
                             </div>
 
 
@@ -114,7 +114,7 @@
                         <!-- Stock info aligned to the right -->
                         <div class="card-footer bg-white border-top-0 mt-auto">
                             <div class="d-flex justify-content-end mb-2">
-                                <small class="text-muted">Stock: @Html.DisplayFor(modelItem => item.Stock)</small>
+                                <small class="text-muted">Voorraad: @Html.DisplayFor(modelItem => item.Stock)</small>
                             </div>
 
                             <!-- Knoppen naast elkaar plaatsen -->
@@ -140,7 +140,7 @@
                                 }
 
                                 <!-- Details knop -->
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn" style="background-color: #20c997; color: white;">View Details</a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn" style="background-color: #20c997; color: white;">Details bekijken</a>
                             </div>
                         </div>
 
