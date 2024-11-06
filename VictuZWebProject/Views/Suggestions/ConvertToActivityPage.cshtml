@@ -24,6 +24,12 @@
                     </div>
 
                     <div class="form-floating mb-3">
+                        <input asp-for="Organizer" class="form-control" placeholder="Location" required />
+                        <label asp-for="Organizer">Host</label>
+                    </div>
+
+
+                    <div class="form-floating mb-3">
                         <input asp-for="MaxCapacity" type="number" class="form-control" placeholder="Max Capacity" required min="1" />
                         <label asp-for="MaxCapacity">Max Capaciteit</label>
                     </div>
