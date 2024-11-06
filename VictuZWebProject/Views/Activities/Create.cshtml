@@ -77,28 +77,28 @@
 
                     <div class="form-check">
                         <input asp-for="OnlyMembers" type="checkbox" id="OnlyMembersCheckbox" class="form-check-input" />
-                        <label asp-for="OnlyMembers" class="form-check-label">Only Members</label>
+                        <label asp-for="OnlyMembers" class="form-check-label">Exclusief voor VictuZ+</label>
                     </div>
               
                     <div class="form-check">
                         <input asp-for="MembersPreRegistration" type="checkbox" id="MembersPreRegistrationCheckbox" class="form-check-input" />
-                        <label asp-for="MembersPreRegistration" class="form-check-label">Members Pre-Registration</label>
+                        <label asp-for="MembersPreRegistration" class="form-check-label">VictuZ+ pre-registratie</label>
                     </div>
 
                     <!-- Alleen zichtbaar wanneer OnlyMembers is aangevinkt -->
                     <div class="form-group" id="MembersOnlyVisibilityEndField" style="display: none;">
-                        <label asp-for="MembersOnlyVisibilityEnd">Members Only Visibility End</label>
+                        <label asp-for="MembersOnlyVisibilityEnd">Zichtbaarheid gast vanaf:</label>
                         <input asp-for="MembersOnlyVisibilityEnd" class="form-control" type="datetime-local" />
                     </div>  
 
                     <div class="form-check">
                         <input asp-for="MembersPriorityCapacity" type="checkbox" id="MembersPriorityCapacityCheckbox" class="form-check-input" />
-                        <label asp-for="MembersPriorityCapacity" class="form-check-label">Members Priority Capacity</label>
+                        <label asp-for="MembersPriorityCapacity" class="form-check-label">VictuZ+ plekken reserveren</label>
                     </div>
 
                     <!-- Alleen zichtbaar wanneer MembersPriorityCapacity is aangevinkt -->
                     <div class="form-group" id="MembersOnlyCapacityField" style="display: none;">
-                        <label asp-for="MembersOnlyCapacity">Members Only Capacity</label>
+                        <label asp-for="MembersOnlyCapacity">Exclusieve VictuZ+ plekken:</label>
                         <input asp-for="MembersOnlyCapacity" class="form-control" type="number" />
                     </div>
 
