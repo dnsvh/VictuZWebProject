@@ -9,10 +9,10 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Name</th>
+            <th>Naam</th>
             <th>Email</th>
-            <th>Current Role</th>
-            <th>Action</th>
+            <th>Rol</th>
+            <th>Actie</th>
         </tr>
     </thead>
     <tbody>
@@ -31,7 +31,7 @@
                 <td>
                     <form method="post" asp-action="AcceptPendingUser">
                         <input type="hidden" name="userId" value="@userRole.User.Id" />
-                        <input type="submit" value="Accept as Visitor" class="btn btn-primary" />
+                        <input type="submit" value="Accepteren" class="btn" />
                     </form>
                 </td>
             </tr>
