@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VictuZWebProject.Migrations.VictuZAccountDb
 {
     /// <inheritdoc />
-    public partial class DatabaseToMsSQLFix : Migration
+    public partial class FixDatabase2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
