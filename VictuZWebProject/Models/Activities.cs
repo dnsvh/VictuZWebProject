@@ -17,6 +17,8 @@ namespace VictuZ_Lars.Models
 
         public bool OnlyMembers { get; set; } = false;//Alleen members kunnen zich aanmelden
 
+        public ICollection<AppUser> RegisteredUsers { get; set; } //Haalt alle users op die zich hebben aangemeld voor de activiteit
+
         //Members plekken reserveren binnen een activiteit
         public bool MembersPreRegistration { get; set; } = false;//Plekken voor members reserveren
         //Kan zijn dat members zich eerder kunnen aanmelden

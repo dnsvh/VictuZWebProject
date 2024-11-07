@@ -4,22 +4,28 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VictuZ_Lars.Data;
 using VictuZ_Lars.Models;
+using VictuZWebProject.Areas.Identity.Data;
 using VictuZWebProject.Models;
 
 namespace VictuZ_Lars.Controllers
 {
+
     public class ActivitiesController : Controller
     {
         private readonly VictuZ_Lars_Db _context;
 
-        public ActivitiesController(VictuZ_Lars_Db context)
+        private readonly UserManager<AppUser> _userManager;
+
+        public ActivitiesController(VictuZ_Lars_Db context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Activities
@@ -321,6 +327,47 @@ namespace VictuZ_Lars.Controllers
             return _context.Activity.Any(e => e.ActivityId == id);
         }
 
+        // Gets the registered users for an activity
+        public async Task<IActionResult> RegisteredUsers(int id)
+        {
+            var activity = await _context.Activity
+                .Include(a => a.RegisteredUsers)
+                .FirstOrDefaultAsync(a => a.ActivityId == id);
+
+            if (activity == null)
+            {
+                return NotFound();
+            }
+
+            return View(activity);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(int activityId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var activity = await _context.Activity
+                .Include(a => a.RegisteredUsers)
+                .FirstOrDefaultAsync(a => a.ActivityId == activityId);
+
+            if (activity == null)
+            {
+                return NotFound();
+            }
+
+            if (!activity.RegisteredUsers.Contains(user))
+            {
+                activity.RegisteredUsers.Add(user);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Index");
+        }
 
         public async Task<IActionResult> Register(int? Id, string returnUrl = null)
         {

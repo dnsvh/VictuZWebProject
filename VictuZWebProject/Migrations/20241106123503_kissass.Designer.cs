@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VictuZ_Lars.Data;
 
@@ -11,9 +12,11 @@ using VictuZ_Lars.Data;
 namespace VictuZWebProject.Migrations
 {
     [DbContext(typeof(VictuZ_Lars_Db))]
-    partial class VictuZ_Lars_DbModelSnapshot : ModelSnapshot
+    [Migration("20241106123503_kissass")]
+    partial class kissass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,71 +24,6 @@ namespace VictuZWebProject.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("VictuZWebProject.Areas.Identity.Data.AppUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActivityId");
-
-                    b.ToTable("AppUser");
-                });
 
             modelBuilder.Entity("VictuZWebProject.Models.Category", b =>
                 {
@@ -283,6 +221,7 @@ namespace VictuZWebProject.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Organizer")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Registered")
@@ -291,13 +230,6 @@ namespace VictuZWebProject.Migrations
                     b.HasKey("ActivityId");
 
                     b.ToTable("Activity", (string)null);
-                });
-
-            modelBuilder.Entity("VictuZWebProject.Areas.Identity.Data.AppUser", b =>
-                {
-                    b.HasOne("VictuZ_Lars.Models.Activity", null)
-                        .WithMany("RegisteredUsers")
-                        .HasForeignKey("ActivityId");
                 });
 
             modelBuilder.Entity("VictuZWebProject.Models.SuggestionLike", b =>
@@ -309,11 +241,6 @@ namespace VictuZWebProject.Migrations
                         .IsRequired();
 
                     b.Navigation("Suggestion");
-                });
-
-            modelBuilder.Entity("VictuZ_Lars.Models.Activity", b =>
-                {
-                    b.Navigation("RegisteredUsers");
                 });
 #pragma warning restore 612, 618
         }
