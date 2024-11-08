@@ -1,4 +1,5 @@
 ﻿using VictuZWebProject.Areas.Identity.Data;
+using VictuZWebProject.Models;
 
 namespace VictuZ_Lars.Models
 {
@@ -17,7 +18,8 @@ namespace VictuZ_Lars.Models
 
         public bool OnlyMembers { get; set; } = false;//Alleen members kunnen zich aanmelden
 
-        public ICollection<AppUser> RegisteredUsers { get; set; } //Haalt alle users op die zich hebben aangemeld voor de activiteit
+        public ICollection<AppUser> RegisteredUsers { get; set; } = new List<AppUser>();
+        public ICollection<UserRegistration> UserRegistrations { get; set; }
 
         //Members plekken reserveren binnen een activiteit
         public bool MembersPreRegistration { get; set; } = false;//Plekken voor members reserveren

@@ -210,13 +210,48 @@ namespace VictuZ_Lars.Controllers
         {
             if (ModelState.IsValid)
             {
+                try
+                {
+                    _context.Add(activity);
+                    await _context.SaveChangesAsync();
 
-                _context.Add(activity);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    // Register the current user for the activity
+                    var userId = _userManager.GetUserId(User);
+                    if (userId == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    var userExists = await _userManager.Users.AnyAsync(u => u.Id == userId);
+                    if (!userExists)
+                    {
+                        return BadRequest("User does not exist.");
+                    }
+
+                    var userRegistration = new UserRegistration
+                    {
+                        UserId = userId,
+                        ActivityId = activity.ActivityId
+                    };
+                    _context.UserRegistration.Add(userRegistration);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException dbEx)
+                {
+                    Console.WriteLine($"An error occurred while creating the activity: {dbEx.InnerException?.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+                }
             }
+
             return View(activity);
         }
+
+
 
         // GET: Activities/Edit/5
         [Authorize(Roles = "Admin,Staff")]
@@ -327,48 +362,6 @@ namespace VictuZ_Lars.Controllers
             return _context.Activity.Any(e => e.ActivityId == id);
         }
 
-        // Gets the registered users for an activity
-        public async Task<IActionResult> RegisteredUsers(int id)
-        {
-            var activity = await _context.Activity
-                .Include(a => a.RegisteredUsers)
-                .FirstOrDefaultAsync(a => a.ActivityId == id);
-
-            if (activity == null)
-            {
-                return NotFound();
-            }
-
-            return View(activity);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Register(int activityId)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-
-            var activity = await _context.Activity
-                .Include(a => a.RegisteredUsers)
-                .FirstOrDefaultAsync(a => a.ActivityId == activityId);
-
-            if (activity == null)
-            {
-                return NotFound();
-            }
-
-            if (!activity.RegisteredUsers.Contains(user))
-            {
-                activity.RegisteredUsers.Add(user);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToAction("Index");
-        }
-
         public async Task<IActionResult> Register(int? Id, string returnUrl = null)
         {
 
@@ -435,7 +428,7 @@ namespace VictuZ_Lars.Controllers
                     }
                 }
 
-                // Voeg registratie toe
+                // Add registration
                 var reg = new UserRegistration
                 {
                     UserId = userId,
@@ -444,6 +437,8 @@ namespace VictuZ_Lars.Controllers
 
                 _context.UserRegistration.Add(reg);
                 activity.Registered += 1;
+
+
             }
 
             // Update
@@ -452,6 +447,181 @@ namespace VictuZ_Lars.Controllers
 
             return RedirectToAction("Index", "Activities");
         }
+
+
+        // GET: Activities/Register/5
+        [HttpGet("Activities/Register/{id}")]
+        public async Task<IActionResult> Register(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var activity = await _context.Activity
+                .FirstOrDefaultAsync(a => a.ActivityId == id);
+            if (activity == null)
+            {
+                return NotFound();
+            }
+
+            var existingRegistration = await _context.UserRegistration
+                .FirstOrDefaultAsync(r => r.UserId == userId && r.ActivityId == id);
+            if (existingRegistration != null)
+            {
+                // User is already registered, handle accordingly
+                return RedirectToAction("Index");
+            }
+
+            // Check if the activity has available capacity
+            if (activity.Registered >= activity.MaxCapacity)
+            {
+                return BadRequest("The activity is full.");
+            }
+
+            var registration = new UserRegistration
+            {
+                UserId = userId,
+                ActivityId = (int)id
+            };
+
+            _context.UserRegistration.Add(registration);
+            activity.Registered += 1;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+
+
+        // POST: Activities/Register
+        [HttpPost("Activities/Register")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(int activityId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            // Check if the user exists in the AppUser table
+            var userExists = await _userManager.Users.AnyAsync(u => u.Id == userId);
+            if (!userExists)
+            {
+                return BadRequest("User does not exist.");
+            }
+
+            var activity = await _context.Activity.FirstOrDefaultAsync(a => a.ActivityId == activityId);
+            if (activity == null)
+            {
+                return NotFound();
+            }
+
+            var existingRegistration = await _context.UserRegistration
+                .FirstOrDefaultAsync(r => r.UserId == userId && r.ActivityId == activityId);
+            if (existingRegistration != null)
+            {
+                // User is already registered, handle accordingly
+                return RedirectToAction("Index");
+            }
+
+            // Check if the activity has available capacity
+            if (activity.Registered >= activity.MaxCapacity)
+            {
+                return BadRequest("The activity is full.");
+            }
+
+            var registration = new UserRegistration
+            {
+                UserId = userId,
+                ActivityId = activityId
+            };
+
+            _context.UserRegistration.Add(registration);
+            activity.Registered += 1;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException dbEx)
+            {
+                Console.WriteLine($"An error occurred while saving the registration: {dbEx.InnerException?.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
+        [HttpGet("Activities/RegisteredUsers/{id}")]
+        public async Task<IActionResult> RegisteredUsers(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            // Check if the user exists in the AppUser table
+            var userExists = await _userManager.Users.AnyAsync(u => u.Id == userId);
+            if (!userExists)
+            {
+                return BadRequest("User does not exist.");
+            }
+
+            var activity = await _context.Activity.FirstOrDefaultAsync(a => a.ActivityId == id);
+            if (activity == null)
+            {
+                return NotFound();
+            }
+
+            var existingRegistration = await _context.UserRegistration
+                .FirstOrDefaultAsync(r => r.UserId == userId && r.ActivityId == id);
+            if (existingRegistration != null)
+            {
+                // User is already registered, handle accordingly
+                return RedirectToAction("Index");
+            }
+
+            // Check if the activity has available capacity
+            if (activity.Registered >= activity.MaxCapacity)
+            {
+                return BadRequest("The activity is full.");
+            }
+
+            var registration = new UserRegistration
+            {
+                UserId = userId,
+                ActivityId = (int)id
+            };
+
+            _context.UserRegistration.Add(registration);
+            activity.Registered += 1;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
 
 
 

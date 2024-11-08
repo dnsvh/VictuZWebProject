@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using VictuZ_Lars.Models;
+using VictuZWebProject.Areas.Identity.Data;
 using VictuZWebProject.Models;
 
 namespace VictuZ_Lars.Data
@@ -29,6 +30,22 @@ namespace VictuZ_Lars.Data
             modelBuilder.Entity<Suggestion>().ToTable("Suggestion");
             modelBuilder.Entity<SuggestionLike>().ToTable("SuggestionLike");
             modelBuilder.Entity<Memberships>().ToTable("Memberships");
+            modelBuilder.Entity<UserRegistration>()
+                .HasKey(ur => new { ur.UserId, ur.ActivityId });
+
+            modelBuilder.Entity<UserRegistration>()
+                .Property(ur => ur.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<UserRegistration>()
+                .HasOne(ur => ur.AppUser)
+                .WithMany(u => u.UserRegistrations)
+                .HasForeignKey(ur => ur.UserId);
+
+            modelBuilder.Entity<UserRegistration>()
+                .HasOne(ur => ur.Activity)
+                .WithMany(a => a.UserRegistrations)
+                .HasForeignKey(ur => ur.ActivityId);
 
             // Update precision for Price column in Store
             modelBuilder.Entity<Store>()

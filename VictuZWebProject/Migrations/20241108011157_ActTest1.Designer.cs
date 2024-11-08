@@ -12,8 +12,8 @@ using VictuZ_Lars.Data;
 namespace VictuZWebProject.Migrations
 {
     [DbContext(typeof(VictuZ_Lars_Db))]
-    [Migration("20241107132030_Kay1")]
-    partial class Kay1
+    [Migration("20241108011157_ActTest1")]
+    partial class ActTest1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,81 @@ namespace VictuZWebProject.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ActivityAppUser", b =>
+                {
+                    b.Property<int>("ActivitiesActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RegisteredUsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ActivitiesActivityId", "RegisteredUsersId");
+
+                    b.HasIndex("RegisteredUsersId");
+
+                    b.ToTable("ActivityAppUser");
+                });
+
+            modelBuilder.Entity("VictuZWebProject.Areas.Identity.Data.AppUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppUser");
+                });
 
             modelBuilder.Entity("VictuZWebProject.Models.Category", b =>
                 {
@@ -155,20 +230,21 @@ namespace VictuZWebProject.Migrations
 
             modelBuilder.Entity("VictuZWebProject.Models.UserRegistration", b =>
                 {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
+                    b.HasKey("UserId", "ActivityId");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasIndex("ActivityId");
 
                     b.ToTable("UserRegistration", (string)null);
                 });
@@ -231,6 +307,21 @@ namespace VictuZWebProject.Migrations
                     b.ToTable("Activity", (string)null);
                 });
 
+            modelBuilder.Entity("ActivityAppUser", b =>
+                {
+                    b.HasOne("VictuZ_Lars.Models.Activity", null)
+                        .WithMany()
+                        .HasForeignKey("ActivitiesActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VictuZWebProject.Areas.Identity.Data.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("RegisteredUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("VictuZWebProject.Models.SuggestionLike", b =>
                 {
                     b.HasOne("VictuZWebProject.Models.Suggestion", "Suggestion")
@@ -240,6 +331,35 @@ namespace VictuZWebProject.Migrations
                         .IsRequired();
 
                     b.Navigation("Suggestion");
+                });
+
+            modelBuilder.Entity("VictuZWebProject.Models.UserRegistration", b =>
+                {
+                    b.HasOne("VictuZ_Lars.Models.Activity", "Activity")
+                        .WithMany("UserRegistrations")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VictuZWebProject.Areas.Identity.Data.AppUser", "AppUser")
+                        .WithMany("UserRegistrations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
+
+                    b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("VictuZWebProject.Areas.Identity.Data.AppUser", b =>
+                {
+                    b.Navigation("UserRegistrations");
+                });
+
+            modelBuilder.Entity("VictuZ_Lars.Models.Activity", b =>
+                {
+                    b.Navigation("UserRegistrations");
                 });
 #pragma warning restore 612, 618
         }
