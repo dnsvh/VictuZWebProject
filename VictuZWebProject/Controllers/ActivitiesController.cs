@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VictuZ_Lars.Data;
 using VictuZ_Lars.Models;
+using VictuZWebProject.Data;
 using VictuZWebProject.Models;
 
 namespace VictuZ_Lars.Controllers
@@ -16,10 +17,12 @@ namespace VictuZ_Lars.Controllers
     public class ActivitiesController : Controller
     {
         private readonly VictuZ_Lars_Db _context;
+        private readonly VictuZAccountDbContext _usercontext;
 
-        public ActivitiesController(VictuZ_Lars_Db context)
+        public ActivitiesController(VictuZ_Lars_Db context, VictuZAccountDbContext usercontext)
         {
             _context = context;
+            _usercontext = usercontext;
         }
 
         // GET: Activities
@@ -405,6 +408,67 @@ namespace VictuZ_Lars.Controllers
 
             return RedirectToAction("Index", "Activities");
         }
+
+        public async Task<IActionResult> RegisteredUsers(int id)
+        {
+            ViewBag.ActivityId = id;
+
+            var activity = await _context.Activity.FindAsync(id);
+            if (activity == null)
+            {
+                return NotFound();
+            }
+
+            var registeredUserIds = await _context.UserRegistration
+                .Where(r => r.ActivityId == id)
+                .Select(r => r.UserId)
+                .ToListAsync();
+
+            var registeredUsers = await _usercontext.Users
+                .Where(u => registeredUserIds.Contains(u.Id))
+                .Select(u => new UserRegistrationViewModel
+                {
+                    UserId = u.Id,
+                    UserName = u.UserName,
+                    Email = u.Email
+                })
+                .ToListAsync();
+
+            return View(registeredUsers);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> DeleteRegistration(string userId, int activityId)
+        {
+            // Find the registration based on userId and activityId
+            var registration = await _context.UserRegistration
+                .FirstOrDefaultAsync(r => r.UserId == userId && r.ActivityId == activityId);
+
+            if (registration != null)
+            {
+                // Remove the registration
+                _context.UserRegistration.Remove(registration);
+
+                // Decrement the registered count for the activity
+                var activity = await _context.Activity.FindAsync(activityId);
+                if (activity != null)
+                {
+                    activity.Registered -= 1;
+                    _context.Activity.Update(activity);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+            // Redirect back to the RegisteredUsers view, passing the activityId
+            return RedirectToAction("RegisteredUsers", new { id = activityId });
+        }
+
+
+
+
+
 
 
 
