@@ -39,16 +39,14 @@
                         <span asp-validation-for="Location" class="text-danger"></span>
                     </div>
 
-                    <!-- Display current image if it exists -->
                     @if (!string.IsNullOrEmpty(Model.ImageUrl))
                     {
                         <div class="mb-3">
                             <label>Huidige afbeelding:</label>
-                            <img src="@Model.ImageUrl" alt="Current Image" class="img-fluid" />
+                            <img src="@Model.ImageUrl" alt="Geen afbeelding geupload" class="img-fluid" />
                         </div>
                     }
 
-                    <!-- New field for image upload -->
                     <div class="mb-3">
                         <label for="imageFile">Upload nieuwe afbeelding</label>
                         <input type="file" name="imageFile" class="form-control" id="imageFile" />
