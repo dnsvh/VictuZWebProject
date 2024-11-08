@@ -83,5 +83,129 @@ namespace VictuZWebProject.Controllers
             return View(new ErrorViewModel { RequestId = DateTime.UtcNow.Ticks.ToString() });
         }
 
+        public async Task<IActionResult> Register(int? Id, string returnUrl = null)
+        {
+
+            if (Id == null)
+            {
+                return NotFound();
+            }
+
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            bool isMember = User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin");
+            bool isVisitor = User.IsInRole("Visitor");
+
+
+            var activity = await _context.Activity.FirstOrDefaultAsync(m => m.ActivityId == Id);
+            if (activity == null)
+            {
+                return NotFound();
+            }
+
+            var existingRegister = await _context.UserRegistration
+                .FirstOrDefaultAsync(l => l.UserId == userId && l.ActivityId == Id);
+
+            var registration = await _context.Activity.FirstOrDefaultAsync(m => m.ActivityId == Id);
+            if (registration == null)
+            {
+                return NotFound();
+            }
+
+            if (existingRegister != null)
+            {
+
+                _context.UserRegistration.Remove(existingRegister);
+                activity.Registered -= 1;
+            }
+            else
+            {
+
+                int memberCount = _context.UserRegistration.Count(r => r.ActivityId == Id &&
+                                  (User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin")));
+                int visitorCount = _context.UserRegistration.Count(r => r.ActivityId == Id && User.IsInRole("Visitor"));
+
+                if (isVisitor)
+                {
+
+                    if (visitorCount >= activity.MaxCapacity - activity.MembersOnlyCapacity)
+                    {
+                        return BadRequest("Geen beschikbare plaatsen voor bezoekers.");
+                    }
+                }
+                else if (isMember)
+                {
+                    // Leden kunnen zich registreren zolang MaxCapacity niet bereikt is
+                    if (activity.Registered >= activity.MaxCapacity)
+                    {
+                        return BadRequest("De activiteit zit vol.");
+                    }
+                }
+
+                // Voeg registratie toe
+                var reg = new UserRegistration
+                {
+                    UserId = userId,
+                    ActivityId = (int)Id
+                };
+
+                _context.UserRegistration.Add(reg);
+                activity.Registered += 1;
+            }
+
+
+            _context.Activity.Update(registration);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> Unregister(int? id, string returnUrl = null)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+
+            var activity = await _context.Activity.FirstOrDefaultAsync(m => m.ActivityId == id);
+            if (activity == null)
+            {
+                return NotFound();
+            }
+
+
+            var existingRegister = await _context.UserRegistration
+                .FirstOrDefaultAsync(r => r.UserId == userId && r.ActivityId == id);
+
+            if (existingRegister != null)
+            {
+
+                _context.UserRegistration.Remove(existingRegister);
+                activity.Registered -= 1;
+
+
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+
+                return NotFound();
+            }
+
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
     }
 }
