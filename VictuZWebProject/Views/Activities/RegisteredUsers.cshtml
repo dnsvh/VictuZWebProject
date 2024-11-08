@@ -1,0 +1,54 @@
+﻿@model IEnumerable<VictuZWebProject.Models.UserRegistrationViewModel>
+
+@{
+    ViewData["Title"] = "Geregistreerde Gebruikers";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header text-white" style="background-color: #20c997;">
+            <h4 class="mb-0">Geregistreerde Gebruikers voor Activiteit</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Gebruiker ID</th>
+                            <th scope="col">Gebruikersnaam</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Actie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var user in Model)
+                            {
+                                <tr>
+                                    <td>@user.UserId</td>
+                                    <td>@user.UserName</td>
+                                    <td>@user.Email</td>
+                                    <td>
+                                        <form asp-action="DeleteRegistration" method="post" style="display:inline;">
+                                            <input type="hidden" name="userId" value="@user.UserId" />
+                                            <input type="hidden" name="activityId" value="@ViewBag.ActivityId" />
+                                            <button type="submit" class="btn btn-danger btn-sm">Verwijder</button>
+                                        </form>
+
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">Geen geregistreerde gebruikers gevonden.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
