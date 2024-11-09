@@ -197,16 +197,32 @@ namespace VictuZ_Lars.Controllers
             return View();
         }
 
-        // POST: Activities/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+        // Modify the Create method to accept an image file
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> Create([Bind("ActivityId,Name,Body,Organizer,Location,ImageUrl,Registered,MaxCapacity,DatePublished,DateDue,OnlyMembers,MembersOnlyVisibilityEnd,MembersPreRegistration,MembersOnlyCapacity")] Activity activity)
+        public async Task<IActionResult> Create([Bind("ActivityId,Name,Body,Organizer,Location,MaxCapacity,DatePublished,DateDue,OnlyMembers,MembersOnlyVisibilityEnd,MembersPreRegistration,MembersOnlyCapacity")] Activity activity, IFormFile imageFile)
         {
             if (ModelState.IsValid)
             {
+                // Check if an image file is uploaded
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    // Generate a unique filename for the uploaded image
+                    var fileName = Path.GetFileName(imageFile.FileName);
+                    var uniqueFileName = $"{Guid.NewGuid()}_{fileName}";
+                    var filePath = Path.Combine("wwwroot/uploads", uniqueFileName);
+
+                    // Save the image file to wwwroot/uploads directory
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+
+                    // Set the ImageUrl property to the saved file path
+                    activity.ImageUrl = $"/uploads/{uniqueFileName}";
+                }
 
                 _context.Add(activity);
                 await _context.SaveChangesAsync();
@@ -215,8 +231,7 @@ namespace VictuZ_Lars.Controllers
             return View(activity);
         }
 
-        // GET: Activities/Edit/5
-        [Authorize(Roles = "Admin,Staff")]
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -229,16 +244,14 @@ namespace VictuZ_Lars.Controllers
             {
                 return NotFound();
             }
+
             return View(activity);
         }
 
-        // POST: Activities/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize(Roles = "Admin,Staff")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ActivityId,Name,Body,Location,ImageUrl,MaxCapacity,DatePublished,DateDue,OnlyMembers,MembersOnlyVisibilityEnd,MembersPreRegistration,MembersOnlyCapacity")] Activity activity)
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> Edit(int id, [Bind("ActivityId,Name,Body,Organizer,Location,MaxCapacity,DatePublished,DateDue,OnlyMembers,MembersOnlyVisibilityEnd,MembersPreRegistration,MembersOnlyCapacity")] Activity activity, IFormFile imageFile)
         {
             if (id != activity.ActivityId)
             {
@@ -249,21 +262,22 @@ namespace VictuZ_Lars.Controllers
             {
                 try
                 {
-                    // Haal de bestaande activiteit op vanuit de database om `Registered` te behouden
-                    var existingActivity = await _context.Activity
-                        .AsNoTracking()  // Voorkom tracking om bestaande waardes op te halen
-                        .FirstOrDefaultAsync(a => a.ActivityId == id);
-
-                    if (existingActivity == null)
+                    // Handle image upload if a new file is uploaded
+                    if (imageFile != null && imageFile.Length > 0)
                     {
-                        return NotFound();
+                        var fileName = Path.GetFileName(imageFile.FileName);
+                        var uniqueFileName = $"{Guid.NewGuid()}_{fileName}";
+                        var filePath = Path.Combine("wwwroot/uploads", uniqueFileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await imageFile.CopyToAsync(stream);
+                        }
+
+                        activity.ImageUrl = $"/uploads/{uniqueFileName}";
                     }
 
-                    // Behoud de bestaande waarde van `Registered`
-                    activity.Registered = existingActivity.Registered;
-
-                    // Update de activiteit zonder `Registered` te resetten
-                    _context.Entry(activity).State = EntityState.Modified;
+                    _context.Update(activity);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -279,9 +293,9 @@ namespace VictuZ_Lars.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
             return View(activity);
         }
+
 
 
         // GET: Activities/Delete/5

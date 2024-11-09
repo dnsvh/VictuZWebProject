@@ -252,8 +252,6 @@ namespace VictuZWebProject.Controllers
             return View("ConvertToActivityPage", model);
         }
 
-
-        // POST: Suggestions/ConvertToActivity
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConvertToActivity(CreateActivityViewModel model)
@@ -265,20 +263,36 @@ namespace VictuZWebProject.Controllers
                     Name = model.Name,
                     Body = model.Body,
                     Location = model.Location,
-                    Organizer = model.Organizer,  // Assign Organizer from the ViewModel
+                    Organizer = model.Organizer,
                     Registered = 0,
                     MaxCapacity = model.MaxCapacity,
                     DatePublished = DateTime.UtcNow,
                     DateDue = model.DateDue
                 };
 
+                // Handle file upload
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    var fileName = Path.GetFileName(model.ImageFile.FileName);
+                    var uniqueFileName = $"{Guid.NewGuid()}_{fileName}";
+                    var filePath = Path.Combine("wwwroot/uploads", uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync(stream);
+                    }
+
+                    activity.ImageUrl = $"/uploads/{uniqueFileName}";
+                }
+
                 _context.Activity.Add(activity);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
-            return View("ConvertToActivity", model);
+            return View("ConvertToActivityPage", model);
         }
+
 
     }
 }

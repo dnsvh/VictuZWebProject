@@ -9,7 +9,9 @@
         <div class="card shadow-sm">
             <div class="card-body">
                 <h2 class="text-center mb-4">Activiteit bewerken</h2>
-                <form asp-action="Edit">
+
+                <!-- Add enctype to allow file uploads -->
+                <form asp-action="Edit" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                     <input type="hidden" asp-for="ActivityId" />
 
@@ -37,10 +39,17 @@
                         <span asp-validation-for="Location" class="text-danger"></span>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <input asp-for="ImageUrl" class="form-control" placeholder="Image URL" />
-                        <label asp-for="ImageUrl">Image URL</label>
-                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <div class="mb-3">
+                            <label>Huidige afbeelding:</label>
+                            <img src="@Model.ImageUrl" alt="Geen afbeelding geupload" class="img-fluid" />
+                        </div>
+                    }
+
+                    <div class="mb-3">
+                        <label for="imageFile">Upload nieuwe afbeelding</label>
+                        <input type="file" name="imageFile" class="form-control" id="imageFile" />
                     </div>
 
                     <div class="form-floating mb-3">
@@ -65,7 +74,6 @@
                         <label asp-for="MembersPreRegistration" class="form-check-label">VictuZ+ pre-registratie</label>
                     </div>
 
-                    <!-- Alleen zichtbaar wanneer OnlyMembers is aangevinkt -->
                     <div class="form-group" id="MembersOnlyVisibilityEndField" style="display: none;">
                         <label asp-for="MembersOnlyVisibilityEnd">Zichtbaarheid gast vanaf:</label>
                         <input asp-for="MembersOnlyVisibilityEnd" class="form-control" type="datetime-local" />
@@ -76,7 +84,6 @@
                         <label asp-for="MembersPriorityCapacity" class="form-check-label">VictuZ+ plekken reserveren</label>
                     </div>
 
-                    <!-- Alleen zichtbaar wanneer MembersPriorityCapacity is aangevinkt -->
                     <div class="form-group" id="MembersOnlyCapacityField" style="display: none;">
                         <label asp-for="MembersOnlyCapacity">Exclusieve VictuZ+ plekken:</label>
                         <input asp-for="MembersOnlyCapacity" class="form-control" type="number" />
@@ -95,30 +102,20 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Verwijs naar de checkboxes en velden
             const onlyMembersCheckbox = document.getElementById("OnlyMembersCheckbox");
             const membersPreRegistrationCheckbox = document.getElementById("MembersPreRegistrationCheckbox");
             const membersPriorityCapacityCheckbox = document.getElementById("MembersPriorityCapacityCheckbox");
-        
+
             const visibilityEndField = document.getElementById("MembersOnlyVisibilityEndField");
             const membersOnlyCapacityField = document.getElementById("MembersOnlyCapacityField");
 
-            // Functie om de zichtbaarheid van velden te wisselen op basis van de checkbox-status
             function toggleFields() {
-                console.log("ToggleFields called"); // Voor debuggen
-                console.log("OnlyMembers checked:", onlyMembersCheckbox.checked);
-            
-                // Zet visibilityEndField zichtbaar als OnlyMembersCheckbox is aangevinkt
                 visibilityEndField.style.display = membersPreRegistrationCheckbox.checked ? "block" : "none";
-            
-                // Zet membersOnlyCapacityField zichtbaar als MembersPriorityCapacityCheckbox is aangevinkt
                 membersOnlyCapacityField.style.display = membersPriorityCapacityCheckbox.checked ? "block" : "none";
             }
 
-            // Initialiseer zichtbaarheid van velden bij pagina laden
             toggleFields();
 
-            // Event listeners voor verandering van de checkboxes
             onlyMembersCheckbox.addEventListener("change", toggleFields);
             membersPreRegistrationCheckbox.addEventListener("change", toggleFields);
             membersPriorityCapacityCheckbox.addEventListener("change", toggleFields);

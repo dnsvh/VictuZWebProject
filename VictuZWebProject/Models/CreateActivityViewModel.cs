@@ -9,5 +9,7 @@
         public string Location { get; set; }
         public int MaxCapacity { get; set; }
         public DateTime DateDue { get; set; }
+
+        public IFormFile ImageFile { get; set; }
     }
 }
