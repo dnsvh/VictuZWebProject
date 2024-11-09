@@ -1,194 +1,276 @@
 ﻿@model IEnumerable<VictuZWebProject.Models.ActivityViewModel>
 @{
     ViewData["Title"] = "Home Page";
+
+
+    var upcomingActivities = Model
+        .Where(activity => activity.Activity.DateDue >= DateTime.Now)
+        .OrderBy(activity => activity.Activity.DateDue)
+        .Take(3)
+        .ToList(); // Take only the first 3 activities and convert to list
 }
 
 <style>
-    /* General hover effect for both the top card and activity cards */
-    .hover-card, .activity-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Style for the header */
+    .header-container {
+        position: relative;
+        background: linear-gradient(45deg, #11d4cf, #11d4a1); /* Diagonal gradient */
+        color: white;
+        padding: 40px 0; /* Add some padding to give space */
+        margin-bottom: 30px; /* Add some margin at the bottom to separate from the carousel */
     }
 
-        .hover-card:hover, .activity-card:hover {
-            transform: scale(1.05); /* Slightly enlarges the card */
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Adds shadow on hover */
+        .header-container h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
         }
+
+    /* Carousel styles */
+    .carousel-container {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        padding: 20px 0;
+        margin-top: 20px;
+    }
+
+    .carousel-track {
+        display: flex;
+        transition: transform 0.5s ease;
+        gap: 15px;
+    }
+
+    .carousel-card {
+        flex: 0 0 33.333%;
+        box-sizing: border-box;
+        padding: 10px;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        background-color: #3c4047;
+        color: white;
+        border-radius: 12px;
+    }
+
+        .carousel-card.center-card {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        .carousel-card:not(.center-card) {
+            transform: scale(0.9);
+            opacity: 0.6;
+        }
+
+        /* Remove inner card border */
+        .carousel-card .card {
+            background-color: #3c4047;
+            color: white;
+            border: none;
+        }
+
+        .carousel-card .card-body {
+            color: white;
+            padding: 15px;
+        }
+
+        .carousel-card.center-card .card-body {
+            font-weight: bold;
+        }
+
+    /* Updated gradient fades on the edges to match background */
+    .carousel-container::before,
+    .carousel-container::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 10%;
+        pointer-events: none;
+        background: linear-gradient(to right, #222326, rgba(34, 35, 38, 0));
+        z-index: 5;
+    }
+
+    .carousel-container::before {
+        left: 0;
+    }
+
+    .carousel-container::after {
+        right: 0;
+        transform: rotate(180deg);
+    }
+
+    .carousel-button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .carousel-button {
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 50%;
+        margin: 0 10px;
+        z-index: 10;
+    }
+
+    .carousel-card .activity-buttons {
+        display: none;
+    }
+
+    .carousel-card.center-card .activity-buttons {
+        display: block;
+    }
 </style>
-<!-- Header-->
-<header class="bg-dark py-5" style="margin-top: 0; padding-top: 0;">
-    <div class="container px-5">
-        <div class="row gx-5 justify-content-between align-items-center">
-            <!-- Left side: Logo and Buttons -->
-            <div class="col-lg-4 d-flex flex-column align-items-center align-items-lg-start text-center text-lg-start">
-                <img src="~/images/VictuZLogoTransparent.webp" alt="VictuZ Logo" style="height: 200px;" />
-                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center p-2 mt-4">
-                    @if (!User.Identity.IsAuthenticated)
-                    {
-                        <!-- Not logged in: link to Registration page -->
-                        <a class="btn btn-lg px-4 me-sm-3" href="https://localhost:7141/Identity/Account/Register" style="background-color: #5ac6aa; color: white;">
-                            Word lid!
-                        </a>
-                    }
-                    else if (User.IsInRole("Visitor"))
-                    {
-                        <!-- Logged in as Visitor: link to Memberships page -->
-                        <a class="btn btn-lg px-4 me-sm-3" href="https://localhost:7141/Memberships" style="background-color: #5ac6aa; color: white;">
-                            Word lid!
-                        </a>
-                    }
-                    else if (User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin"))
-                    {
-                        <!-- Logged in as Member, Staff, or Admin: show alert -->
-                        <a class="btn btn-lg px-4 me-sm-3" href="javascript:void(0);" onclick="alert('Je bent al lid van VictuZ!');" style="background-color: #5ac6aa; color: white;">
-                            Word lid!
-                        </a>
-                    }
 
-                    <!-- Activiteiten button -->
-                    <a class="btn btn-outline-light btn-lg px-4" href="https://localhost:7141/Activities">Activiteiten</a>
-                </div>
-            </div>
-
-            <!-- Right side: Next Upcoming Activity -->
-            <div class="col-lg-6 mt-5 mt-lg-0">
-                    <div class="card shadow-sm p-4 h-100 hover-card">
-                        <h4 class="text-center">Volgende Activiteit</h4>
-                    <div class="card-body">
-                        <h5 class="card-title">@Model.FirstOrDefault()?.Activity.Name</h5>
-                        <p class="card-text">@Model.FirstOrDefault()?.Activity.Body"</p>
-                        <div class="d-flex justify-content-between mb-3">
-                            <small class="text-muted">Location: @Model.FirstOrDefault()?.Activity.Location</small>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <small class="text-muted">Date: @Model.FirstOrDefault()?.Activity.DateDue.ToString("MMMM dd, h:mm tt")"</small>
-                        </div>
-                    </div>
-                    <div class="card-footer border-top-0">
-                        <small class="text-muted">@Model.FirstOrDefault()?.Activity.Registered / @Model.FirstOrDefault()?.Activity.MaxCapacity Ingeschreven</small>
-                        <div class="d-flex justify-content-end">
-                            @if (Model.FirstOrDefault()?.IsUserRegistered == true)
-                            {
-                                <form asp-action="Register" asp-controller="Activities" asp-route-id="@Model.FirstOrDefault()?.Activity.ActivityId" method="post" style="display:inline;">
-                                    <input type="hidden" name="returnUrl" value="~/">
-                                    <button type="submit" class="btn btn-danger">Delete Registration</button>
-                                </form>
-                            }
-                            else if (Model.FirstOrDefault()?.Activity.Registered >= Model.FirstOrDefault()?.Activity.MaxCapacity)
-                            {
-                                <a class="btn btn-secondary disabled" aria-disabled="true">Vol</a>
-                            }
-                            else if (!User.Identity.IsAuthenticated)
-                            {
-                                <a class="btn btn-secondary disabled" aria-disabled="true">Login om in te schrijven</a>
-                            }
-                            else
-                            {
-                                <form asp-action="Register" asp-controller="Activities" asp-route-id="@Model.FirstOrDefault()?.Activity.ActivityId" method="post" style="display:inline;">
-                                    
-                                    <button type="submit" class="btn" style="background-color: #20c997; color: white;">Inschrijven</button>
-                                    <input type="hidden" name="returnUrl" value="~/">
-                                </form>
-                            }
-                        </div>
-                    </div>
-
-            </div>
-            </div>
-        </div>
-    </div>
-</header>
+<div class="header-container">
+    <h2>WELKOM BIJ VICTUZ!</h2>
+</div>
 
 <div class="container mt-5">
-    <div class="row justify-content-md-center">
-        <div class="col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6">
-            <h2 class="mb-4 display-5 text-center">Activiteiten</h2>
-
-            <hr class="w-50 mx-auto mb-5 mb-xl-9 border-dark-subtle">
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="row">
-        @if (Model != null && Model.Any())
-        {
-            int count = 0;
-            @foreach (var item in Model)
+    <div class="carousel-container">
+        <div class="carousel-track">
+            @if (upcomingActivities.Any())
             {
-                count++;
-                <div class="col-md-4 mb-4 d-flex activity-card @(count > 6 ? "d-none" : "")">
-                    <div class="card h-100 shadow-sm" style="width: 100%; position: relative;">
+                foreach (var item in upcomingActivities)
+                {
+                    <div class="carousel-card @(item == upcomingActivities[1] ? "center-card" : "")">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">@item.Activity.Name</h5>
+                                <p class="card-text">@item.Activity.Body</p>
+                                <small class="text-muted">Location: @item.Activity.Location</small>
+                                <small class="text-muted">Date: @item.Activity.DateDue.ToString("MMMM dd, h:mm tt")</small>
 
-                        <div class="card-body d-flex flex-column">
-
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="card-title">@Html.DisplayFor(modelItem => item.Activity.Name)</h5>
-                            </div>
-
-                            <p class="card-text">@Html.DisplayFor(modelItem => item.Activity.Body)</p>
-
-                            <div class="d-flex justify-content-between mb-3">
-                                <small class="text-muted">Locatie: @Html.DisplayFor(modelItem => item.Activity.Location)</small>
-                            </div>
-
-                            <div class="d-flex justify-content-between">
-                                <small class="text-muted">Datum: @item.Activity.DateDue.ToString("MMMM dd, h:mm tt")</small>
-                            </div>
-                        </div>
-
-
-                        <div class="card-footer bg-white border-top-0 mt-auto">
-                            <div class="d-flex justify-content-end mb-2">
-                                <small class="text-muted">@Html.DisplayFor(modelItem => item.Activity.Registered) / @Html.DisplayFor(modelItem => item.Activity.MaxCapacity) Ingeschreven</small>
-                            </div>
-
-                            <div class="d-flex justify-content-end">
-                                @if (item.Activity.Registered >= item.Activity.MaxCapacity)
-                                {
-                                    <a class="btn btn-secondary disabled" aria-disabled="true">Vol</a>
-                                }
+                                <div class="d-flex justify-content-end mt-3 activity-buttons">
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        @if (item.IsUserRegistered)
+                                        {
+                                            <form asp-action="Unregister" asp-route-id="@item.Activity.ActivityId" method="post" style="display:inline;">
+                                                <button type="submit" class="btn btn-danger">Uitschrijven</button>
+                                            </form>
+                                        }
+                                        else if (item.Activity.Registered < item.Activity.MaxCapacity)
+                                        {
+                                            <a asp-action="Register" asp-route-id="@item.Activity.ActivityId" class="btn" style="background-color: #20c997; color: white;">Inschrijven</a>
+                                        }
+                                        else
+                                        {
+                                            <a class="btn btn-secondary disabled" aria-disabled="true">Vol</a>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <a class="btn btn-secondary disabled" aria-disabled="true">Log in om in te schrijven</a>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
             }
-        }
-        else
-        {
-            <p>Geen activiteiten gevonden.</p>
-        }
+            else
+            {
+                <p>No upcoming activities found.</p>
+            }
+        </div>
+    </div>
+
+    <div class="carousel-button-container">
+        <button class="carousel-button carousel-button-prev">❮</button>
+        <button class="carousel-button carousel-button-next">❯</button>
     </div>
 </div>
 
-<script src="https://kit.fontawesome.com/8073668e9d.js" crossorigin="anonymous"></script>
 <script>
-    document.getElementById('show-more-btn').addEventListener('click', function () {
-        // Show all hidden activity cards
-        document.querySelectorAll('.activity-card.d-none').forEach(function (card) {
-            card.classList.remove('d-none');
-        });
+    document.addEventListener('DOMContentLoaded', function () {
+        const track = document.querySelector('.carousel-track');
+        const cards = Array.from(track.children);
+        const cardWidth = cards[0].offsetWidth;
+        let currentIndex = 0;
 
-        // Hide the "Show More" button after revealing the hidden activities
-        this.style.display = 'none';
+        if (cards.length === 3) {
+            const firstClone = track.firstElementChild.cloneNode(true);
+            const lastClone = track.lastElementChild.cloneNode(true);
+            track.appendChild(firstClone);
+            track.insertBefore(lastClone, track.firstElementChild);
+            currentIndex = 1;
+        }
+
+        track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+        updateCenterCard();
+
+        function moveToNext() {
+            currentIndex++;
+            track.style.transition = 'transform 0.5s ease';
+            track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+            updateCenterCard();
+
+            if (currentIndex === cards.length) {
+                setTimeout(() => {
+                    track.style.transition = 'none';
+                    currentIndex = 0;
+                    track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+                    updateCenterCard();
+                }, 500);
+            }
+        }
+
+        function moveToPrev() {
+            currentIndex--;
+            track.style.transition = 'transform 0.5s ease';
+            track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+            updateCenterCard();
+
+            if (currentIndex < 0) {
+                setTimeout(() => {
+                    track.style.transition = 'none';
+                    currentIndex = cards.length - 1;
+                    track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+                    updateCenterCard();
+                }, 500);
+            }
+        }
+
+        function updateCenterCard() {
+            cards.forEach((card, index) => {
+                card.classList.remove('center-card');
+                const buttonContainer = card.querySelector('.activity-buttons');
+                if (buttonContainer) {
+                    buttonContainer.style.display = 'none';
+                }
+
+                if (index === currentIndex % cards.length) {
+                    card.classList.add('center-card');
+                    const buttonContainer = card.querySelector('.activity-buttons');
+                    if (buttonContainer) {
+                        buttonContainer.style.display = 'block';
+                    }
+                }
+            });
+        }
+
+        document.querySelector('.carousel-button-next').addEventListener('click', moveToNext);
+        document.querySelector('.carousel-button-prev').addEventListener('click', moveToPrev);
+
+        // Auto-slide every 5 seconds
+        setInterval(moveToNext, 5000);
     });
 </script>
 
 
-    <div class="d-flex justify-content-center p-3 ">
-    <a href="https://localhost:7141/Activities" class="btn" style="background-color: #5ac6aa; color: white;">Bekijk alle activiteiten</a>
-        </div>          
-            <section class="py-3 py-md-5 py-xl-8">
-                <div class="container">
-                    <div class="row justify-content-md-center">
-                        <div class="col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6">
-                            <h2 class="mb-4 display-5 text-center">Sponsors</h2>
 
-                            <hr class="w-50 mx-auto mb-5 mb-xl-9 border-dark-subtle">
-                        </div>
-                    </div>
-                </div>
 
-                <div class="container overflow-hidden">
+
+
+
+
+
+
+               @*  <div class="container overflow-hidden">
                     <div class="row gy-5">
                         <div class="col-6 col-md-3 align-self-center text-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="125" height="65" viewBox="0 0 125 65" fill="currentColor" class="text-dark">
@@ -231,5 +313,4 @@
                             </svg>
                         </div>
                     </div>
-                </div>
-            </section>
+                </div> *@
