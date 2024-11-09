@@ -5,7 +5,8 @@
         <div class="card shadow-sm">
             <div class="card-body">
                 <h2 class="text-center mb-4">Converteer Suggestie naar activiteit</h2>
-                <form asp-action="ConvertToActivity" method="post">
+
+                <form asp-action="ConvertToActivity" method="post" enctype="multipart/form-data">
                     <input type="hidden" asp-for="SuggestionId" />
 
                     <div class="form-floating mb-3">
@@ -23,11 +24,15 @@
                         <label asp-for="Location">Locatie</label>
                     </div>
 
+                    <div class="mb-3">
+                        <label for="imageFile">Upload Afbeelding</label>
+                        <input type="file" name="ImageFile" class="form-control" id="imageFile" />
+                    </div>
+
                     <div class="form-floating mb-3">
                         <input asp-for="Organizer" class="form-control" placeholder="Location" required />
                         <label asp-for="Organizer">Host</label>
                     </div>
-
 
                     <div class="form-floating mb-3">
                         <input asp-for="MaxCapacity" type="number" class="form-control" placeholder="Max Capacity" required min="1" />
@@ -39,6 +44,7 @@
                         <label asp-for="DateDue">Datum</label>
                         <span asp-validation-for="DateDue" class="text-danger"></span>
                     </div>
+
 
                     <button type="submit" class="btn w-100" style="background-color: #5ac6aa; color: white;">Maak activiteit</button>
                     <a asp-action="Index" class="btn btn-secondary w-100 mt-2">Annuleer</a>
