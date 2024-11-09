@@ -11,19 +11,34 @@
 }
 
 <style>
+    /* Style for the header */
+    .header-container {
+        position: relative;
+        background: linear-gradient(45deg, #11d4cf, #11d4a1); /* Diagonal gradient */
+        color: white;
+        padding: 40px 0; /* Add some padding to give space */
+        margin-bottom: 30px; /* Add some margin at the bottom to separate from the carousel */
+    }
 
+        .header-container h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+    /* Carousel styles */
     .carousel-container {
         position: relative;
         overflow: hidden;
         width: 100%;
-        padding: 20px 0; 
+        padding: 20px 0;
         margin-top: 20px;
     }
 
     .carousel-track {
         display: flex;
         transition: transform 0.5s ease;
-        gap: 15px; 
+        gap: 15px;
     }
 
     .carousel-card {
@@ -31,33 +46,30 @@
         box-sizing: border-box;
         padding: 10px;
         transition: transform 0.3s ease, opacity 0.3s ease;
-        background-color: #3c4047; 
-        color: white; 
+        background-color: #3c4047;
+        color: white;
         border-radius: 12px;
     }
 
-
         .carousel-card.center-card {
-            transform: scale(1.1); 
+            transform: scale(1.1);
             opacity: 1;
         }
 
-
         .carousel-card:not(.center-card) {
-            transform: scale(0.9); 
-            opacity: 0.6; 
+            transform: scale(0.9);
+            opacity: 0.6;
         }
 
         /* Remove inner card border */
         .carousel-card .card {
-            background-color: #3c4047; 
-            color: white; 
-            border: none; 
+            background-color: #3c4047;
+            color: white;
+            border: none;
         }
 
-
         .carousel-card .card-body {
-            color: white; 
+            color: white;
             padding: 15px;
         }
 
@@ -87,7 +99,6 @@
         transform: rotate(180deg);
     }
 
-
     .carousel-button-container {
         display: flex;
         justify-content: center;
@@ -105,7 +116,6 @@
         z-index: 10;
     }
 
-
     .carousel-card .activity-buttons {
         display: none;
     }
@@ -115,8 +125,11 @@
     }
 </style>
 
+<div class="header-container">
+    <h2>WELKOM BIJ VICTUZ!</h2>
+</div>
+
 <div class="container mt-5">
-    <h2 class="text-center">Activiteiten Carousel</h2>
     <div class="carousel-container">
         <div class="carousel-track">
             @if (upcomingActivities.Any())
@@ -179,7 +192,6 @@
         const cardWidth = cards[0].offsetWidth;
         let currentIndex = 0;
 
-
         if (cards.length === 3) {
             const firstClone = track.firstElementChild.cloneNode(true);
             const lastClone = track.lastElementChild.cloneNode(true);
@@ -187,7 +199,6 @@
             track.insertBefore(lastClone, track.firstElementChild);
             currentIndex = 1;
         }
-
 
         track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
         updateCenterCard();
@@ -224,7 +235,6 @@
             }
         }
 
-
         function updateCenterCard() {
             cards.forEach((card, index) => {
                 card.classList.remove('center-card');
@@ -233,12 +243,11 @@
                     buttonContainer.style.display = 'none';
                 }
 
-
                 if (index === currentIndex % cards.length) {
                     card.classList.add('center-card');
                     const buttonContainer = card.querySelector('.activity-buttons');
                     if (buttonContainer) {
-                        buttonContainer.style.display = 'block'; 
+                        buttonContainer.style.display = 'block';
                     }
                 }
             });
@@ -251,6 +260,7 @@
         setInterval(moveToNext, 5000);
     });
 </script>
+
 
 
 
