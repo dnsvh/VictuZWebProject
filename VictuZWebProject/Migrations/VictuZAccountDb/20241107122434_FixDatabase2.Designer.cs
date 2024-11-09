@@ -12,8 +12,8 @@ using VictuZWebProject.Data;
 namespace VictuZWebProject.Migrations.VictuZAccountDb
 {
     [DbContext(typeof(VictuZAccountDbContext))]
-    [Migration("20241106093636_mssql3")]
-    partial class mssql3
+    [Migration("20241107122434_FixDatabase2")]
+    partial class FixDatabase2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
