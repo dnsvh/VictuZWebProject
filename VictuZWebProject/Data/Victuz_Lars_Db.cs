@@ -13,7 +13,9 @@ namespace VictuZ_Lars.Data
         public DbSet<SuggestionLike> SuggestionLike { get; set; }
         public DbSet<Memberships> Memberships { get; set; }
         public DbSet<Store> Store { get; set; }
-        public DbSet<Category> Categories { get; set; } // Add this line
+        public DbSet<Category> Categories { get; set; } 
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

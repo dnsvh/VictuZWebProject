@@ -170,6 +170,16 @@
                             <a class="nav-link" asp-area="" asp-controller="Stores" asp-action="Index">Winkel</a>
                         </li>
                     </ul>
+
+                    <ul>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="ShoppingCarts" asp-action="Index">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span id="cartItemCount">@ViewData["CartItemCount"]</span>
+                            </a>
+                        </li>
+                    </ul>
+
                     <partial name="_LoginPartial" />
                 </div>
             </div>

@@ -42,6 +42,16 @@
                                 }
                                 <a asp-action="Index" class="btn btn-secondary">Terug naar de lijst</a>
                             </div>
+
+                            <!-- Formulier voor toevoegen aan winkelwagen -->
+                            <div class="mt-4">
+                                <form action="@Url.Action("AddToCart", "ShoppingCart")" method="post">
+                                    <input type="hidden" name="storeId" value="@Model.Id" />
+                                    <input type="number" name="quantity" value="1" min="1" class="form-control mb-2" />
+                                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                                </form>
+                            </div>
+
                         </div>
                     </div> <!-- End of Row -->
                 </div>

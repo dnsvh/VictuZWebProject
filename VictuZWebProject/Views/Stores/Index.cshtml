@@ -125,7 +125,9 @@
                                     <!-- Als gebruiker in een geautoriseerde rol zit, toon de koopknop -->
                                     @if (User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin"))
                                     {
-                                        <a asp-action="Buy" asp-route-id="@item.Id" class="btn btn-primary me-2">Koop</a>
+                                        <form asp-action="AddToCart" asp-route-id="@item.Id" method="post">
+                                            <button type="submit" class="btn btn-primary me-2">Koop</button>
+                                        </form>
                                     }
                                     else
                                     {
@@ -136,12 +138,15 @@
                                 else
                                 {
                                     <!-- Voor producten zonder restricties, toon standaard koopknop -->
-                                    <a asp-action="Buy" asp-route-id="@item.Id" class="btn btn-primary me-2">Koop</a>
+                                    <form asp-action="AddToCart" asp-route-id="@item.Id" method="post">
+                                        <button type="submit" class="btn btn-primary me-2">Koop</button>
+                                    </form>
                                 }
 
                                 <!-- Details knop -->
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn" style="background-color: #20c997; color: white;">Details bekijken</a>
                             </div>
+
                         </div>
 
                     </div>
