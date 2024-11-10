@@ -118,7 +118,7 @@ namespace VictuZWebProject.Areas.Identity.Pages.Account
                     var userRoles = await _signInManager.UserManager.GetRolesAsync(user);
                     if (userRoles.Contains("Pending"))
                     {
-                        ModelState.AddModelError(string.Empty, "Uw account is nog niet geaccepteerd, probeer het later opnieuw!");
+                        ModelState.AddModelError(string.Empty, "Uw account is nog niet geaccepteerd, een administrator zal uw aanvraag zo snel mogelijk bekijken!");
                         return Page();
                     }
                 }
