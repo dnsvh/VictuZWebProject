@@ -153,6 +153,34 @@
 
 @section Scripts {
     <script>
+        function addToCart(storeId, quantity) {
+        $.ajax({
+            url: '@Url.Action("AddToCart", "ShoppingCarts")', // Pas dit aan naar de juiste AddToCart actie URL in de ShoppingCarts controller
+            type: 'POST',
+            data: {
+                storeId: storeId,
+                quantity: quantity
+            },
+            success: function (result) {
+                if (result.success) {
+                    alert("Het product is toegevoegd aan de winkelwagen!");
+
+                    // Werk het winkelwagenaantal bij
+                    updateCartCount(result.cartItemCount);
+
+                    // Werk de totale prijs bij
+                    updateCartTotalPrice(result.cartTotalPrice);
+                } else {
+                    alert("Er is een fout opgetreden: " + result.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Er is een fout opgetreden: " + error);
+                alert("Er is een fout opgetreden bij het toevoegen van het product aan de winkelwagen.");
+            }
+        });
+    }
+
         function updateCart(storeId, quantity) {
             $.ajax({
                 url: '@Url.Action("UpdateCart", "ShoppingCarts")', // Dynamisch de juiste URL halen voor de AddToCart actie in de ShoppingCarts controller

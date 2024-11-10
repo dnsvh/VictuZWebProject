@@ -125,6 +125,12 @@
         width: 100%;
     }
 
+    .quantity-input {
+        width: 80px; 
+        padding: 0.2rem; 
+        text-align: center;
+    }
+
 </style>
 
 <section class="h-100 h-custom">
@@ -148,43 +154,45 @@
                                         @foreach (var item in Model)
                                         {
                                             <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                                <div class="col-md-2 col-lg-2 col-xl-2">
+                                                <div class="col-md-2 col-lg-2 col-xl-2 d-flex flex-column align-items-center">
                                                     @if (item.Store != null)
                                                     {
                                                         <img src="@item.Store.ImageUrl" class="img-fluid rounded-3" alt="@item.Name">
-                                                        <h6 class="text-muted">@item.Store.Category</h6> <!-- Gebruik de Category van de Store -->
+                                                        <h6 class="text-muted">@item.Store.Category</h6>
                                                     }
                                                     else
                                                     {
                                                         <span class="text-muted">Geen product informatie beschikbaar</span>
                                                     }
                                                 </div>
-                                                <div class="col-md-3 col-lg-3 col-xl-3">
+
+                                                <div class="col-md-3 col-lg-3 col-xl-3 d-flex justify-content-center">
                                                     <h6 class="mb-0">@item.Name</h6>
                                                 </div>
-                                                <div class="quantity-controls">
-                                                    <!-- Verlaag de hoeveelheid (min knop) -->
+
+                                                <div class="col-md-3 d-flex justify-content-center align-items-center">
+                                                    <!-- Verlaag de hoeveelheid -->
                                                     <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
                                                             onclick="updateQuantity(@item.StoreId, -1)">
                                                         <i class="fa-solid fa-minus"></i>
                                                     </button>
 
-                                                    <!-- Hoeveelheid weergeven (invoerveld) -->
-                                                    <input type="number" id="quantity-@item.Id" value="1" min="1" class="quantity-input" readonly />
+                                                    <!-- Hoeveelheid -->
+                                                    <input type="number" id="quantity-@item.Id" value="1" min="1" class="quantity-input text-center" readonly />
 
-                                                    <!-- Verhoog de hoeveelheid (plus knop) -->
+                                                    <!-- Verhoog de hoeveelheid -->
                                                     <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
                                                             onclick="updateQuantity(@item.StoreId, 1)">
                                                         <i class="fa-solid fa-plus"></i>
                                                     </button>
                                                 </div>
-                                                <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+
+                                                <div class="col-md-2 col-lg-2 col-xl-2 d-flex justify-content-center">
                                                     <h6 class="mb-0">€ @item.Price</h6>
                                                 </div>
-                                                <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                                                    <!-- Formulier voor het verwijderen van een product -->
+
+                                                <div class="col-md-1 col-lg-1 col-xl-1 d-flex justify-content-center">
                                                     <form asp-action="RemoveFromCart" asp-route-storeId="@item.StoreId" method="post" style="display:inline;">
-                                                        <!-- Als de gebruiker op de "X" klikt, wordt dit formulier ingediend -->
                                                         <button type="submit" class="btn btn-link text-muted" style="border: none; background: none;">
                                                             <i class="fa-solid fa-x"></i>
                                                         </button>
@@ -192,12 +200,13 @@
                                                 </div>
                                             </div>
                                         }
-
                                     }
+
 
                                     <div class="pt-5">
                                         <h6 class="mb-0">
-                                            <a href="#!" class="text-body">
+                                            <a class="nav-link" asp-area="" asp-controller="Stores" asp-action="Index"
+                                               class="text-body">
                                                 <i class="fa-solid fa-arrow-left"></i>Back to shop
                                             </a>
                                         </h6>
@@ -213,17 +222,6 @@
                                     <div class="d-flex justify-content-between mb-4">
                                         <h5 class="text-uppercase">Items</h5>
                                         <h5>€ @Model.Sum(i => i.Price * i.Quantity)</h5>
-                                    </div>
-
-                                    <h5 class="text-uppercase mb-3">Shipping</h5>
-
-                                    <div class="mb-4 pb-2">
-                                        <select data-mdb-select-init>
-                                            <option value="1">Standard-Delivery- €5.00</option>
-                                            <option value="2">Two</option>
-                                            <option value="3">Three</option>
-                                            <option value="4">Four</option>
-                                        </select>
                                     </div>
 
                                     <h5 class="text-uppercase mb-3">Give code</h5>
