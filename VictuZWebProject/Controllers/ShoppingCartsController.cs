@@ -55,10 +55,30 @@ namespace VictuZWebProject.Controllers
         [HttpPost]
         public IActionResult AddToCart(int storeId, int quantity)
         {
-            _shoppingCartService.AddToCart(storeId, quantity);
-            var cartItemCount = _shoppingCartService.GetCartItems().Count; // Haal het aantal winkelwagentjes op
-            return Json(new { success = true, cartItemCount = cartItemCount, message = "Product toegevoegd aan winkelwagen!" });
+            var result = _shoppingCartService.AddToCart(storeId, quantity);
+
+            // Haal het aantal winkelwagentjes op na de wijziging
+            var cartItemCount = _shoppingCartService.GetCartItems().Count;
+
+            // Als de operatie niet succesvol was, geef een foutmelding terug
+            if (!result.Success)
+            {
+                return Json(new { success = false, message = result.Message });
+            }
+
+            // Als de operatie succesvol was, geef het aantal items, totaalprijs en succesbericht terug
+            return Json(new
+            {
+                success = true,
+                cartItemCount = cartItemCount,
+                cartTotalPrice = result.CartTotalPrice,
+                message = "Winkelwagen bijgewerkt!"
+            });
         }
+
+
+
+
 
         public IActionResult RemoveFromCart(int storeId)
         {

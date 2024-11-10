@@ -16,6 +16,8 @@ namespace VictuZ_Lars.Data
         public DbSet<Category> Categories { get; set; } 
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
+        public DbSet<CheckoutModel> CheckoutModels { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

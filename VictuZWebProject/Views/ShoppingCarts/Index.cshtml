@@ -144,7 +144,7 @@
                                 <div class="p-5">
                                     <div class="d-flex justify-content-between align-items-center mb-5">
                                         <h1 class="fw-bold mb-0">Shopping Cart</h1>
-                                        <h6 class="mb-0 text-muted">@Model.Count() items</h6>
+                                        <h6 class="mb-0 text-muted" id="cartItemCountDisplay">@Model.Count() items</h6>
                                     </div>
 
                                     <hr class="my-4">
@@ -240,10 +240,13 @@
                                         <h5>€ @(Model.Sum(i => i.Price * i.Quantity))</h5>
                                     </div>
 
-                                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-block btn-lg"
-                                            data-mdb-ripple-color="dark">
-                                        Register
-                                    </button>
+                                    <form method="get" asp-controller="CheckoutModels" asp-action="Index">
+                                        <button type="submit" class="btn btn-dark btn-block btn-lg"
+                                                data-mdb-button-init data-mdb-ripple-init data-mdb-ripple-color="dark">
+                                            Afrekenen
+                                        </button>
+                                    </form>
+
 
                                 </div>
                             </div>
@@ -259,10 +262,9 @@
     <script src="https://kit.fontawesome.com/b707baea87.js" crossorigin="anonymous"></script>
 
     <script>
-                // Functie om een product toe te voegen aan de winkelwagen via een AJAX-aanroep
-                function addToCart(storeId, quantity) {
+                    function addToCart(storeId, quantity) {
             $.ajax({
-                url: '@Url.Action("AddToCart", "ShoppingCarts")', // De juiste actie in de ShoppingCarts controller
+                url: '@Url.Action("AddToCart", "ShoppingCarts")', // Zorg ervoor dat dit de juiste actie is
                 type: 'POST',
                 data: {
                     storeId: storeId,
@@ -270,18 +272,21 @@
                 },
                 success: function (result) {
                     if (result.success) {
-                        // Werk de item count en totale prijs bij op de pagina
+                        // Werk de winkelwagenteller en de totaalprijs bij op de pagina
                         updateCartDisplay(result.cartItemCount, result.cartTotalPrice);
 
-                        // Zoek de input voor de hoeveelheid van het specifieke product en verhoog het
+                        // Zoek de input voor de hoeveelheid van dit specifieke product
                         var quantityInput = document.getElementById('quantity-' + storeId);
                         if (quantityInput) {
-                            // Verhoog de hoeveelheid van het product (bijvoorbeeld met 1)
-                            quantityInput.value = parseInt(quantityInput.value) + 1;
+                            // Update de hoeveelheid van dit product
+                            quantityInput.value = parseInt(quantityInput.value) + quantity;
                         }
 
-                        // Geef een bevestiging dat het product is toegevoegd of de hoeveelheid is aangepast
-                        alert("Het product is toegevoegd of de hoeveelheid is bijgewerkt in de winkelwagen!");
+                        // Werk de teller van de items in de winkelwagen bij
+                        document.getElementById('cartItemCountDisplay').textContent = result.cartItemCount + " items";
+
+                        // Optioneel: Toon een succesbericht
+                        alert("Winkelwagen bijgewerkt!");
                     } else {
                         alert("Er is een fout opgetreden: " + result.message);
                     }
@@ -293,8 +298,9 @@
             });
         }
 
-                // Functie om het winkelwagenaantal en het totaalbedrag bij te werken
-        function updateCartDisplay(cartItemCount, cartTotalPrice) {
+
+
+                   function updateCartDisplay(cartItemCount, cartTotalPrice) {
             // Werk het aantal items bij in de winkelwagen
             var cartCountElement = document.getElementById('cartItemCount');
             if (cartCountElement) {
@@ -306,8 +312,10 @@
             if (totalPriceElement) {
                 totalPriceElement.textContent = "€ " + cartTotalPrice.toFixed(2);
             }
-        }
 
+            // Werk de weergave van de winkelwagenteller bij (de tekst met 'items')
+            document.getElementById('cartItemCountDisplay').textContent = cartItemCount + " items";
+        }
 
 
     </script>

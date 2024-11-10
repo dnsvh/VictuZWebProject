@@ -82,19 +82,36 @@ namespace VictuZWebProject.Services
         }
 
         // Voeg een product toe aan de winkelwagen
-        public void AddToCart(int storeId, int quantity)
+        public (bool Success, int CartItemCount, decimal CartTotalPrice, string Message) AddToCart(int storeId, int quantity)
         {
-            var cart = GetOrCreateCart(); // Haal de winkelwagen op (of maak een nieuwe als die niet bestaat)
-            var store = _context.Store.FirstOrDefault(s => s.Id == storeId); // Haal de winkel uit de database
-            if (store == null || cart == null) return;
+            var cart = GetOrCreateCart();
+            var store = _context.Store.FirstOrDefault(s => s.Id == storeId);
 
-            var existingItem = cart.Items.FirstOrDefault(i => i.StoreId == storeId); // Kijk of het product al in de winkelwagen zit
+            if (store == null || cart == null)
+                return (false, 0, 0, "Product niet gevonden");
+
+            var existingItem = cart.Items.FirstOrDefault(i => i.StoreId == storeId);
+
             if (existingItem != null)
             {
-                existingItem.Quantity += quantity; // Verhoog het aantal van dit product
+                // Als de quantity positief is, voeg het toe
+                if (quantity > 0)
+                {
+                    existingItem.Quantity += quantity;
+                }
+                // Als de quantity negatief is, verminder de hoeveelheid (zorg ervoor dat de hoeveelheid niet negatief wordt)
+                else if (existingItem.Quantity + quantity >= 0)
+                {
+                    existingItem.Quantity += quantity;
+                }
+                else
+                {
+                    return (false, cart.Items.Count, cart.Items.Sum(i => i.Quantity * i.Price), "Niet genoeg voorraad om te verwijderen");
+                }
             }
-            else
+            else if (quantity > 0)
             {
+                // Voeg nieuw item toe als het product nog niet in de winkelwagen zit
                 var newItem = new ShoppingCartItem
                 {
                     StoreId = storeId,
@@ -104,13 +121,22 @@ namespace VictuZWebProject.Services
                 };
                 cart.Items.Add(newItem);
             }
+            else
+            {
+                return (false, cart.Items.Count, cart.Items.Sum(i => i.Quantity * i.Price), "Product is nog niet in de winkelwagen");
+            }
 
             // Update het aantal producten in de sessie
             var cartItemCount = cart.Items.Sum(i => i.Quantity);
-            _httpContextAccessor.HttpContext.Session.SetInt32("CartItemCount", cartItemCount);
+            var cartTotalPrice = cart.Items.Sum(i => i.Quantity * i.Price);  // Bereken de totaalprijs
 
+            _httpContextAccessor.HttpContext.Session.SetInt32("CartItemCount", cartItemCount);
             _context.SaveChanges();
+
+            return (true, cartItemCount, cartTotalPrice, string.Empty);
         }
+
+
 
 
         // Verkrijg de winkelwagenitems
