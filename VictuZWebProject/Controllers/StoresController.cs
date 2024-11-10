@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using VictuZWebProject.Models;
 using VictuZ_Lars.Data;
 using Microsoft.AspNetCore.Authorization;
+using VictuZWebProject.Services;
 
 namespace VictuZWebProject.Controllers
 {
@@ -15,11 +16,13 @@ namespace VictuZWebProject.Controllers
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly VictuZ_Lars_Db _context;
+        private readonly ShoppingCartService _shoppingCartService;
 
-        public StoresController(IWebHostEnvironment webHostEnvironment, VictuZ_Lars_Db context)
+        public StoresController(IWebHostEnvironment webHostEnvironment, VictuZ_Lars_Db context, ShoppingCartService shoppingCartService)
         {
             _webHostEnvironment = webHostEnvironment;
             _context = context;
+            _shoppingCartService = shoppingCartService;
         }
 
         [Authorize(Roles = "Admin,Staff")]
@@ -34,8 +37,6 @@ namespace VictuZWebProject.Controllers
 
             return View();
         }
-
-
 
         // GET: Stores
         public async Task<IActionResult> Index(string searchString)
@@ -53,6 +54,7 @@ namespace VictuZWebProject.Controllers
 
             return View(await stores.ToListAsync());
         }
+
 
         // GET: Stores/Details/5
         public async Task<IActionResult> Details(int? id)

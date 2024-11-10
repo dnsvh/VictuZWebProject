@@ -1,0 +1,325 @@
+﻿@model List<ShoppingCartItem>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<style>
+
+    .card-registration .select-input.form-control[readonly]:not([disabled]) {
+    font-size: 1rem;
+    line-height: 2.15;
+    padding-left: .75em;
+    padding-right: .75em;
+    }
+
+    .card-registration .select-arrow {
+    top: 13px;
+    }
+
+    /* Algemene stijlen */
+    .h-100 {
+        height: 100%;
+    }
+
+    .h-custom {
+        background-color: #F0F0F0;
+    }
+
+    .card-registration {
+        border-radius: 15px;
+    }
+
+    .card-body {
+        padding: 0;
+    }
+
+        .card-body .row.g-0 {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+    /* Stijlen voor het winkelmandgedeelte */
+    .img-fluid {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .text-muted {
+        color: #6c757d;
+    }
+
+    .fw-bold {
+        font-weight: bold;
+    }
+
+    .mb-0 {
+        margin-bottom: 0;
+    }
+
+    /* Stijlen voor de productdetails */
+    .form-control-sm {
+        padding: .375rem .75rem;
+        font-size: .875rem;
+    }
+
+    .form-control-lg {
+        padding: .75rem 1.25rem;
+        font-size: 1.25rem;
+    }
+
+    .text-end {
+        text-align: right;
+    }
+
+    .text-body {
+        color: #0d6efd;
+    }
+
+    .text-uppercase {
+        text-transform: uppercase;
+    }
+
+    .bg-body-tertiary {
+        background-color: #f8f9fa;
+    }
+
+    .pt-5 {
+        padding-top: 3rem;
+    }
+
+    /* Toevoeging van schaduwen, marges en overige layoutstijlen */
+    .card-registration-2 .p-5 {
+        padding: 2rem;
+    }
+
+    .d-flex {
+        display: flex;
+    }
+
+    .justify-content-between {
+        justify-content: space-between;
+    }
+
+    .align-items-center {
+        align-items: center;
+    }
+
+    .mb-5 {
+        margin-bottom: 3rem;
+    }
+
+    .hr {
+        border-top: 1px solid #e0e0e0;
+    }
+
+    .btn-dark {
+        background-color: #212529;
+    }
+
+    .btn-block {
+        display: block;
+        width: 100%;
+    }
+
+    .quantity-input {
+        width: 80px; 
+        padding: 0.2rem; 
+        text-align: center;
+    }
+
+</style>
+
+<section class="h-100 h-custom">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12">
+                <div class="card card-registration card-registration-2">
+                    <div class="card-body p-0">
+                        <div class="row g-0">
+                            <div class="col-lg-8">
+                                <div class="p-5">
+                                    <div class="d-flex justify-content-between align-items-center mb-5">
+                                        <h1 class="fw-bold mb-0">Winkelwagen</h1>
+                                        <h6 class="mb-0 text-muted" id="cartItemCountDisplay">@Model.Count() items</h6>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        @foreach (var item in Model)
+                                        {
+                                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                                <div class="col-md-2 col-lg-2 col-xl-2 d-flex flex-column align-items-center">
+                                                    @if (item.Store != null)
+                                                    {
+                                                        <img src="@item.Store.ImageUrl" class="img-fluid rounded-3" alt="@item.Name">
+                                                        <h6 class="text-muted">@item.Store.Category</h6>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">Geen product informatie beschikbaar</span>
+                                                    }
+                                                </div>
+
+                                                <div class="col-md-3 col-lg-3 col-xl-3 d-flex justify-content-center">
+                                                    <h6 class="mb-0">@item.Name</h6>
+                                                </div>
+
+                                                <div class="col-md-3 d-flex justify-content-center align-items-center">
+                                                    <!-- Verlaag de hoeveelheid -->
+                                                    <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
+                                                            onclick="addToCart(@item.StoreId, -1)">
+                                                        <i class="fa-solid fa-minus"></i>
+                                                    </button>
+
+                                                    <!-- Hoeveelheid -->
+                                                    <input type="number" id="quantity-@item.StoreId" value="@item.Quantity" min="1" class="quantity-input text-center" readonly />
+
+                                                    <!-- Verhoog de hoeveelheid -->
+                                                    <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
+                                                            onclick="addToCart(@item.StoreId, 1)">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </button>
+                                                </div>
+
+                                                <div class="col-md-2 col-lg-2 col-xl-2 d-flex justify-content-center">
+                                                    <h6 class="mb-0">€ @item.Price</h6>
+                                                </div>
+
+                                                <div class="col-md-1 col-lg-1 col-xl-1 d-flex justify-content-center">
+                                                    <form asp-action="RemoveFromCart" asp-route-storeId="@item.StoreId" method="post" style="display:inline;">
+                                                        <button type="submit" class="btn btn-link text-muted" style="border: none; background: none;">
+                                                            <i class="fa-solid fa-x"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+
+
+                                    <div class="pt-5">
+                                        <h6 class="mb-0">
+                                            <a class="nav-link" asp-area="" asp-controller="Stores" asp-action="Index"
+                                               class="text-body">
+                                                <i class="fa-solid fa-arrow-left"></i>Terug naar winkel
+                                            </a>
+                                        </h6>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-4 bg-body-tertiary">
+                                <div class="p-5">
+                                    <h3 class="fw-bold mb-5 mt-2 pt-1">Samenvatting</h3>
+                                    <hr class="my-4">
+
+                                    <div class="d-flex justify-content-between mb-4">
+                                        <h5 class="text-uppercase">Items</h5>
+                                        <h5>€ @Model.Sum(i => i.Price * i.Quantity)</h5>
+                                    </div>
+
+                                    <h5 class="text-uppercase mb-3">Kortingscode</h5>
+
+                                    <div class="mb-5">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
+                                            <label class="form-label" for="form3Examplea2">Vul hier je code in</label>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <div class="d-flex justify-content-between mb-5">
+                                        <h5 class="text-uppercase">Totaal prijs</h5>
+                                        <h5>€ @(Model.Sum(i => i.Price * i.Quantity))</h5>
+                                    </div>
+
+                                    <form method="get" asp-controller="CheckoutModels" asp-action="Index">
+                                        <button type="submit" class="btn btn-dark btn-block btn-lg"
+                                                data-mdb-button-init data-mdb-ripple-init data-mdb-ripple-color="dark">
+                                            Afrekenen
+                                        </button>
+                                    </form>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/b707baea87.js" crossorigin="anonymous"></script>
+
+    <script>
+                    function addToCart(storeId, quantity) {
+            $.ajax({
+                url: '@Url.Action("AddToCart", "ShoppingCarts")', // Zorg ervoor dat dit de juiste actie is
+                type: 'POST',
+                data: {
+                    storeId: storeId,
+                    quantity: quantity
+                },
+                success: function (result) {
+                    if (result.success) {
+                        // Werk de winkelwagenteller en de totaalprijs bij op de pagina
+                        updateCartDisplay(result.cartItemCount, result.cartTotalPrice);
+
+                        // Zoek de input voor de hoeveelheid van dit specifieke product
+                        var quantityInput = document.getElementById('quantity-' + storeId);
+                        if (quantityInput) {
+                            // Update de hoeveelheid van dit product
+                            quantityInput.value = parseInt(quantityInput.value) + quantity;
+                        }
+
+                        // Werk de teller van de items in de winkelwagen bij
+                        document.getElementById('cartItemCountDisplay').textContent = result.cartItemCount + " items";
+
+                        // Optioneel: Toon een succesbericht
+                        alert("Winkelwagen bijgewerkt!");
+                    } else {
+                        alert("Er is een fout opgetreden: " + result.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Er is een fout opgetreden: " + error);
+                    alert("Er is een fout opgetreden bij het toevoegen van het product aan de winkelwagen.");
+                }
+            });
+        }
+
+
+
+                   function updateCartDisplay(cartItemCount, cartTotalPrice) {
+            // Werk het aantal items bij in de winkelwagen
+            var cartCountElement = document.getElementById('cartItemCount');
+            if (cartCountElement) {
+                cartCountElement.textContent = cartItemCount;
+            }
+
+            // Werk de totale prijs bij
+            var totalPriceElement = document.getElementById('cartTotalPrice');
+            if (totalPriceElement) {
+                totalPriceElement.textContent = "€ " + cartTotalPrice.toFixed(2);
+            }
+
+            // Werk de weergave van de winkelwagenteller bij (de tekst met 'items')
+            document.getElementById('cartItemCountDisplay').textContent = cartItemCount + " items";
+        }
+
+
+    </script>
+
+
+
+}

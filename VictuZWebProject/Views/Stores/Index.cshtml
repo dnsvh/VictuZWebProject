@@ -119,29 +119,25 @@
 
                             <!-- Knoppen naast elkaar plaatsen -->
                             <div class="d-flex justify-content-end">
-                                <!-- Controleer of product alleen gekocht kan worden door MemberPlus gebruikers -->
                                 @if (item.MemberPlusProduct)
                                 {
-                                    <!-- Als gebruiker in een geautoriseerde rol zit, toon de koopknop -->
                                     @if (User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin"))
                                     {
-                                        <a asp-action="Buy" asp-route-id="@item.Id" class="btn btn-primary me-2">Koop</a>
+                                        <button class="btn btn-primary me-2" onclick="addToCart(@item.Id, 1)">Koop</button>
                                     }
                                     else
                                     {
-                                        <!-- Voor niet-geautoriseerde gebruikers, toon een inactieve knop of melding -->
                                         <button class="btn btn-secondary me-2" disabled>Alleen voor leden</button>
                                     }
                                 }
                                 else
                                 {
-                                    <!-- Voor producten zonder restricties, toon standaard koopknop -->
-                                    <a asp-action="Buy" asp-route-id="@item.Id" class="btn btn-primary me-2">Koop</a>
+                                    <button class="btn btn-primary me-2" onclick="addToCart(@item.Id, 1)">Koop</button>
                                 }
 
-                                <!-- Details knop -->
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn" style="background-color: #20c997; color: white;">Details bekijken</a>
                             </div>
+
                         </div>
 
                     </div>
@@ -157,10 +153,37 @@
 
 @section Scripts {
     <script>
-        function openCategoryForm() {
-            document.getElementById('categoryFormContainer').style.display = 'block';
-        }
-    </script>
+
+    // Functie om een product toe te voegen aan de winkelwagen via een AJAX-aanroep
+    function addToCart(storeId, quantity) {
+        $.ajax({
+            url: '@Url.Action("AddToCart", "ShoppingCarts")', // Pas dit aan naar de juiste AddToCart actie URL in de ShoppingCarts controller
+            type: 'POST',
+            data: {
+                storeId: storeId,
+                quantity: quantity
+            },
+            success: function (result) {
+                if (result.success) {
+                    alert("Het product is toegevoegd aan de winkelwagen!");
+
+                    // Werk het winkelwagenaantal bij
+                    updateCartCount(result.cartItemCount);
+
+                    // Werk de totale prijs bij
+                    updateCartTotalPrice(result.cartTotalPrice);
+                } else {
+                    alert("Er is een fout opgetreden: " + result.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Er is een fout opgetreden: " + error);
+                alert("Er is een fout opgetreden bij het toevoegen van het product aan de winkelwagen.");
+            }
+        });
+    }
+</script>
+
 }
 
 <script src="https://kit.fontawesome.com/8073668e9d.js" crossorigin="anonymous"></script>

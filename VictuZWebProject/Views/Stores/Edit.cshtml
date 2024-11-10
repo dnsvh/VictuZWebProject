@@ -59,15 +59,17 @@
                         <span asp-validation-for="Stock" class="text-danger"></span>
                     </div>
 
+                    <div class="form-check">
+                        <input asp-for="MemberPlusProduct" type="checkbox" id="MemberPlusProductCheckbox" class="form-check-input" />
+                        <label asp-for="MemberPlusProduct" class="form-check-label">MemberPlusProduct</label>
+                    </div>
+
                     <div class="d-flex justify-content-between mt-4">
                         <button type="submit" class="btn btn-primary w-45">Opslaan</button>
                         <a asp-action="Index" class="btn btn-secondary w-45">Annuleer</a>
                     </div>
 
-                    <div class="form-check">
-                        <input asp-for="MemberPlusProduct" type="checkbox" id="MemberPlusProductCheckbox" class="form-check-input" />
-                        <label asp-for="MemberPlusProduct" class="form-check-label">MemberPlusProduct</label>
-                    </div>
+                    
                 </form>
             </div>
         </div>

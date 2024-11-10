@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VictuZ_Lars.Data;
 
@@ -11,9 +12,11 @@ using VictuZ_Lars.Data;
 namespace VictuZWebProject.Migrations
 {
     [DbContext(typeof(VictuZ_Lars_Db))]
-    partial class VictuZ_Lars_DbModelSnapshot : ModelSnapshot
+    [Migration("20241109225733_ShoppingCartClasses")]
+    partial class ShoppingCartClasses
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,36 +42,6 @@ namespace VictuZWebProject.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("VictuZWebProject.Models.CheckoutModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CustomerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Subtotal")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CheckoutModels");
-                });
-
             modelBuilder.Entity("VictuZWebProject.Models.Memberships", b =>
                 {
                     b.Property<int>("Id")
@@ -88,37 +61,6 @@ namespace VictuZWebProject.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Memberships", (string)null);
-                });
-
-            modelBuilder.Entity("VictuZWebProject.Models.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CustomerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("VictuZWebProject.Models.ShoppingCart", b =>
@@ -146,15 +88,9 @@ namespace VictuZWebProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CheckoutModelId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -170,13 +106,7 @@ namespace VictuZWebProject.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CheckoutModelId");
-
-                    b.HasIndex("OrderId");
-
                     b.HasIndex("ShoppingCartId");
-
-                    b.HasIndex("StoreId");
 
                     b.ToTable("ShoppingCartItems");
                 });
@@ -351,29 +281,13 @@ namespace VictuZWebProject.Migrations
 
             modelBuilder.Entity("VictuZWebProject.Models.ShoppingCartItem", b =>
                 {
-                    b.HasOne("VictuZWebProject.Models.CheckoutModel", null)
-                        .WithMany("ShoppingCartItems")
-                        .HasForeignKey("CheckoutModelId");
-
-                    b.HasOne("VictuZWebProject.Models.Order", null)
-                        .WithMany("ShoppingCartItems")
-                        .HasForeignKey("OrderId");
-
                     b.HasOne("VictuZWebProject.Models.ShoppingCart", "ShoppingCart")
                         .WithMany("Items")
                         .HasForeignKey("ShoppingCartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VictuZWebProject.Models.Store", "Store")
-                        .WithMany()
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("ShoppingCart");
-
-                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("VictuZWebProject.Models.SuggestionLike", b =>
@@ -385,16 +299,6 @@ namespace VictuZWebProject.Migrations
                         .IsRequired();
 
                     b.Navigation("Suggestion");
-                });
-
-            modelBuilder.Entity("VictuZWebProject.Models.CheckoutModel", b =>
-                {
-                    b.Navigation("ShoppingCartItems");
-                });
-
-            modelBuilder.Entity("VictuZWebProject.Models.Order", b =>
-                {
-                    b.Navigation("ShoppingCartItems");
                 });
 
             modelBuilder.Entity("VictuZWebProject.Models.ShoppingCart", b =>
