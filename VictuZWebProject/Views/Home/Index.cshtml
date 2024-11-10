@@ -2,57 +2,71 @@
 @{
     ViewData["Title"] = "Home Page";
 
-
     var upcomingActivities = Model
         .Where(activity => activity.Activity.DateDue >= DateTime.Now)
         .OrderBy(activity => activity.Activity.DateDue)
         .Take(3)
-        .ToList(); // Take only the first 3 activities and convert to list
+        .ToList();
 }
 
 <style>
-    /* Style for the header */
+
     .header-container {
-        position: relative;
-        background: linear-gradient(45deg, #11d4cf, #11d4a1); /* Diagonal gradient */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        background: url('/images/backgroundimage3.png') no-repeat center center;
+        background-size: cover;
         color: white;
-        padding: 40px 0; /* Add some padding to give space */
-        margin-bottom: 30px; /* Add some margin at the bottom to separate from the carousel */
+        padding: 20px 20px; 
+        min-height: 600px; 
+        text-align: center;
+        overflow: hidden;
     }
 
-        .header-container h2 {
-            text-align: center;
-            font-size: 2.5rem;
+        .header-container .welcome-text {
+            font-size: 1.8rem;
             font-weight: bold;
+            margin-bottom: -3px; 
         }
 
-    /* Carousel styles */
+        .header-container .logo {
+            width: 500px; 
+            height: auto;
+            margin-bottom: -3px; 
+        }
+
     .carousel-container {
         position: relative;
         overflow: hidden;
-        width: 100%;
+        width: 80%; 
+        max-width: 1600px; 
+        margin-top: 0; 
+        margin-bottom: 20px; 
         padding: 20px 0;
-        margin-top: 20px;
     }
 
     .carousel-track {
         display: flex;
         transition: transform 0.5s ease;
-        gap: 15px;
+        gap: 10px; 
     }
 
     .carousel-card {
-        flex: 0 0 33.333%;
+        flex: 0 0 auto;
+        width: 33.333%;
         box-sizing: border-box;
-        padding: 10px;
+        padding: 5px; 
         transition: transform 0.3s ease, opacity 0.3s ease;
-        background-color: #3c4047;
-        color: white;
+        background-color: white;
+        color: #3c4047;
         border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     }
 
         .carousel-card.center-card {
-            transform: scale(1.1);
+            transform: scale(1.05);
             opacity: 1;
         }
 
@@ -61,60 +75,44 @@
             opacity: 0.6;
         }
 
-        /* Remove inner card border */
         .carousel-card .card {
-            background-color: #3c4047;
-            color: white;
+            background-color: white;
+            color: #3c4047;
             border: none;
+            box-shadow: none;
         }
 
         .carousel-card .card-body {
-            color: white;
-            padding: 15px;
+            color: #3c4047;
+            padding: 10px;
         }
 
         .carousel-card.center-card .card-body {
             font-weight: bold;
         }
 
-    /* Updated gradient fades on the edges to match background */
-    .carousel-container::before,
-    .carousel-container::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 10%;
-        pointer-events: none;
-        background: linear-gradient(to right, #222326, rgba(34, 35, 38, 0));
-        z-index: 5;
-    }
-
-    .carousel-container::before {
-        left: 0;
-    }
-
-    .carousel-container::after {
-        right: 0;
-        transform: rotate(180deg);
-    }
 
     .carousel-button-container {
         display: flex;
         justify-content: center;
-        margin-top: 10px;
+        margin-top: 5px; 
     }
 
     .carousel-button {
-        background-color: rgba(0, 0, 0, 0.5);
-        color: #fff;
+        background: transparent;
         border: none;
-        padding: 10px;
+        font-size: 2rem;
+        color: rgba(255, 255, 255, 0.6);
         cursor: pointer;
-        border-radius: 50%;
-        margin: 0 10px;
-        z-index: 10;
+        margin: 0 10px; 
+        transition: color 0.3s ease, transform 0.3s ease;
     }
+
+        .carousel-button:hover {
+            color: rgba(255, 255, 255, 1);
+            transform: scale(1.2);
+        }
+
 
     .carousel-card .activity-buttons {
         display: none;
@@ -126,10 +124,11 @@
 </style>
 
 <div class="header-container">
-    <h2>WELKOM BIJ VICTUZ!</h2>
-</div>
+    <!-- Welcome Text and Logo -->
+    <div class="welcome-text">WELKOM BIJ</div>
+    <img src="/images/VictuZLogoTransparent.webp" alt="VictuZ Logo" class="logo" />
 
-<div class="container mt-5">
+
     <div class="carousel-container">
         <div class="carousel-track">
             @if (upcomingActivities.Any())
@@ -137,7 +136,7 @@
                 foreach (var item in upcomingActivities)
                 {
                     <div class="carousel-card @(item == upcomingActivities[1] ? "center-card" : "")">
-                        <div class="card h-100 shadow-sm border-0">
+                        <div class="card h-100 border-0">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">@item.Activity.Name</h5>
                                 <p class="card-text">@item.Activity.Body</p>
@@ -180,10 +179,12 @@
     </div>
 
     <div class="carousel-button-container">
-        <button class="carousel-button carousel-button-prev">❮</button>
-        <button class="carousel-button carousel-button-next">❯</button>
+        <button class="carousel-button carousel-button-prev">←</button>
+        <button class="carousel-button carousel-button-next">→</button>
     </div>
 </div>
+
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -256,10 +257,18 @@
         document.querySelector('.carousel-button-next').addEventListener('click', moveToNext);
         document.querySelector('.carousel-button-prev').addEventListener('click', moveToPrev);
 
-        // Auto-slide every 5 seconds
         setInterval(moveToNext, 5000);
     });
 </script>
+
+
+
+
+
+
+
+
+
 
 
 
