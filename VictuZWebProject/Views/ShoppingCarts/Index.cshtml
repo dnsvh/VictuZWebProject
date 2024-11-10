@@ -162,17 +162,19 @@
                                                 <div class="col-md-3 col-lg-3 col-xl-3">
                                                     <h6 class="mb-0">@item.Name</h6>
                                                 </div>
-                                                <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                                                <div class="quantity-controls">
+                                                    <!-- Verlaag de hoeveelheid (min knop) -->
                                                     <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
-                                                            onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                                                            onclick="updateQuantity(@item.StoreId, -1)">
                                                         <i class="fa-solid fa-minus"></i>
                                                     </button>
 
-                                                    <input id="form1" min="0" name="quantity" value="@item.Quantity" type="number"
-                                                           class="form-control form-control-sm" />
+                                                    <!-- Hoeveelheid weergeven (invoerveld) -->
+                                                    <input type="number" id="quantity-@item.Id" value="1" min="1" class="quantity-input" readonly />
 
+                                                    <!-- Verhoog de hoeveelheid (plus knop) -->
                                                     <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
-                                                            onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                                                            onclick="updateQuantity(@item.StoreId, 1)">
                                                         <i class="fa-solid fa-plus"></i>
                                                     </button>
                                                 </div>
@@ -257,5 +259,51 @@
 
 @section Scripts {
     <script src="https://kit.fontawesome.com/b707baea87.js" crossorigin="anonymous"></script>
+
+    <script>
+        // Functie om de hoeveelheid en prijs bij te werken
+        function updateQuantity(productId, delta) {
+            var quantityInput = document.getElementById('quantity-' + productId);
+            var currentQuantity = parseInt(quantityInput.value);
+            var newQuantity = currentQuantity + delta;
+
+            // Zorg ervoor dat de hoeveelheid niet lager is dan 1
+            if (newQuantity >= 1) {
+                quantityInput.value = newQuantity;
+
+                // Verzend de nieuwe hoeveelheid naar de server
+                $.ajax({
+                    url: '/ShoppingCarts/UpdateCart/' + productId,
+                    type: 'POST',
+                    data: {
+                        storeId: productId,
+                        quantity: newQuantity
+                    },
+                    success: function (result) {
+                        if (result.success) {
+                            alert('Winkelwagen bijgewerkt!');
+                            updateCartDisplay(result.cartItemCount, result.cartTotalPrice);
+                        } else {
+                            alert(result.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Er is een fout opgetreden bij het bijwerken van de winkelwagen.');
+                    }
+                });
+            } else {
+                alert("De hoeveelheid kan niet lager zijn dan 1.");
+            }
+        }
+
+        // Functie om het winkelwagenaantal en het totaalbedrag bij te werken
+        function updateCartDisplay(cartItemCount, cartTotalPrice) {
+            // Werk het aantal bij
+            document.getElementById('cartItemCount').textContent = cartItemCount;
+
+            // Werk de prijs bij
+            document.getElementById('cartTotalPrice').textContent = cartTotalPrice.toFixed(2) + " €";
+        }
+    </script>
 
 }

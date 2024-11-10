@@ -10,6 +10,7 @@
 
         public ShoppingCart ShoppingCart { get; set; } // Koppeling naar winkelwagen
         public Store Store { get; set; } // Koppeling naar product
+        public decimal TotalPrice => Price * Quantity;
     }
 
 }

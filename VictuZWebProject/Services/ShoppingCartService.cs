@@ -2,6 +2,9 @@
 using System.Security.Claims;
 using VictuZ_Lars.Data;
 using VictuZWebProject.Models;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
 
 namespace VictuZWebProject.Services
 {
@@ -9,6 +12,7 @@ namespace VictuZWebProject.Services
     {
         private readonly VictuZ_Lars_Db _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
+
 
         public ShoppingCartService(VictuZ_Lars_Db context, IHttpContextAccessor httpContextAccessor)
         {
@@ -31,6 +35,55 @@ namespace VictuZWebProject.Services
             }
             return cart;
         }
+        public int GetCartItemCount()
+        {
+            var cart = GetOrCreateCart();
+            return cart.Items.Sum(i => i.Quantity); // Tel de hoeveelheid van alle items in de winkelwagen op
+        }
+
+        public decimal GetCartTotalPrice()
+        {
+            var cart = GetOrCreateCart();
+            return cart.TotalPrice; // Haal de totale prijs van de winkelwagen op
+        }
+
+        public void UpdateCart(int storeId, int quantity)
+        {
+            var cart = GetOrCreateCart(); // Haal de winkelwagen op (of maak een nieuwe als die niet bestaat)
+            var store = _context.Store.FirstOrDefault(s => s.Id == storeId); // Haal het product uit de database
+
+            if (store == null)
+            {
+                throw new Exception("Product niet gevonden.");
+            }
+
+            // Zoek of het product al in de winkelwagen zit
+            var cartItem = cart.Items.FirstOrDefault(i => i.StoreId == storeId);
+
+            if (cartItem != null)
+            {
+                // Werk de hoeveelheid bij
+                cartItem.Quantity = quantity;
+
+            }
+            else
+            {
+                // Als het item nog niet in de winkelwagen staat, voeg het toe
+                var newItem = new ShoppingCartItem
+                {
+                    StoreId = storeId,
+                    Quantity = quantity,
+                    Price = store.Price,
+                };
+                cart.Items.Add(newItem);
+            }
+
+            // Sla de wijzigingen op in de context (of sessie, afhankelijk van waar je de winkelwagen bewaart)
+            _context.SaveChanges();
+        }
+
+
+
 
 
         // Voeg een product toe aan de winkelwagen
@@ -73,22 +126,6 @@ namespace VictuZWebProject.Services
             var cart = _context.ShoppingCarts.Include(c => c.Items)
                                              .FirstOrDefault(c => c.UserId == userId);
             return cart?.Items ?? new List<ShoppingCartItem>();
-        }
-
-        public int GetCartItemCount()
-        {
-            var userId = _httpContextAccessor.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return 0;
-
-            var cart = _context.ShoppingCarts.Include(c => c.Items)
-                                             .FirstOrDefault(c => c.UserId == userId);
-
-            var cartItemCount = cart?.Items.Sum(i => i.Quantity) ?? 0;
-
-            // Update session zodat het actuele aantal altijd beschikbaar is
-            _httpContextAccessor.HttpContext.Session.SetInt32("CartItemCount", cartItemCount);
-
-            return cartItemCount;
         }
 
         public void RemoveCartItem(int storeId)

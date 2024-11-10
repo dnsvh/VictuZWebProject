@@ -119,31 +119,22 @@
 
                             <!-- Knoppen naast elkaar plaatsen -->
                             <div class="d-flex justify-content-end">
-                                <!-- Controleer of product alleen gekocht kan worden door MemberPlus gebruikers -->
                                 @if (item.MemberPlusProduct)
                                 {
-                                    <!-- Als gebruiker in een geautoriseerde rol zit, toon de koopknop -->
                                     @if (User.IsInRole("Member") || User.IsInRole("Staff") || User.IsInRole("Admin"))
                                     {
-                                        <form asp-action="AddToCart" asp-route-id="@item.Id" method="post">
-                                            <button type="submit" class="btn btn-primary me-2">Koop</button>
-                                        </form>
+                                        <button class="btn btn-primary me-2" onclick="addToCart(@item.Id, 1)">Koop</button>
                                     }
                                     else
                                     {
-                                        <!-- Voor niet-geautoriseerde gebruikers, toon een inactieve knop of melding -->
                                         <button class="btn btn-secondary me-2" disabled>Alleen voor leden</button>
                                     }
                                 }
                                 else
                                 {
-                                    <!-- Voor producten zonder restricties, toon standaard koopknop -->
-                                    <form asp-action="AddToCart" asp-route-id="@item.Id" method="post">
-                                        <button type="submit" class="btn btn-primary me-2">Koop</button>
-                                    </form>
+                                    <button class="btn btn-primary me-2" onclick="addToCart(@item.Id, 1)">Koop</button>
                                 }
 
-                                <!-- Details knop -->
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn" style="background-color: #20c997; color: white;">Details bekijken</a>
                             </div>
 
@@ -162,9 +153,51 @@
 
 @section Scripts {
     <script>
-        function openCategoryForm() {
-            document.getElementById('categoryFormContainer').style.display = 'block';
+        function updateCart(storeId, quantity) {
+            $.ajax({
+                url: '@Url.Action("UpdateCart", "ShoppingCarts")', // Dynamisch de juiste URL halen voor de AddToCart actie in de ShoppingCarts controller
+                type: 'POST',
+                data: {
+                    storeId: storeId,
+                    quantity: quantity
+                },
+                success: function (result) {
+                    if (result.success) {
+                        alert("De winkelwagen is bijgewerkt!");
+
+                        // Werk het winkelwagenaantal bij
+                        updateCartCount(result.cartItemCount);
+
+                        // Werk de totale prijs bij
+                        updateCartTotalPrice(result.cartTotalPrice);
+                    } else {
+                        alert("Er is een fout opgetreden: " + result.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Er is een fout opgetreden: " + error);
+                    alert("Er is een fout opgetreden bij het bijwerken van de winkelwagen.");
+                }
+            });
         }
+
+        // Functie om het winkelwagenaantal bij te werken op de pagina
+        function updateCartCount(cartItemCount) {
+            var cartCountElement = document.getElementById('cartItemCount');
+            if (cartCountElement) {
+                cartCountElement.textContent = cartItemCount;
+            }
+        }
+
+        // Functie om de totale prijs van de winkelwagen bij te werken
+        function updateCartTotalPrice(cartTotalPrice) {
+            var totalPriceElement = document.getElementById('cartTotalPrice');
+            if (totalPriceElement) {
+                totalPriceElement.textContent = "€" + cartTotalPrice.toFixed(2); // Zorg ervoor dat de prijs goed wordt weergegeven
+            }
+        }
+
+
     </script>
 }
 

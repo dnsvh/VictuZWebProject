@@ -142,6 +142,12 @@
         font-size: 0.8rem;
         color: #777;
     }
+
+    .navbar-nav .badge {
+        font-size: 0.8rem;
+        padding: 0.2em 0.5em;
+    }
+
 </style>
 
 <body>
@@ -171,14 +177,15 @@
                         </li>
                     </ul>
 
-                    <ul>
+                    <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="ShoppingCarts" asp-action="Index">
+                            <a class="nav-link d-flex align-items-center" asp-area="" asp-controller="ShoppingCarts" asp-action="Index">
                                 <i class="fas fa-shopping-cart"></i>
-                                <span id="cartItemCount">@ViewData["CartItemCount"]</span>
+                                <span id="cartItemCount" class="badge bg-primary ms-2">@ViewData["CartItemCount"]</span>
                             </a>
                         </li>
                     </ul>
+
 
                     <partial name="_LoginPartial" />
                 </div>

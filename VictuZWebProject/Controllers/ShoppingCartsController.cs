@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using VictuZWebProject.Models;
 using VictuZ_Lars.Data;
 using VictuZWebProject.Services;
+using Microsoft.Extensions.Logging;
+
 
 namespace VictuZWebProject.Controllers
 {
@@ -15,12 +17,40 @@ namespace VictuZWebProject.Controllers
     {
         private readonly VictuZ_Lars_Db _context;
         private readonly ShoppingCartService _shoppingCartService;
+        private readonly ILogger<ShoppingCartsController> _logger;
 
-        public ShoppingCartsController(VictuZ_Lars_Db context, ShoppingCartService shoppingCartService)
+
+        public ShoppingCartsController(VictuZ_Lars_Db context, ShoppingCartService shoppingCartService, ILogger<ShoppingCartsController> logger)
         {
             _context = context;
             _shoppingCartService = shoppingCartService;
+            _logger = logger;
         }
+
+        [HttpPost]
+        [Route("ShoppingCarts/UpdateCart/{storeId}")]
+        public IActionResult UpdateCart(int storeId, int quantity)
+        {
+            try
+            {
+                // Update de winkelwagen met de nieuwe hoeveelheid
+                _shoppingCartService.UpdateCart(storeId, quantity);
+
+                // Verkrijg het totaal aantal items en de totale prijs
+                var cartItemCount = _shoppingCartService.GetCartItemCount();
+                var cartTotalPrice = _shoppingCartService.GetCartTotalPrice();
+
+                // Geef de resultaten terug naar de frontend
+                return Json(new { success = true, cartItemCount, cartTotalPrice });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Fout bij het bijwerken van de winkelwagen");
+                return Json(new { success = false, message = "Er is een fout opgetreden bij het bijwerken van de winkelwagen." });
+            }
+        }
+
+
 
         [HttpPost]
         public IActionResult AddToCart(int storeId, int quantity)
