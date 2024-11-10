@@ -153,7 +153,9 @@
 
 @section Scripts {
     <script>
-        function addToCart(storeId, quantity) {
+
+    // Functie om een product toe te voegen aan de winkelwagen via een AJAX-aanroep
+    function addToCart(storeId, quantity) {
         $.ajax({
             url: '@Url.Action("AddToCart", "ShoppingCarts")', // Pas dit aan naar de juiste AddToCart actie URL in de ShoppingCarts controller
             type: 'POST',
@@ -180,53 +182,8 @@
             }
         });
     }
+</script>
 
-        function updateCart(storeId, quantity) {
-            $.ajax({
-                url: '@Url.Action("UpdateCart", "ShoppingCarts")', // Dynamisch de juiste URL halen voor de AddToCart actie in de ShoppingCarts controller
-                type: 'POST',
-                data: {
-                    storeId: storeId,
-                    quantity: quantity
-                },
-                success: function (result) {
-                    if (result.success) {
-                        alert("De winkelwagen is bijgewerkt!");
-
-                        // Werk het winkelwagenaantal bij
-                        updateCartCount(result.cartItemCount);
-
-                        // Werk de totale prijs bij
-                        updateCartTotalPrice(result.cartTotalPrice);
-                    } else {
-                        alert("Er is een fout opgetreden: " + result.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Er is een fout opgetreden: " + error);
-                    alert("Er is een fout opgetreden bij het bijwerken van de winkelwagen.");
-                }
-            });
-        }
-
-        // Functie om het winkelwagenaantal bij te werken op de pagina
-        function updateCartCount(cartItemCount) {
-            var cartCountElement = document.getElementById('cartItemCount');
-            if (cartCountElement) {
-                cartCountElement.textContent = cartItemCount;
-            }
-        }
-
-        // Functie om de totale prijs van de winkelwagen bij te werken
-        function updateCartTotalPrice(cartTotalPrice) {
-            var totalPriceElement = document.getElementById('cartTotalPrice');
-            if (totalPriceElement) {
-                totalPriceElement.textContent = "€" + cartTotalPrice.toFixed(2); // Zorg ervoor dat de prijs goed wordt weergegeven
-            }
-        }
-
-
-    </script>
 }
 
 <script src="https://kit.fontawesome.com/8073668e9d.js" crossorigin="anonymous"></script>

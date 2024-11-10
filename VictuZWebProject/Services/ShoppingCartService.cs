@@ -64,7 +64,6 @@ namespace VictuZWebProject.Services
             {
                 // Werk de hoeveelheid bij
                 cartItem.Quantity = quantity;
-
             }
             else
             {
@@ -81,10 +80,6 @@ namespace VictuZWebProject.Services
             // Sla de wijzigingen op in de context (of sessie, afhankelijk van waar je de winkelwagen bewaart)
             _context.SaveChanges();
         }
-
-
-
-
 
         // Voeg een product toe aan de winkelwagen
         public void AddToCart(int storeId, int quantity)
@@ -116,6 +111,7 @@ namespace VictuZWebProject.Services
 
             _context.SaveChanges();
         }
+
 
         // Verkrijg de winkelwagenitems
         public List<ShoppingCartItem> GetCartItems()

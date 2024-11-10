@@ -36,7 +36,7 @@ namespace VictuZWebProject.Controllers
                 // Update de winkelwagen met de nieuwe hoeveelheid
                 _shoppingCartService.UpdateCart(storeId, quantity);
 
-                // Verkrijg het totaal aantal items en de totale prijs
+                // Verkrijg het totaal aantal items en de totale prijs van de winkelwagen
                 var cartItemCount = _shoppingCartService.GetCartItemCount();
                 var cartTotalPrice = _shoppingCartService.GetCartTotalPrice();
 

@@ -173,16 +173,16 @@
                                                 <div class="col-md-3 d-flex justify-content-center align-items-center">
                                                     <!-- Verlaag de hoeveelheid -->
                                                     <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
-                                                            onclick="updateQuantity(@item.StoreId, -1)">
+                                                            onclick="addToCart(@item.StoreId, -1)">
                                                         <i class="fa-solid fa-minus"></i>
                                                     </button>
 
                                                     <!-- Hoeveelheid -->
-                                                    <input type="number" id="quantity-@item.Id" value="1" min="1" class="quantity-input text-center" readonly />
+                                                    <input type="number" id="quantity-@item.StoreId" value="@item.Quantity" min="1" class="quantity-input text-center" readonly />
 
                                                     <!-- Verhoog de hoeveelheid -->
                                                     <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
-                                                            onclick="updateQuantity(@item.StoreId, 1)">
+                                                            onclick="addToCart(@item.StoreId, 1)">
                                                         <i class="fa-solid fa-plus"></i>
                                                     </button>
                                                 </div>
@@ -259,49 +259,59 @@
     <script src="https://kit.fontawesome.com/b707baea87.js" crossorigin="anonymous"></script>
 
     <script>
-        // Functie om de hoeveelheid en prijs bij te werken
-        function updateQuantity(productId, delta) {
-            var quantityInput = document.getElementById('quantity-' + productId);
-            var currentQuantity = parseInt(quantityInput.value);
-            var newQuantity = currentQuantity + delta;
+                // Functie om een product toe te voegen aan de winkelwagen via een AJAX-aanroep
+                function addToCart(storeId, quantity) {
+            $.ajax({
+                url: '@Url.Action("AddToCart", "ShoppingCarts")', // De juiste actie in de ShoppingCarts controller
+                type: 'POST',
+                data: {
+                    storeId: storeId,
+                    quantity: quantity
+                },
+                success: function (result) {
+                    if (result.success) {
+                        // Werk de item count en totale prijs bij op de pagina
+                        updateCartDisplay(result.cartItemCount, result.cartTotalPrice);
 
-            // Zorg ervoor dat de hoeveelheid niet lager is dan 1
-            if (newQuantity >= 1) {
-                quantityInput.value = newQuantity;
-
-                // Verzend de nieuwe hoeveelheid naar de server
-                $.ajax({
-                    url: '/ShoppingCarts/UpdateCart/' + productId,
-                    type: 'POST',
-                    data: {
-                        storeId: productId,
-                        quantity: newQuantity
-                    },
-                    success: function (result) {
-                        if (result.success) {
-                            alert('Winkelwagen bijgewerkt!');
-                            updateCartDisplay(result.cartItemCount, result.cartTotalPrice);
-                        } else {
-                            alert(result.message);
+                        // Zoek de input voor de hoeveelheid van het specifieke product en verhoog het
+                        var quantityInput = document.getElementById('quantity-' + storeId);
+                        if (quantityInput) {
+                            // Verhoog de hoeveelheid van het product (bijvoorbeeld met 1)
+                            quantityInput.value = parseInt(quantityInput.value) + 1;
                         }
-                    },
-                    error: function () {
-                        alert('Er is een fout opgetreden bij het bijwerken van de winkelwagen.');
+
+                        // Geef een bevestiging dat het product is toegevoegd of de hoeveelheid is aangepast
+                        alert("Het product is toegevoegd of de hoeveelheid is bijgewerkt in de winkelwagen!");
+                    } else {
+                        alert("Er is een fout opgetreden: " + result.message);
                     }
-                });
-            } else {
-                alert("De hoeveelheid kan niet lager zijn dan 1.");
+                },
+                error: function (xhr, status, error) {
+                    console.error("Er is een fout opgetreden: " + error);
+                    alert("Er is een fout opgetreden bij het toevoegen van het product aan de winkelwagen.");
+                }
+            });
+        }
+
+                // Functie om het winkelwagenaantal en het totaalbedrag bij te werken
+        function updateCartDisplay(cartItemCount, cartTotalPrice) {
+            // Werk het aantal items bij in de winkelwagen
+            var cartCountElement = document.getElementById('cartItemCount');
+            if (cartCountElement) {
+                cartCountElement.textContent = cartItemCount;
+            }
+
+            // Werk de totale prijs bij
+            var totalPriceElement = document.getElementById('cartTotalPrice');
+            if (totalPriceElement) {
+                totalPriceElement.textContent = "€ " + cartTotalPrice.toFixed(2);
             }
         }
 
-        // Functie om het winkelwagenaantal en het totaalbedrag bij te werken
-        function updateCartDisplay(cartItemCount, cartTotalPrice) {
-            // Werk het aantal bij
-            document.getElementById('cartItemCount').textContent = cartItemCount;
 
-            // Werk de prijs bij
-            document.getElementById('cartTotalPrice').textContent = cartTotalPrice.toFixed(2) + " €";
-        }
+
     </script>
+
+
 
 }
