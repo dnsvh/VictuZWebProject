@@ -9,6 +9,7 @@ using VictuZWebProject.Models;
 using VictuZ_Lars.Data;
 using VictuZWebProject.Services;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 
 namespace VictuZWebProject.Controllers
@@ -76,10 +77,6 @@ namespace VictuZWebProject.Controllers
             });
         }
 
-
-
-
-
         public IActionResult RemoveFromCart(int storeId)
         {
             // Verwijder het product uit de winkelwagen
@@ -88,7 +85,6 @@ namespace VictuZWebProject.Controllers
             // Redirect naar de winkelwagenpagina of waar je ook heen wilt na het verwijderen
             return RedirectToAction("Index", "ShoppingCarts");
         }
-
 
         public IActionResult Index()
         {

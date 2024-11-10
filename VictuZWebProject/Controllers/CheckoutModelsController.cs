@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using VictuZWebProject.Models;
 using VictuZ_Lars.Data;
 using VictuZWebProject.Services;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Identity;
+using VictuZWebProject.Areas.Identity.Data;
 
 namespace VictuZWebProject.Controllers
 {
@@ -15,11 +18,38 @@ namespace VictuZWebProject.Controllers
     {
         private readonly VictuZ_Lars_Db _context;
         private readonly ShoppingCartService _shoppingCartService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public CheckoutModelsController(VictuZ_Lars_Db context, ShoppingCartService shoppingCartService)
+
+        public CheckoutModelsController(VictuZ_Lars_Db context, ShoppingCartService shoppingCartService, UserManager<AppUser> userManager)
         {
             _context = context;
             _shoppingCartService = shoppingCartService;
+            _userManager = userManager;
+        }
+
+        [HttpPost]
+        public IActionResult Checkout(CheckoutModel model)
+        {
+
+            // Haal de winkelmanditems op
+            var shoppingCartItems = _shoppingCartService.GetShoppingCartItems(User.Identity.Name);
+
+            // Maak een nieuwe order aan
+            var order = new Order
+            {
+                CustomerName = model.CustomerName,
+                Email = model.Email,
+                TotalAmount = shoppingCartItems.Sum(item => item.Price * item.Quantity),
+                OrderDate = DateTime.UtcNow,
+                ShoppingCartItems = shoppingCartItems
+            };
+
+            // Leeg de winkelmand
+            _shoppingCartService.ClearShoppingCart(User.Identity.Name);
+
+            // Redirect naar de store
+            return RedirectToAction("Index", "Stores");
         }
 
         // GET: CheckoutModels
@@ -44,21 +74,7 @@ namespace VictuZWebProject.Controllers
             return View(checkoutModel);
         }
 
-
-        [HttpPost]
-        public IActionResult Index(CheckoutModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                // Verwerk betaling en andere logica
-                // Bijvoorbeeld: sla de bestelling op, stuur bevestiging naar de klant, etc.
-                return RedirectToAction("Confirmation");
-            }
-
-            // Bij een fout in het model herlaad het formulier met fouten
-            return View(model);
-        }
-
+        
 
         // GET: CheckoutModels/Details/5
         public async Task<IActionResult> Details(int? id)

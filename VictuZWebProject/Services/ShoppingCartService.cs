@@ -5,6 +5,7 @@ using VictuZWebProject.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace VictuZWebProject.Services
 {
@@ -19,10 +20,28 @@ namespace VictuZWebProject.Services
             _context = context;
             _httpContextAccessor = httpContextAccessor;
         }
-        // Haal de winkelwagen van de ingelogde gebruiker op
+
+        public List<ShoppingCartItem> GetShoppingCartItems(string userId)
+        {
+            // Haal de winkelmand items op voor de gebruiker uit de database of session
+            return _context.ShoppingCartItems.Where(item => item.ShoppingCart.UserId == userId).ToList();
+        }
+
+        public void ClearShoppingCart(string userId)
+        {
+            var items = _context.ShoppingCartItems.Where(item => item.ShoppingCart.UserId == userId).ToList();
+            _context.ShoppingCartItems.RemoveRange(items);
+            _context.SaveChanges();
+        }
+
         public ShoppingCart GetOrCreateCart()
         {
-            var userId = _httpContextAccessor.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier); // Haal de userId op
+            if (_context == null || _context.ShoppingCarts == null)
+            {
+                throw new InvalidOperationException("Database context or ShoppingCarts set is not initialized.");
+            }
+
+            var userId = _httpContextAccessor.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return null;
 
             var cart = _context.ShoppingCarts.Include(c => c.Items)
@@ -35,6 +54,8 @@ namespace VictuZWebProject.Services
             }
             return cart;
         }
+
+
         public int GetCartItemCount()
         {
             var cart = GetOrCreateCart();

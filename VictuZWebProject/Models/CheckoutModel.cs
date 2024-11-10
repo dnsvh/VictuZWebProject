@@ -19,11 +19,6 @@ namespace VictuZWebProject.Models
         public decimal Discount { get; set; }
         public decimal TotalAmount { get; set; }
 
-
-        public CheckoutModel()
-        {
-            ShoppingCartItems = new List<ShoppingCartItem>();
-        }
     }
 }
 

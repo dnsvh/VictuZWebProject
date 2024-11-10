@@ -43,6 +43,8 @@ namespace VictuZWebProject
 
             var app = builder.Build();
 
+            builder.Logging.AddConsole();
+
             // Cultuurinstellingen voor het gebruik van punt als decimaalteken
             var cultureInfo = new CultureInfo("en-US")
             {

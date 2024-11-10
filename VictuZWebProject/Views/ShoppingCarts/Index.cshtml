@@ -26,7 +26,7 @@
     }
 
     .h-custom {
-        background-color: #d2c9ff;
+        background-color: #F0F0F0;
     }
 
     .card-registration {
@@ -143,7 +143,7 @@
                             <div class="col-lg-8">
                                 <div class="p-5">
                                     <div class="d-flex justify-content-between align-items-center mb-5">
-                                        <h1 class="fw-bold mb-0">Shopping Cart</h1>
+                                        <h1 class="fw-bold mb-0">Winkelwagen</h1>
                                         <h6 class="mb-0 text-muted" id="cartItemCountDisplay">@Model.Count() items</h6>
                                     </div>
 
@@ -207,7 +207,7 @@
                                         <h6 class="mb-0">
                                             <a class="nav-link" asp-area="" asp-controller="Stores" asp-action="Index"
                                                class="text-body">
-                                                <i class="fa-solid fa-arrow-left"></i>Back to shop
+                                                <i class="fa-solid fa-arrow-left"></i>Terug naar winkel
                                             </a>
                                         </h6>
                                     </div>
@@ -216,7 +216,7 @@
                             </div>
                             <div class="col-lg-4 bg-body-tertiary">
                                 <div class="p-5">
-                                    <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
+                                    <h3 class="fw-bold mb-5 mt-2 pt-1">Samenvatting</h3>
                                     <hr class="my-4">
 
                                     <div class="d-flex justify-content-between mb-4">
@@ -224,19 +224,19 @@
                                         <h5>€ @Model.Sum(i => i.Price * i.Quantity)</h5>
                                     </div>
 
-                                    <h5 class="text-uppercase mb-3">Give code</h5>
+                                    <h5 class="text-uppercase mb-3">Kortingscode</h5>
 
                                     <div class="mb-5">
                                         <div data-mdb-input-init class="form-outline">
                                             <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
-                                            <label class="form-label" for="form3Examplea2">Enter your code</label>
+                                            <label class="form-label" for="form3Examplea2">Vul hier je code in</label>
                                         </div>
                                     </div>
 
                                     <hr class="my-4">
 
                                     <div class="d-flex justify-content-between mb-5">
-                                        <h5 class="text-uppercase">Total price</h5>
+                                        <h5 class="text-uppercase">Totaal prijs</h5>
                                         <h5>€ @(Model.Sum(i => i.Price * i.Quantity))</h5>
                                     </div>
 

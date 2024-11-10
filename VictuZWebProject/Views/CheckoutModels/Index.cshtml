@@ -154,35 +154,35 @@
         <div class="block-heading">
             <h2>Betalen</h2>
         </div>
-        <form method="post">
+        <form method="post" asp-controller="CheckoutModels" asp-action="Checkout">
             <div class="products">
                 <h3 class="title">Checkout</h3>
 
                 @foreach (var item in Model.ShoppingCartItems)
                 {
-                    var totalPricePerItem = item.Price * item.Quantity;  // Bereken de prijs voor dit specifieke product
+                    var totalPricePerItem = item.Price * item.Quantity;
 
                     <div class="item">
-                        <span class="price">€@totalPricePerItem</span>  <!-- Toon de totale prijs per product -->
+                        <span class="price">€@totalPricePerItem</span>
                         <p class="item-name">@item.Name</p>
-                        <p class="item-quantity">Aantal: @item.Quantity</p>  <!-- Optioneel: toon de hoeveelheid van het product -->
+                        <p class="item-quantity">Aantal: @item.Quantity</p>
                     </div>
                 }
 
                 <div class="total">
-                    Totale prijs: €@Model.TotalAmount  <!-- De totale prijs van de winkelwagen -->
+                    Totale prijs: €@Model.TotalAmount
                 </div>
             </div>
 
             <div class="card-details">
-                <h3 class="title">Credit Card Details</h3>
+                <h3 class="title">Kaart gegevens</h3>
                 <div class="row">
                     <div class="form-group col-sm-7">
-                        <label for="card-holder">Card Holder</label>
-                        <input id="card-holder" type="text" class="form-control" placeholder="Card Holder" name="CardHolder" value="@Model.CustomerName" required>
+                        <label for="card-holder">Kaarthouder</label>
+                        <input id="card-holder" type="text" class="form-control" placeholder="Kaarthouder" name="CardHolder" value="@Model.CustomerName" required>
                     </div>
                     <div class="form-group col-sm-5">
-                        <label for="">Expiration Date</label>
+                        <label for="">Vervaldatum</label>
                         <div class="input-group expiration-date">
                             <input type="text" class="form-control" placeholder="MM" name="ExpirationMonth" required>
                             <span class="date-separator">/</span>
@@ -190,19 +190,21 @@
                         </div>
                     </div>
                     <div class="form-group col-sm-8">
-                        <label for="card-number">Card Number</label>
-                        <input id="card-number" type="text" class="form-control" placeholder="Card Number" name="CardNumber" required>
+                        <label for="card-number">Kaartnummer</label>
+                        <input id="card-number" type="text" class="form-control" placeholder="Kaartnummer" name="CardNumber" required>
                     </div>
                     <div class="form-group col-sm-4">
                         <label for="cvc">CVC</label>
                         <input id="cvc" type="text" class="form-control" placeholder="CVC" name="CVC" required>
                     </div>
+
                     <div class="form-group col-sm-12">
                         <button type="submit" class="btn btn-primary btn-block">Betalen</button>
                     </div>
                 </div>
             </div>
         </form>
+
 
     </div>
 </section>

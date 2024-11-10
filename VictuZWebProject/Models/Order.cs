@@ -1,17 +1,17 @@
 ﻿namespace VictuZWebProject.Models
-{
-    public class Order
     {
-        public int Id { get; set; }  // Order ID
-        public string CustomerName { get; set; }  // Naam van de klant
-        public string Email { get; set; }  // Email van de klant
-        public DateTime OrderDate { get; set; }  // Datum van de bestelling
-        public decimal TotalAmount { get; set; }  // Totaalbedrag van de bestelling
-        public List<ShoppingCartItem> ShoppingCartItems { get; set; }  // Lijst van bestelde producten
-
-        public Order()
+        public class Order
         {
-            ShoppingCartItems = new List<ShoppingCartItem>();
+            public int Id { get; set; }
+            public string UserId { get; set; }
+            public string CustomerName { get; set; }
+            public string Email { get; set; }
+            public DateTime OrderDate { get; set; }
+            public decimal TotalAmount { get; set; }
+            public List<ShoppingCartItem> ShoppingCartItems { get; set; }
+            public Order()
+            {
+                ShoppingCartItems = new List<ShoppingCartItem>();
+            }
         }
     }
-}
