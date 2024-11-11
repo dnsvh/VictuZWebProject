@@ -181,9 +181,9 @@
         gap: 40px;
     }
 
-        /* Add margin-top to the second row of sponsors */
+
         .sponsors-grid + .sponsors-grid {
-            margin-top: 40px; /* Adjust the value to control the space between rows */
+            margin-top: 40px; 
         }
 
     .sponsor-item {
@@ -238,7 +238,7 @@
 
 
 <div class="header-container">
-    <!-- Welcome Text and Logo -->
+
     <img src="/images/VictuZLogoTransparent.webp" alt="VictuZ Logo" class="logo" />
 
 
@@ -253,8 +253,8 @@
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">@item.Activity.Name</h5>
                                 <p class="card-text">@item.Activity.Body</p>
-                                <small class="text-muted">Location: @item.Activity.Location</small>
-                                <small class="text-muted">Date: @item.Activity.DateDue.ToString("MMMM dd, h:mm tt")</small>
+                                <small class="text-muted">Locatie: @item.Activity.Location</small>
+                                <small class="text-muted">Datum: @item.Activity.DateDue.ToString("MMMM dd, h:mm tt")</small>
 
                                 <div class="d-flex justify-content-end mt-3 activity-buttons">
                                     @if (User.Identity.IsAuthenticated)
@@ -295,7 +295,15 @@
         <button class="carousel-button carousel-button-prev">←</button>
         <button class="carousel-button carousel-button-next">→</button>
     </div>
+
+    <div class="carousel-all-activities-button">
+        <a asp-action="Index" asp-controller="Activities" class="btn btn-primary" style="background-color: #20c997; color: white; margin-top: 10px;">
+            Alle Activiteiten
+        </a>
+    </div>
 </div>
+
+
 
 <div class="about-section">
     <div class="about-content">
